@@ -19,6 +19,24 @@
     <Filter Include="99. BMPManager">
       <UniqueIdentifier>{679c1760-a90b-4cd1-bb6e-cad86a266b77}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. GameObject">
+      <UniqueIdentifier>{2ee1d6ff-04f8-46e2-b31c-18450e17167b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Collision">
+      <UniqueIdentifier>{6e953dea-2787-4fef-b54a-c640cc2a56cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. MissionManager">
+      <UniqueIdentifier>{f0502e52-3ecd-4ebe-bd68-c42d16e7ed01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. ObjectManager">
+      <UniqueIdentifier>{ff7942a8-4f6d-4b0c-bc15-7a54ce275a69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96. CollisionManager">
+      <UniqueIdentifier>{0fd84c58-6c2a-4dae-80d5-c472f83fac2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95. KeyManager">
+      <UniqueIdentifier>{2a490fee-f2a8-49ec-b6dd-ab8857e1d9c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -45,6 +63,12 @@
     <ClInclude Include="CBmpManager.h">
       <Filter>99. BMPManager</Filter>
     </ClInclude>
+    <ClInclude Include="CGameObject.h">
+      <Filter>01. GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="CCollision.h">
+      <Filter>02. Collision</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MetalSlug3.cpp">
@@ -58,6 +82,12 @@
     </ClCompile>
     <ClCompile Include="CBmpManager.cpp">
       <Filter>99. BMPManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CGameObject.cpp">
+      <Filter>01. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="CCollision.cpp">
+      <Filter>02. Collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

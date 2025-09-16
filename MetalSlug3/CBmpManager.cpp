@@ -19,7 +19,7 @@ CBmpManager& CBmpManager::GetInstance()
     return *m_pInstance;
 }
 
-CBmpManager& CBmpManager::DeleteInstance()
+void CBmpManager::DeleteInstance()
 {
     if (m_pInstance)
     {

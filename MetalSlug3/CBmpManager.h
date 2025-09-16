@@ -10,7 +10,7 @@ private:
 
 public:
 	static CBmpManager&		GetInstance();
-	static CBmpManager&		DeleteInstance();
+	static void				DeleteInstance();
 
 public:
 
