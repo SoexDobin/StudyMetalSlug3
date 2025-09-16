@@ -13,6 +13,7 @@ public:
 	void		Release();
 
 private:
+	HDC			m_hDC;
 
 };
 

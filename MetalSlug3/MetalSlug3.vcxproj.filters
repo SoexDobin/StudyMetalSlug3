@@ -37,6 +37,9 @@
     <Filter Include="95. KeyManager">
       <UniqueIdentifier>{2a490fee-f2a8-49ec-b6dd-ab8857e1d9c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Vector2">
+      <UniqueIdentifier>{8ba33937-1178-4404-909c-289836903891}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -69,6 +72,12 @@
     <ClInclude Include="CCollision.h">
       <Filter>02. Collision</Filter>
     </ClInclude>
+    <ClInclude Include="CKeyManager.h">
+      <Filter>95. KeyManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>소스 파일\Vector2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MetalSlug3.cpp">
@@ -88,6 +97,12 @@
     </ClCompile>
     <ClCompile Include="CCollision.cpp">
       <Filter>02. Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="CKeyManager.cpp">
+      <Filter>95. KeyManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2.cpp">
+      <Filter>소스 파일\Vector2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
