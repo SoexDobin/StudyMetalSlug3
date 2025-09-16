@@ -1,4 +1,6 @@
 #pragma once
+#include "Define.h"
+
 class CGame
 {
 public:
@@ -15,5 +17,8 @@ public:
 private:
 	HDC			m_hDC;
 
+	RECT	    m_tRect;
+	HDC			m_hDCBack;
+	HBITMAP		m_bmpBack;
 };
 

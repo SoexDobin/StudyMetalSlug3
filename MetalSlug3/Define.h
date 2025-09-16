@@ -13,6 +13,18 @@
 // World Variable
 extern HWND			g_hWnd;
 
+enum OBJECT_TYPE
+{
+	PLAYER,
+	ENEMY,
+	NEUTRAL,
+	PROJECTILE,
+	EXPLODE,
+	PARTICLE,
+	UI,
+	OBJECT_END
+};
+
 enum COL_TYPE
 {
 	RECT_COL,

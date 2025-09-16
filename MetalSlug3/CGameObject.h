@@ -29,7 +29,7 @@ public:
 	virtual void	Initialize()										PURE;
 	virtual int		Update()											PURE;
 	virtual void	LateUpdate()										PURE;
-	virtual void	Render(HDC hDC)										PURE;
+	virtual void	Render(HDC _hDC)									PURE;
 	virtual void	Release()											PURE;
 	virtual void	OnCollision(CGameObject* _pCol, Vector2 _vColSize)	PURE;
 

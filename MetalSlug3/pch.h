@@ -3,12 +3,17 @@
 
 // 여기에 미리 컴파일하려는 헤더 추가
 #include "framework.h"
-#include "Define.h"
 #include "Vector2.h"
 
-#include ""
+#include <list>
+#include <unordered_map>
+#include <vector>
+#include <algorithm>
 
 #ifdef _DEBUG
+
+#include <io.h>
+#include <iostream>
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>

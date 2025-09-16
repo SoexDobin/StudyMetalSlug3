@@ -132,9 +132,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CBmpManager.h" />
+    <ClInclude Include="CBmpObject.h" />
     <ClInclude Include="CCollision.h" />
     <ClInclude Include="CGame.h" />
     <ClInclude Include="CGameObject.h" />
+    <ClInclude Include="CObjectManager.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="CKeyManager.h" />
@@ -146,10 +148,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CBmpManager.cpp" />
+    <ClCompile Include="CBmpObject.cpp" />
     <ClCompile Include="CCollision.cpp" />
     <ClCompile Include="CGame.cpp" />
     <ClCompile Include="CGameObject.cpp" />
     <ClCompile Include="CKeyManager.cpp" />
+    <ClCompile Include="CObjectManager.cpp" />
     <ClCompile Include="MetalSlug3.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -40,6 +40,9 @@
     <Filter Include="소스 파일\Vector2">
       <UniqueIdentifier>{8ba33937-1178-4404-909c-289836903891}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. GameObject\00. Eri">
+      <UniqueIdentifier>{55737aca-fbea-4a74-bf73-790d069983b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -78,6 +81,12 @@
     <ClInclude Include="Vector2.h">
       <Filter>소스 파일\Vector2</Filter>
     </ClInclude>
+    <ClInclude Include="CBmpObject.h">
+      <Filter>99. BMPManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CObjectManager.h">
+      <Filter>97. ObjectManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MetalSlug3.cpp">
@@ -103,6 +112,12 @@
     </ClCompile>
     <ClCompile Include="Vector2.cpp">
       <Filter>소스 파일\Vector2</Filter>
+    </ClCompile>
+    <ClCompile Include="CBmpObject.cpp">
+      <Filter>99. BMPManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CObjectManager.cpp">
+      <Filter>97. ObjectManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

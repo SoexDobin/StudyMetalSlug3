@@ -14,11 +14,7 @@ CGameObject::CGameObject()
 
 CGameObject::~CGameObject()
 {
-	if (m_pCollision)
-	{
-		delete m_pCollision;
-		m_pCollision = nullptr;
-	}
+	SafeDelete(m_pCollision);
 }
 
 void CGameObject::UpdateGameObject()
@@ -28,6 +24,6 @@ void CGameObject::UpdateGameObject()
 	m_tRect.right	= LONG(m_vPivot.x + (m_vSize.x / 2.f));
 	m_tRect.bottom	= LONG(m_vPivot.y + (m_vSize.y / 2.f));
 
-	if (m_pCollision != nullptr)
+	if (m_pCollision)
 		m_pCollision->UpdateCollision();
 }

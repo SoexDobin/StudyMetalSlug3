@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CCollision.h"
+#include "Define.h"
 
 CCollision::CCollision() 
 	: m_bShowCol(false), m_bIsCol(false), m_eColType(RECT_COL)
