@@ -8,6 +8,7 @@
 #include "CKeyManager.h"
 #include "CObjectManager.h"
 #include "CBmpManager.h"
+#include "CTimeManager.h"
 
 CGame::CGame()
 	: m_hDC(nullptr)
@@ -40,10 +41,12 @@ void CGame::Initialize()
 
 	m_hDC = GetDC(g_hWnd);
 
+	CTimeManager::GetInstance().Initialize();
 }
 
 void CGame::Update()
 {
+	CTimeManager::GetInstance().Update();
 }
 
 void CGame::LateUpdate()
@@ -74,6 +77,7 @@ FreeConsole();
 	CKeyManager::DeleteInstance();
 	CBmpManager::DeleteInstance();
 	CObjectManager::DeleteInstance();
+	CTimeManager::DeleteInstance();
 
 	ReleaseDC(g_hWnd, m_hDC);
 }

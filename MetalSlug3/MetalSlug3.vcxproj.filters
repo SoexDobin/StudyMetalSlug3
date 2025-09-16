@@ -25,9 +25,6 @@
     <Filter Include="02. Collision">
       <UniqueIdentifier>{6e953dea-2787-4fef-b54a-c640cc2a56cb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="98. MissionManager">
-      <UniqueIdentifier>{f0502e52-3ecd-4ebe-bd68-c42d16e7ed01}</UniqueIdentifier>
-    </Filter>
     <Filter Include="97. ObjectManager">
       <UniqueIdentifier>{ff7942a8-4f6d-4b0c-bc15-7a54ce275a69}</UniqueIdentifier>
     </Filter>
@@ -42,6 +39,12 @@
     </Filter>
     <Filter Include="01. GameObject\00. Eri">
       <UniqueIdentifier>{55737aca-fbea-4a74-bf73-790d069983b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="94. TimeManager">
+      <UniqueIdentifier>{9120434f-46dc-44f2-855d-3dab9ddaf560}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. SceneManager">
+      <UniqueIdentifier>{f0502e52-3ecd-4ebe-bd68-c42d16e7ed01}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -87,6 +90,12 @@
     <ClInclude Include="CObjectManager.h">
       <Filter>97. ObjectManager</Filter>
     </ClInclude>
+    <ClInclude Include="CTimeManager.h">
+      <Filter>94. TimeManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CEri.h">
+      <Filter>01. GameObject\00. Eri</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MetalSlug3.cpp">
@@ -118,6 +127,12 @@
     </ClCompile>
     <ClCompile Include="CObjectManager.cpp">
       <Filter>97. ObjectManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CTimeManager.cpp">
+      <Filter>94. TimeManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CEri.cpp">
+      <Filter>01. GameObject\00. Eri</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
