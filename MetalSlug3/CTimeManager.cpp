@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "CTimeManager.h"
 
+#ifdef _DEBUG
+#include "CKeyManager.h" 
+#endif
+
 CTimeManager::CTimeManager() 
 	: m_fDeltaTime(0.f)
 	, m_liCurCount({ 0 }), m_liPrevCount({ 0 }), m_liFrequency({ 0 })
@@ -28,4 +32,8 @@ void CTimeManager::Update()
 	m_fDeltaTime = (m_liCurCount.QuadPart - m_liPrevCount.QuadPart) / static_cast<float>(m_liFrequency.QuadPart);
 	m_liPrevCount = m_liCurCount;
 
+#ifdef _DEBUG
+	if (CKeyManager::GetInstance().KeyPressing('K'))
+		std::wcout << m_fDeltaTime << L"\n";
+#endif // _DEBUG
 }

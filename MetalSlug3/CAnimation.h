@@ -34,12 +34,16 @@ public:
 
 public:
 	void			Initialize();
-	void			UpdateAnimation(const TCHAR* _szKey, int _iStartFrame);
+	void			UpdateAnimation();
+	void			ChangeAnimation(const TCHAR* _szKey, int _iStartFrame = 0);
 	void			RenderAnimation(HDC _hDC);
 	void			Release();
 
 	void			PlayAnimation();
 	int				StopAnimation();
+
+private:
+	int				m_iLastFacingX;
 
 protected:
 	CGameObject*	m_pParentObject;
@@ -49,7 +53,7 @@ protected:
 	int				m_iLayer;
 	float			m_fDeltaFrame;
 	float			m_fFrameSpeed;
-	const TCHAR*	m_fCurFrameKey;
+	const TCHAR*	m_szCurFrameKey;
 	COLORREF		m_dwEaseColor;
 	unordered_map<const TCHAR*, pair<int, int>> m_umapAnimationPair;
 };

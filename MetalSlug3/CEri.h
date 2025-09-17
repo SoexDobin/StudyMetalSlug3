@@ -11,6 +11,8 @@ public:
 	CEri();
 	virtual ~CEri() override;
 
+public:
+	int			GetLastFacingX()	{ return m_iLastFaceX; }
 
 public:
 	void		Initialize()										override;
@@ -38,6 +40,8 @@ private:
 	PLAYER_STATE	m_eCurLegState;
 	PLAYER_STATE	m_ePrevLegState;
 	
+	int				m_iLastFaceX;
+
 private:
 	const char		m_cJumpKey = 'D';
 	const char		m_cAttackKey = 'A';

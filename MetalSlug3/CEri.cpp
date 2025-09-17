@@ -10,6 +10,7 @@ CEri::CEri()
 	: m_pBodyAnim(nullptr), m_pLegAnim(nullptr)
 	, m_eCurBodyState(PLAYER_STATE_END), m_ePrevBodyState(PLAYER_STATE_END)
 	, m_eCurLegState(PLAYER_STATE_END), m_ePrevLegState(PLAYER_STATE_END)
+	, m_iLastFaceX(1)
 {
 }
 
@@ -20,20 +21,24 @@ CEri::~CEri()
 
 void CEri::Initialize()
 {
-	m_vPivot = Vector2(120, 600);
+	m_vPivot = Vector2(200, 500);
 	m_vSize = Vector2(PLAYER_BMPX, PLAYER_BMPY);
 	m_vFace = Vector2::UnitX;
 	m_vDirection = Vector2(0.f, 0.f);
-	
-	
 
 	LoadEriBmp();
+	m_ePrevBodyState = IDLE;
+	m_ePrevLegState = IDLE;
+	m_pBodyAnim->ChangeAnimation(L"Eri_Standing_Idle_Body");
+	m_pLegAnim->ChangeAnimation(L"Eri_Standing_Idle_Leg");
 }
 
 int CEri::Update()
 {
 	if (m_bDestroy) return OBJ_DESTROY;
 
+	m_pBodyAnim->UpdateAnimation();
+	m_pLegAnim->UpdateAnimation();
 	__super::UpdateGameObject();
 
 	return OBJ_NOEVENT;
@@ -46,13 +51,12 @@ void CEri::LateUpdate()
 	BehaviourKeyInput();
 	AttackKeyInput();
 
-	m_ePrevBodyState = m_ePrevBodyState;
-	m_ePrevLegState = m_ePrevLegState;
+	m_ePrevBodyState = m_eCurBodyState;
+	m_ePrevLegState = m_eCurLegState;
 }
 
 void CEri::Render(HDC _hDC)
 {
-	Rectangle(_hDC, m_tRect.left, m_tRect.top, m_tRect.right, m_tRect.bottom);
 	m_pLegAnim->RenderAnimation(_hDC);
 	m_pBodyAnim->RenderAnimation(_hDC);
 }
@@ -72,10 +76,15 @@ void CEri::BehaviourKeyInput()
 	if (CKeyManager::GetInstance().KeyPressing(VK_DOWN)
 		&& !CKeyManager::GetInstance().KeyPressing(VK_UP))
 	{
-
 		m_eCurBodyState = SIT;
+		m_pBodyAnim->ChangeAnimation(L"Eri_Blank_Body");
 		return;
 	}
+	else
+	{
+		m_eCurBodyState = IDLE;
+	}
+
 
 	if (CKeyManager::GetInstance().KeyPressing(m_cJumpKey))
 	{
@@ -84,29 +93,28 @@ void CEri::BehaviourKeyInput()
 
 		m_eCurBodyState = JUMP;
 		m_eCurLegState = JUMP;
+		return;
 	}
 
 	if (CKeyManager::GetInstance().KeyPressing(VK_RIGHT))
 	{
-
+		m_vFace = Vector2::UnitX;
+		m_vDirection = Vector2::UnitX;
 		m_eCurLegState = MOVE;
+		m_pLegAnim->ChangeAnimation(L"Eri_Standing_Move_Leg");
 	}
 	else if (CKeyManager::GetInstance().KeyPressing(VK_LEFT))
 	{
-
+		m_vFace = Vector2::UnitX * -1.f;
+		m_vDirection = Vector2::UnitX * -1.f;
 		m_eCurLegState = MOVE;
-	}
-
-	if (CKeyManager::GetInstance().KeyPressing(VK_UP))
-	{
-		
-
-
+		m_pLegAnim->ChangeAnimation(L"Eri_Standing_Move_Leg");
 	}
 	else
 	{
-
+		m_vDirection = Vector2::Zero;
 		m_eCurLegState = IDLE;
+		m_pLegAnim->ChangeAnimation(L"Eri_Standing_Idle_Leg");
 	}
 }
 
@@ -117,23 +125,36 @@ void CEri::AttackKeyInput()
 		// TODO 근접 공격 여부 조건 추가
 		if (CKeyManager::GetInstance().KeyPressing(m_cAttackKey))
 		{
+			if (CKeyManager::GetInstance().KeyPressing(VK_RIGHT))
+				m_vFace = Vector2::UnitX;
+			else if (CKeyManager::GetInstance().KeyPressing(VK_LEFT))
+				m_vFace = Vector2::UnitX * -1.f;
 
+			m_vDirection = Vector2::Zero;
 			m_eCurLegState = SHOOT;
+			m_pLegAnim->ChangeAnimation(L"Eri_Sit_Shoot");
 		}
 		else if (CKeyManager::GetInstance().KeyPressing(VK_RIGHT))
 		{
-
+			m_vFace = Vector2::UnitX;
+			m_vDirection = Vector2::UnitX;
+			m_iLastFaceX = m_vFace.x;
 			m_eCurLegState = MOVE;
+			m_pLegAnim->ChangeAnimation(L"Eri_Sit_Move");
 		}
 		else if (CKeyManager::GetInstance().KeyPressing(VK_LEFT))
 		{
-
+			m_vFace = Vector2::UnitX * -1.f;
+			m_vDirection = Vector2::UnitX * -1.f;
+			m_iLastFaceX = m_vFace.x;
 			m_eCurLegState = MOVE;
+			m_pLegAnim->ChangeAnimation(L"Eri_Sit_Move");
 		}
 		else
 		{
 			
 			m_eCurLegState = IDLE;
+			m_pLegAnim->ChangeAnimation(L"Eri_Sit_Idle");
 		}
 	}
 	else
@@ -142,17 +163,53 @@ void CEri::AttackKeyInput()
 		if (m_eCurBodyState == JUMP || m_eCurBodyState == MOVEJUMP)
 			;
 		else if (m_eCurBodyState == DROP)
+			;
 
 		// TODO 근접 공격 여부 조건 추가
 		if (CKeyManager::GetInstance().KeyPressing(m_cAttackKey))
 		{
-
 			m_eCurBodyState = SHOOT;
+			
+			
+			
+			if (CKeyManager::GetInstance().KeyPressing(VK_UP)
+				&& CKeyManager::GetInstance().KeyPressing(VK_RIGHT))
+			{
+				m_vFace = Vector2::UnitX;
+				m_pBodyAnim->ChangeAnimation(L"Eri_Standing_ShootUp_Body");
+			}
+			else if (CKeyManager::GetInstance().KeyPressing(VK_UP)
+				&& CKeyManager::GetInstance().KeyPressing(VK_LEFT))
+			{
+				m_vFace = Vector2::UnitX * -1.f;
+				m_pBodyAnim->ChangeAnimation(L"Eri_Standing_ShootUp_Body");
+			}
+			else if (CKeyManager::GetInstance().KeyPressing(VK_UP))
+			{
+				m_vFace = Vector2::UnitY * -1.f;
+				m_pBodyAnim->ChangeAnimation(L"Eri_Standing_ShootUp_Body");
+			}
+			else if (CKeyManager::GetInstance().KeyPressing(VK_RIGHT))
+			{
+				m_vFace = Vector2::UnitX;
+				m_pBodyAnim->ChangeAnimation(L"Eri_Standing_ShootFront_Body");
+			}
+			else if (CKeyManager::GetInstance().KeyPressing(VK_LEFT))
+			{
+				m_vFace = Vector2::UnitX * -1.f;
+				m_pBodyAnim->ChangeAnimation(L"Eri_Standing_ShootFront_Body");
+			}
+			else
+			{
+				m_pBodyAnim->ChangeAnimation(L"Eri_Standing_ShootFront_Body");
+			}
+			
 		}
 		else
 		{
 
 			m_eCurBodyState = IDLE;
+			m_pBodyAnim->ChangeAnimation(L"Eri_Standing_Idle_Body");
 		}
 	}
 }
@@ -161,9 +218,10 @@ void CEri::LoadEriBmp()
 {
 	m_pBodyAnim = new CAnimation();
 	m_pLegAnim = new CAnimation();
-	m_pBodyAnim->SetParent(this);
-	m_pLegAnim->SetParent(this);
 
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Eri/Eri_Blank_Body.bmp"
+		, L"Eri_Blank_Body");
+	m_pBodyAnim->AddAnimation(L"Eri_Blank_Body", pair<int, int>{0, 1});
 	// sit
 	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Eri/Eri_Sit_CQC.bmp"
 		, L"Eri_Sit_CQC");
@@ -245,4 +303,9 @@ void CEri::LoadEriBmp()
 		, L"Eri_Standing_ShootUpToFront_Body");
 	m_pBodyAnim->AddAnimation(L"Eri_Standing_ShootFrontToUp_Body", pair<int, int>{0, 2});
 	m_pBodyAnim->AddAnimation(L"Eri_Standing_ShootUpToFront_Body", pair<int, int>{0, 2});
+
+	m_pBodyAnim->Initialize();
+	m_pLegAnim->Initialize();
+	m_pBodyAnim->SetParent(this);
+	m_pLegAnim->SetParent(this);
 }
