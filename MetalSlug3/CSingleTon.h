@@ -5,7 +5,7 @@ class CSingleTon
 {
 protected:
 	CSingleTon() {};
-	virtual ~CSingleTon() {};
+	virtual ~CSingleTon() { };
 
 private:
 	CSingleTon(const T&)		= delete;

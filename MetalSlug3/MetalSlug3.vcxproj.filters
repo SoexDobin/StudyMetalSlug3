@@ -49,17 +49,17 @@
     <Filter Include="소스 파일\SingleTon">
       <UniqueIdentifier>{e9b8fa39-d074-4f93-86f2-3d793858002d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Scene">
+      <UniqueIdentifier>{8b8e3300-e325-4d1f-952c-dbd1d3454bc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Scene\00. Armory">
+      <UniqueIdentifier>{0c916e1e-d1d9-4bcc-a71d-dff5e4bffc02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\VSHeader">
+      <UniqueIdentifier>{f8268861-4f33-40e9-ab63-cf57f6e55758}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="MetalSlug3.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -102,6 +102,24 @@
     <ClInclude Include="CSingleTon.h">
       <Filter>소스 파일\SingleTon</Filter>
     </ClInclude>
+    <ClInclude Include="CSceneManager.h">
+      <Filter>98. SceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CScene.h">
+      <Filter>03. Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="CArmoryScene.h">
+      <Filter>03. Scene\00. Armory</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>헤더 파일\VSHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>헤더 파일\VSHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일\VSHeader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MetalSlug3.cpp">
@@ -139,6 +157,15 @@
     </ClCompile>
     <ClCompile Include="CEri.cpp">
       <Filter>01. GameObject\00. Eri</Filter>
+    </ClCompile>
+    <ClCompile Include="CSceneManager.cpp">
+      <Filter>98. SceneManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CScene.cpp">
+      <Filter>03. Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="CArmoryScene.cpp">
+      <Filter>03. Scene\00. Armory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

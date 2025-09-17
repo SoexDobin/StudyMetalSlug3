@@ -10,6 +10,11 @@ CObjectManager::~CObjectManager()
 	Release();
 }
 
+void CObjectManager::AddGameObject(CGameObject* _pObj, OBJECT_TYPE _eType)
+{
+	m_vecObjectList[_eType].push_back(_pObj);
+}
+
 void CObjectManager::Initialize()
 {
 	m_vecObjectList.clear();
@@ -26,7 +31,7 @@ void CObjectManager::Update()
 
 			if (isDestroy)
 			{
-				SafeDelete(*it);
+				SafeDelete<CGameObject*>(*it);
 				it = list.erase(it);
 			}
 			else

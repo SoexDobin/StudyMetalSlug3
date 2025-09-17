@@ -16,6 +16,9 @@ public:
 	}
 
 public:
+	void						AddGameObject(CGameObject* _pObj, OBJECT_TYPE _eType);
+
+public:
 	void						Initialize();
 	void						Update();
 	void						LateUpdate();

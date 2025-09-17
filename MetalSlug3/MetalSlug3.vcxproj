@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CArmoryScene.h" />
     <ClInclude Include="CBmpManager.h" />
     <ClInclude Include="CBmpObject.h" />
     <ClInclude Include="CCollision.h" />
@@ -138,6 +139,8 @@
     <ClInclude Include="CGame.h" />
     <ClInclude Include="CGameObject.h" />
     <ClInclude Include="CObjectManager.h" />
+    <ClInclude Include="CScene.h" />
+    <ClInclude Include="CSceneManager.h" />
     <ClInclude Include="CSingleTon.h" />
     <ClInclude Include="CTimeManager.h" />
     <ClInclude Include="Define.h" />
@@ -150,6 +153,7 @@
     <ClInclude Include="Vector2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CArmoryScene.cpp" />
     <ClCompile Include="CBmpManager.cpp" />
     <ClCompile Include="CBmpObject.cpp" />
     <ClCompile Include="CCollision.cpp" />
@@ -158,6 +162,8 @@
     <ClCompile Include="CGameObject.cpp" />
     <ClCompile Include="CKeyManager.cpp" />
     <ClCompile Include="CObjectManager.cpp" />
+    <ClCompile Include="CScene.cpp" />
+    <ClCompile Include="CSceneManager.cpp" />
     <ClCompile Include="CTimeManager.cpp" />
     <ClCompile Include="MetalSlug3.cpp" />
     <ClCompile Include="pch.cpp">

@@ -14,7 +14,7 @@ CGameObject::CGameObject()
 
 CGameObject::~CGameObject()
 {
-	SafeDelete(m_pCollision);
+	SafeDelete<CCollision*>(m_pCollision);
 }
 
 void CGameObject::UpdateGameObject()

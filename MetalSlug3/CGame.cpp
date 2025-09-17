@@ -5,10 +5,12 @@
 #include "CBmpObject.h"
 
 // Managers
+#include "CSingleTon.h"
 #include "CKeyManager.h"
 #include "CObjectManager.h"
 #include "CBmpManager.h"
 #include "CTimeManager.h"
+#include "CSceneManager.h"
 
 CGame::CGame()
 	: m_hDC(nullptr)
@@ -41,19 +43,23 @@ void CGame::Initialize()
 
 	m_hDC = GetDC(g_hWnd);
 
+	
+	CSceneManager::GetInstance().Initialize();
+
 	CTimeManager::GetInstance().Initialize();
 }
 
 void CGame::Update()
 {
 	CTimeManager::GetInstance().Update();
+
+	CSceneManager::GetInstance().Update();
 }
 
 void CGame::LateUpdate()
 {
-
 	CKeyManager::GetInstance().KeyUpdate();
-
+	CSceneManager::GetInstance().LateUpdate();
 }
 
 void CGame::Render()
@@ -61,10 +67,9 @@ void CGame::Render()
 	BitBlt(m_hDC, 0, 0, m_tRect.right, m_tRect.bottom, m_hDCBack, 0, 0, SRCCOPY);
 	PatBlt(m_hDCBack, 0, 0, m_tRect.right, m_tRect.bottom, WHITENESS);
 
+	CSceneManager::GetInstance().Render(m_hDCBack);
 	//HDC	hBackDC = BmpMgr::Get_Instance()->Find_Img(L"Back");
-
 	//SceneMgr::Get_Instance()->Render(hBackDC);
-
 	//BitBlt(m_hDC, 0, 0, WINCX, WINCY, hBackDC, 0, 0, SRCCOPY);
 }
 
@@ -73,6 +78,8 @@ void CGame::Release()
 #ifdef _DEBUG
 FreeConsole();
 #endif
+
+	CSceneManager::DeleteInstance();
 	CKeyManager::DeleteInstance();
 	CBmpManager::DeleteInstance();
 	CObjectManager::DeleteInstance();
