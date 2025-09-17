@@ -10,6 +10,9 @@
 #define			PLAYER_BMPX		192
 #define			PLAYER_BMPY		288
 
+#define			OBJ_DESTROY		1
+#define			OBJ_NOEVENT		0
+
 // World Variable
 extern HWND			g_hWnd;
 

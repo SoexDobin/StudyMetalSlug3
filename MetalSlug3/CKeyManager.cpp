@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "CKeyManager.h"
 
-CKeyManager* CKeyManager::m_pInstance = nullptr;
-
 CKeyManager::CKeyManager()
 {
 	ZeroMemory(m_bKeyState, sizeof(m_bKeyState));
@@ -59,23 +57,5 @@ void CKeyManager::KeyUpdate()
 		{
 			m_bKeyState[i] = !m_bKeyState[i];
 		}
-	}
-
-}
-
-CKeyManager& CKeyManager::GetInstance()
-{
-	if (nullptr == m_pInstance)
-		m_pInstance = new CKeyManager;
-
-	return *m_pInstance;
-}
-
-void CKeyManager::DeleteInstance()
-{
-	if (m_pInstance)
-	{
-		delete m_pInstance;
-		m_pInstance = nullptr;
 	}
 }

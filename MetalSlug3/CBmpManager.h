@@ -1,17 +1,13 @@
 #pragma once
+#include "CSingleTon.h"
 #include "CBmpObject.h"
 
-class CBmpManager
+class CBmpManager final : public CSingleTon<CBmpManager>
 {
+	friend class CSingleTon;
 private:
 	CBmpManager();
-	~CBmpManager();
-	CBmpManager(const CBmpManager& _rhs) = delete;
-	CBmpManager& operator=(CBmpManager& _rhs) = delete;
-
-public:
-	static CBmpManager&		GetInstance();
-	static void				DeleteInstance();
+	~CBmpManager() override;
 
 public:
 	void		InsertBmp(const TCHAR* _pFilePath, const TCHAR* _pImgKey);
@@ -19,7 +15,6 @@ public:
 	void		Release();
 
 private:
-	static CBmpManager*		m_pInstance;
 	unordered_map<const TCHAR*, CBmpObject*> m_umapBitMap;
 };
 

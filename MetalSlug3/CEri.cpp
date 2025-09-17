@@ -1,17 +1,31 @@
 #include "pch.h"
 #include "CEri.h"
 
+CEri::CEri()
+{
+}
+
+CEri::~CEri()
+{
+}
+
 void CEri::Initialize()
 {
 }
 
 int CEri::Update()
 {
-	return 0;
+	if (m_bDestroy) return OBJ_DESTROY;
+
+	__super::UpdateGameObject();
+
+
+	return OBJ_NOEVENT;
 }
 
 void CEri::LateUpdate()
 {
+	KeyInput();
 }
 
 void CEri::Render(HDC _hDC)

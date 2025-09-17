@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "CObjectManager.h"
 
-CObjectManager* CObjectManager::m_pInstance = nullptr;
-
 CObjectManager::CObjectManager()
 {
 }
@@ -75,24 +73,4 @@ void CObjectManager::Release()
 		list.clear();
 	}
 	m_vecObjectList.shrink_to_fit();
-}
-
-
-CObjectManager& CObjectManager::GetInstance()
-{
-	if (m_pInstance == nullptr)
-	{
-		m_pInstance = new CObjectManager;
-	}
-
-	return *m_pInstance;
-}
-
-void CObjectManager::DeleteInstance()
-{
-	if (m_pInstance)
-	{
-		delete m_pInstance;
-		m_pInstance = nullptr;
-	}
 }

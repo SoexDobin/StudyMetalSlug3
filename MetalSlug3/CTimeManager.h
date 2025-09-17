@@ -1,25 +1,18 @@
 #pragma once
+#include "CSingleTon.h"
 
-class CTimeManager
+class CTimeManager final : public CSingleTon<CTimeManager>
 {
+	friend class CSingleTon;
 private:
 	CTimeManager();
-	~CTimeManager();
-	CTimeManager(const CTimeManager& _rhs) = delete;
-	CTimeManager& operator=(const CTimeManager& _rhs) = delete;
-
+	~CTimeManager() override;
 public:
 	float					GetDeltaTime()		{ return m_fDeltaTime; }
 	void					Initialize();
 	void					Update();
 
-public:
-	static CTimeManager&	GetInstance();
-	static void				DeleteInstance();
-
 private:
-	static CTimeManager*		m_pInstance;
-
 	float						m_fDeltaTime;
 	LARGE_INTEGER				m_liCurCount;
 	LARGE_INTEGER				m_liPrevCount;

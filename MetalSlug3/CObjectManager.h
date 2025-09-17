@@ -1,13 +1,13 @@
 #pragma once
+#include "CSingleTon.h"
 #include "CGameObject.h"
 
-class CObjectManager
+class CObjectManager final : public CSingleTon<CObjectManager>
 {
+	friend class CSingleTon;
 private:
 	CObjectManager();
-	~CObjectManager();
-	CObjectManager(const CObjectManager& _rhs) = delete;
-	CObjectManager& operator=(const CObjectManager& _rhs) = delete;
+	~CObjectManager() override;
 
 public:
 	list<CGameObject*>& GetGameObjectList(OBJECT_TYPE _eID) 
@@ -16,9 +16,6 @@ public:
 	}
 
 public:
-	static CObjectManager&		GetInstance();
-	static void					DeleteInstance();
-
 	void						Initialize();
 	void						Update();
 	void						LateUpdate();
@@ -26,7 +23,6 @@ public:
 	void						Release();
 
 private:
-	static CObjectManager*		m_pInstance;
 	vector<list<CGameObject*>>	m_vecObjectList;
 };
 

@@ -138,6 +138,7 @@
     <ClInclude Include="CGame.h" />
     <ClInclude Include="CGameObject.h" />
     <ClInclude Include="CObjectManager.h" />
+    <ClInclude Include="CSingleTon.h" />
     <ClInclude Include="CTimeManager.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="framework.h" />

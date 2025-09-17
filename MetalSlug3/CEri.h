@@ -16,10 +16,11 @@ public:
 	void		Release()											override;
 	void		OnCollision(CGameObject* _pCol, Vector2 _vColSize)  override;
 
+	
 private:
+	void		KeyInput();
 
-
-
-
+private:
+	
 };
 

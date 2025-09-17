@@ -73,7 +73,6 @@ void CGame::Release()
 #ifdef _DEBUG
 FreeConsole();
 #endif
-
 	CKeyManager::DeleteInstance();
 	CBmpManager::DeleteInstance();
 	CObjectManager::DeleteInstance();

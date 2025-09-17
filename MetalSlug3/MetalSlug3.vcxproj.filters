@@ -46,6 +46,9 @@
     <Filter Include="98. SceneManager">
       <UniqueIdentifier>{f0502e52-3ecd-4ebe-bd68-c42d16e7ed01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\SingleTon">
+      <UniqueIdentifier>{e9b8fa39-d074-4f93-86f2-3d793858002d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -95,6 +98,9 @@
     </ClInclude>
     <ClInclude Include="CEri.h">
       <Filter>01. GameObject\00. Eri</Filter>
+    </ClInclude>
+    <ClInclude Include="CSingleTon.h">
+      <Filter>소스 파일\SingleTon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,11 +1,13 @@
 #pragma once
+#include "CSingleTon.h"
 #include "Define.h"
 
-class CKeyManager
+class CKeyManager final : public CSingleTon<CKeyManager>
 {
+	friend class CSingleTon;
 private:
 	CKeyManager();
-	~CKeyManager();
+	~CKeyManager() override;
 
 public:
 	bool		KeyPressing(int iKey);
@@ -13,13 +15,7 @@ public:
 	bool		KeyDown(int iKey);	
 	void		KeyUpdate();
 
-public:
-	static CKeyManager&			GetInstance();
-	static void					DeleteInstance();
-
 private:
-	static CKeyManager*		m_pInstance;
 	bool					m_bKeyState[VK_MAX];
-
 };
 
