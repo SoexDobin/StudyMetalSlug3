@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CAnimation.h" />
     <ClInclude Include="CArmoryScene.h" />
     <ClInclude Include="CBmpManager.h" />
     <ClInclude Include="CBmpObject.h" />
@@ -153,6 +154,7 @@
     <ClInclude Include="Vector2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CAnimation.cpp" />
     <ClCompile Include="CArmoryScene.cpp" />
     <ClCompile Include="CBmpManager.cpp" />
     <ClCompile Include="CBmpObject.cpp" />

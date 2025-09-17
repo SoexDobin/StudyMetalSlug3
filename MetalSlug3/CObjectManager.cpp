@@ -18,7 +18,7 @@ void CObjectManager::AddGameObject(CGameObject* _pObj, OBJECT_TYPE _eType)
 void CObjectManager::Initialize()
 {
 	m_vecObjectList.clear();
-	m_vecObjectList.reserve(OBJECT_END);
+	m_vecObjectList.resize(OBJECT_END);
 }
 
 void CObjectManager::Update()
@@ -56,7 +56,7 @@ void CObjectManager::Render(HDC _hDC)
 {
 	for (auto& list : m_vecObjectList)
 	{
-		for_each(list.begin(), list.end(), [=](CGameObject* _p)
+		for_each(list.begin(), list.end(), [&](CGameObject* _p)
 			{
 				_p->Render(_hDC);
 			}

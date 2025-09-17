@@ -58,6 +58,9 @@
     <Filter Include="헤더 파일\VSHeader">
       <UniqueIdentifier>{f8268861-4f33-40e9-ab63-cf57f6e55758}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Animation">
+      <UniqueIdentifier>{1c920371-201a-4e0a-899b-6d9a3cdb3837}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MetalSlug3.h">
@@ -120,6 +123,9 @@
     <ClInclude Include="targetver.h">
       <Filter>헤더 파일\VSHeader</Filter>
     </ClInclude>
+    <ClInclude Include="CAnimation.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MetalSlug3.cpp">
@@ -166,6 +172,9 @@
     </ClCompile>
     <ClCompile Include="CArmoryScene.cpp">
       <Filter>03. Scene\00. Armory</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimation.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

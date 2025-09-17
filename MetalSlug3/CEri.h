@@ -20,7 +20,9 @@ public:
 private:
 	void		KeyInput();
 
+	void		LoadEriBmp();
+
 private:
-	
+	const TCHAR* m_bmpPATH = L"../Resource/Bmp/Eri/";
 };
 

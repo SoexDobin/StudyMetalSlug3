@@ -105,6 +105,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance;
    RECT rcWindow = { 0, 0, WINCX, WINCY };
+   AdjustWindowRect(&rcWindow, WS_OVERLAPPEDWINDOW, FALSE);
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW
                                                    ,CW_USEDEFAULT
                                                    , 0

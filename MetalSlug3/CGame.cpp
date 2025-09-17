@@ -35,17 +35,18 @@ void CGame::Initialize()
 		std::ios::sync_with_stdio();
 	}
 #endif
+
+	m_hDC = GetDC(g_hWnd);
 	GetClientRect(g_hWnd, &m_tRect);
 	m_hDCBack = CreateCompatibleDC(m_hDC);
 	m_bmpBack = CreateCompatibleBitmap(m_hDC, m_tRect.right, m_tRect.bottom);
 	HBITMAP prev = (HBITMAP)::SelectObject(m_hDCBack, m_bmpBack);
 	DeleteObject(prev);
 
-	m_hDC = GetDC(g_hWnd);
-
 	
-	CSceneManager::GetInstance().Initialize();
 
+	CObjectManager::GetInstance().Initialize();
+	CSceneManager::GetInstance().Initialize();
 	CTimeManager::GetInstance().Initialize();
 }
 
@@ -68,9 +69,9 @@ void CGame::Render()
 	PatBlt(m_hDCBack, 0, 0, m_tRect.right, m_tRect.bottom, WHITENESS);
 
 	CSceneManager::GetInstance().Render(m_hDCBack);
-	//HDC	hBackDC = BmpMgr::Get_Instance()->Find_Img(L"Back");
-	//SceneMgr::Get_Instance()->Render(hBackDC);
-	//BitBlt(m_hDC, 0, 0, WINCX, WINCY, hBackDC, 0, 0, SRCCOPY);
+
+	
+
 }
 
 void CGame::Release()
