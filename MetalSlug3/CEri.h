@@ -1,8 +1,12 @@
 #pragma once
 #include "CGameObject.h"
 
+class CAnimation;
+class CCollision;
+
 class CEri : public CGameObject
 {
+	enum PLAYER_STATE { SIT, IDLE, MOVE, SHOOT, CQC, JUMP, MOVEJUMP, DROP, PLAYER_STATE_END };
 public:
 	CEri();
 	virtual ~CEri() override;
@@ -18,11 +22,25 @@ public:
 
 	
 private:
-	void		KeyInput();
+	void		BehaviourKeyInput();
+	void		AttackKeyInput();
 
 	void		LoadEriBmp();
 
 private:
-	const TCHAR* m_bmpPATH = L"../Resource/Bmp/Eri/";
+	CAnimation*		m_pBodyAnim;
+	CAnimation*		m_pLegAnim;
+	CCollision*		m_pHitBox;
+	CCollision*		m_pCQCCollider;
+
+	PLAYER_STATE	m_eCurBodyState;
+	PLAYER_STATE	m_ePrevBodyState;
+	PLAYER_STATE	m_eCurLegState;
+	PLAYER_STATE	m_ePrevLegState;
+	
+private:
+	const char		m_cJumpKey = 'D';
+	const char		m_cAttackKey = 'A';
+	const TCHAR*	m_bmpPATH = L"../Resource/Bmp/Eri/";
 };
 

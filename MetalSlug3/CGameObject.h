@@ -9,7 +9,6 @@ public:
 
 public:
 	const RECT&		GetRect() const			{ return m_tRect; }
-	CCollision*		GetCollision()			{ return m_pCollision; }
 
 	bool			IsDestroy() const		{ return m_bDestroy; }
 	int				GetHp() const			{ return m_iHp; }
@@ -45,7 +44,5 @@ protected:
 	Vector2			m_vSize;
 	Vector2			m_vFace;
 	Vector2			m_vDirection;
-
-	CCollision*		m_pCollision = nullptr;
 };
 

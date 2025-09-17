@@ -1,5 +1,7 @@
 #pragma once
 
+class CGameObject;
+
 class CAnimation
 {
 public:
@@ -7,41 +9,47 @@ public:
 	virtual ~CAnimation();
 
 public:
-	void		Initialize();
-	void		Update();
-	void		LateUpdate();
-	void		Render();
-	void		Release();
+	int				GetStartFrameIndex();
+	int				GetEndFrameIndex();
+	int				GetCurrentFrameIndex();
+	int				GetFrameLayer();
+	float			GetDeltaFrame();
+	float			GetFrameSpeed();
+	const TCHAR*	GetCurrentFrameKey();
+	COLORREF		GetEaseColor();
+
+	void			SetParent(CGameObject* _pObj);
+	void			SetStartFrameIndex(int _idx);
+	void			SetEndFrameIndex(int _idx);
+	void			SetCurrentFrameIndex(int _idx);
+	void			SetFrameLayer(int _idx);
+	void			SetDeltaFrame(float _fDelta);
+	void			SetFrameSpeed(float _fSpeed);
+	void			SetCurrentFrameKey(const TCHAR* _szkey);
+	void			SetEaseColor(COLORREF _dwRGB);
+
+	void			AddAnimation(const TCHAR* _szKey, pair<int, int> _motionPair);
+	void			DeleteAnimation(const TCHAR* _szKey);
+	pair<int, int>	GetAnimationPairByTString(const TCHAR* _szKey);
 
 public:
-	int			GetStartFrameIndex();
-	int			GetEndFrameIndex();
-	int			GetCurrentFrameIndex();
-	int			GetFrameLayer();
+	void			Initialize();
+	void			UpdateAnimation(const TCHAR* _szKey, int _iStartFrame);
+	void			RenderAnimation(HDC _hDC);
+	void			Release();
 
-
-public:
 	void			PlayAnimation();
 	int				StopAnimation();
 
 protected:
-	int				m_iStartMotion;
-	int				m_iEndMotion;
-	int				m_iCurMotion;
+	CGameObject*	m_pParentObject;
+	int				m_iStartFrame;
+	int				m_iEndFrame;
+	int				m_iCurFrame;
 	int				m_iLayer;
-	float			m_tDeltaFrame;
-	float			m_tFrameSpeed;
-	const TCHAR*	m_tCurFrameKey;
+	float			m_fDeltaFrame;
+	float			m_fFrameSpeed;
+	const TCHAR*	m_fCurFrameKey;
+	COLORREF		m_dwEaseColor;
 	unordered_map<const TCHAR*, pair<int, int>> m_umapAnimationPair;
 };
-
-typedef struct tagFrame
-{
-	int		iStart;
-	int		iEnd;
-	int		iMotion;
-	DWORD	dwSpeed;
-	DWORD	dwTime;
-
-
-}FRAME;
