@@ -7,7 +7,7 @@
 #include "CTimeManager.h"
 
 CAnimation::CAnimation()
-	: m_pParentObject(nullptr)
+	: m_pParentObject(nullptr), m_iLastFacingX(1)
 	,m_iStartFrame(0), m_iEndFrame(0), m_iCurFrame(0), m_iLayer(0)
 	, m_fDeltaFrame(0.f), m_fFrameSpeed(0.f)
 	, m_szCurFrameKey(L"")
@@ -73,12 +73,12 @@ void CAnimation::UpdateAnimation()
 {
 	if (m_pParentObject->GetFace().x > 0)
 	{
-		m_iLastFacingX = m_pParentObject->GetFace().x;
+		m_iLastFacingX = static_cast<int>(m_pParentObject->GetFace().x);
 		m_iLayer = 0;
 	}
 	else if (m_pParentObject->GetFace().x < 0)
 	{
-		m_iLastFacingX = m_pParentObject->GetFace().x;
+		m_iLastFacingX = static_cast<int>(m_pParentObject->GetFace().x);
 		m_iLayer = 1; 
 	}
 	else

@@ -25,6 +25,7 @@ void CEri::Initialize()
 	m_vSize = Vector2(PLAYER_BMPX, PLAYER_BMPY);
 	m_vFace = Vector2::UnitX;
 	m_vDirection = Vector2(0.f, 0.f);
+	m_eType = PLAYER;
 
 	LoadEriBmp();
 	m_ePrevBodyState = IDLE;
@@ -91,7 +92,7 @@ void CEri::BehaviourKeyInput()
 		// TODO : 점프 중일 때는 현재 프레임 받아와서 그시점부터 적용
 		// TODO : DROP도 동일 && 단 DROP은 마지막 프레임이면 마지막으로 고정
 
-		m_eCurBodyState = JUMP;
+
 		m_eCurLegState = JUMP;
 		return;
 	}
@@ -152,7 +153,7 @@ void CEri::AttackKeyInput()
 		}
 		else
 		{
-			
+			m_vDirection = Vector2::Zero;
 			m_eCurLegState = IDLE;
 			m_pLegAnim->ChangeAnimation(L"Eri_Sit_Idle");
 		}
@@ -203,7 +204,6 @@ void CEri::AttackKeyInput()
 			{
 				m_pBodyAnim->ChangeAnimation(L"Eri_Standing_ShootFront_Body");
 			}
-			
 		}
 		else
 		{

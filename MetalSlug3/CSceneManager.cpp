@@ -4,7 +4,9 @@
 #include "CScene.h"
 #include "CArmoryScene.h"
 
+// Managers
 #include "CObjectManager.h"
+#include "CCollisionManager.h"
 
 CSceneManager::CSceneManager() 
 	: m_pScene(nullptr), m_eCurScene(SCENE_END), m_ePrevScene(SCENE_END)
@@ -49,6 +51,11 @@ void CSceneManager::LateUpdate()
 void CSceneManager::Render(HDC _hDC)
 {
 	m_pScene->Render(_hDC);
+
+	CCollisionManager::GetInstance().CheckCollision(
+		CObjectManager::GetInstance().GetGameObjectList(PLAYER)
+		, CObjectManager::GetInstance().GetGameObjectList(ENEMY)
+		, RECT_TO_RECT);
 }
 
 void CSceneManager::Release()

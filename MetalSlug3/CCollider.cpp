@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "CCollision.h"
+#include "CCollider.h"
 #include "Define.h"
 
-CCollision::CCollision() 
+CCollider::CCollider() 
 	: m_bShowCol(false), m_bIsCol(false), m_eColType(RECT_COL)
 {
 	ZeroMemory(&m_tRect, sizeof(RECT));
@@ -10,12 +10,12 @@ CCollision::CCollision()
 	ZeroMemory(&m_vSize, sizeof(Vector2));
 }
 
-CCollision::~CCollision()
+CCollider::~CCollider()
 {
 
 }
 
-void CCollision::UpdateCollision()
+void CCollider::UpdateCollision()
 {
 	m_tRect.left	= LONG(m_vPivot.x - (m_vSize.x / 2.f));
 	m_tRect.top		= LONG(m_vPivot.y - (m_vSize.y / 2.f));
@@ -23,7 +23,7 @@ void CCollision::UpdateCollision()
 	m_tRect.bottom	= LONG(m_vPivot.y + (m_vSize.y / 2.f));
 }
 
-void CCollision::RenderCollision(HDC hDC)
+void CCollider::RenderCollision(HDC hDC)
 {
 	switch (m_eColType)
 	{

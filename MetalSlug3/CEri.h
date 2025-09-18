@@ -2,7 +2,7 @@
 #include "CGameObject.h"
 
 class CAnimation;
-class CCollision;
+class CCollider;
 
 class CEri : public CGameObject
 {
@@ -32,8 +32,8 @@ private:
 private:
 	CAnimation*		m_pBodyAnim;
 	CAnimation*		m_pLegAnim;
-	CCollision*		m_pHitBox;
-	CCollision*		m_pCQCCollider;
+	CCollider*		m_pHitBox;
+	CCollider*		m_pCQCCollider;
 
 	PLAYER_STATE	m_eCurBodyState;
 	PLAYER_STATE	m_ePrevBodyState;

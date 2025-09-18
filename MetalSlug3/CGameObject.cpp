@@ -1,8 +1,9 @@
 #include "pch.h"
 #include "CGameObject.h"
+#include "CCollider.h"
 
 CGameObject::CGameObject()
-	: m_iHp(1), m_bDestroy(false)
+	: m_pColBox(nullptr), m_iHp(1), m_bDestroy(false)
 {
 	ZeroMemory(&m_tRect, sizeof(RECT));
 	ZeroMemory(&m_vPivot, sizeof(Vector2));
@@ -13,7 +14,7 @@ CGameObject::CGameObject()
 
 CGameObject::~CGameObject()
 {
-	
+	SafeDelete<CCollider*>(m_pColBox);
 }
 
 void CGameObject::UpdateGameObject()

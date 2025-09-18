@@ -22,9 +22,6 @@
     <Filter Include="01. GameObject">
       <UniqueIdentifier>{2ee1d6ff-04f8-46e2-b31c-18450e17167b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Collision">
-      <UniqueIdentifier>{6e953dea-2787-4fef-b54a-c640cc2a56cb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="97. ObjectManager">
       <UniqueIdentifier>{ff7942a8-4f6d-4b0c-bc15-7a54ce275a69}</UniqueIdentifier>
     </Filter>
@@ -61,6 +58,24 @@
     <Filter Include="04. Animation">
       <UniqueIdentifier>{1c920371-201a-4e0a-899b-6d9a3cdb3837}</UniqueIdentifier>
     </Filter>
+    <Filter Include="93. ScrollManager">
+      <UniqueIdentifier>{c26bc546-b313-44bc-9b71-0e9862f10339}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Collider">
+      <UniqueIdentifier>{6e953dea-2787-4fef-b54a-c640cc2a56cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Collider\00. HitBox">
+      <UniqueIdentifier>{62f0c050-6341-4ca4-967e-70545e381430}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Collider\01. CTrigger">
+      <UniqueIdentifier>{e8a813ef-fa71-408c-a703-8e7aeb9b49e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="92. Factory">
+      <UniqueIdentifier>{ade14161-3b75-48e9-a44a-14cda03f79b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\01. CQCField">
+      <UniqueIdentifier>{207959b0-894e-47ff-8d9a-663d14f8192d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MetalSlug3.h">
@@ -81,8 +96,8 @@
     <ClInclude Include="CGameObject.h">
       <Filter>01. GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="CCollision.h">
-      <Filter>02. Collision</Filter>
+    <ClInclude Include="CCollider.h">
+      <Filter>02. Collider</Filter>
     </ClInclude>
     <ClInclude Include="CKeyManager.h">
       <Filter>95. KeyManager</Filter>
@@ -98,9 +113,6 @@
     </ClInclude>
     <ClInclude Include="CTimeManager.h">
       <Filter>94. TimeManager</Filter>
-    </ClInclude>
-    <ClInclude Include="CEri.h">
-      <Filter>01. GameObject\00. Eri</Filter>
     </ClInclude>
     <ClInclude Include="CSingleTon.h">
       <Filter>소스 파일\SingleTon</Filter>
@@ -124,6 +136,21 @@
       <Filter>헤더 파일\VSHeader</Filter>
     </ClInclude>
     <ClInclude Include="CAnimation.h">
+      <Filter>04. Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="CScrollManager.h">
+      <Filter>93. ScrollManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CEri.h">
+      <Filter>01. GameObject\00. Eri</Filter>
+    </ClInclude>
+    <ClInclude Include="CHitBox.h">
+      <Filter>02. Collider\00. HitBox</Filter>
+    </ClInclude>
+    <ClInclude Include="CCollisionManager.h">
+      <Filter>96. CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CGameObjectFactory.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -143,8 +170,8 @@
     <ClCompile Include="CGameObject.cpp">
       <Filter>01. GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="CCollision.cpp">
-      <Filter>02. Collision</Filter>
+    <ClCompile Include="CCollider.cpp">
+      <Filter>02. Collider</Filter>
     </ClCompile>
     <ClCompile Include="CKeyManager.cpp">
       <Filter>95. KeyManager</Filter>
@@ -174,6 +201,18 @@
       <Filter>03. Scene\00. Armory</Filter>
     </ClCompile>
     <ClCompile Include="CAnimation.cpp">
+      <Filter>04. Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="CScrollManager.cpp">
+      <Filter>93. ScrollManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CHitBox.cpp">
+      <Filter>02. Collider\00. HitBox</Filter>
+    </ClCompile>
+    <ClCompile Include="CCollisionManager.cpp">
+      <Filter>96. CollisionManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CGameObjectFactory.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
