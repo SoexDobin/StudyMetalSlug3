@@ -151,7 +151,10 @@
       <Filter>96. CollisionManager</Filter>
     </ClInclude>
     <ClInclude Include="CGameObjectFactory.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>92. Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="CColliderFactory.h">
+      <Filter>92. Factory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -211,9 +214,6 @@
     </ClCompile>
     <ClCompile Include="CCollisionManager.cpp">
       <Filter>96. CollisionManager</Filter>
-    </ClCompile>
-    <ClCompile Include="CGameObjectFactory.cpp">
-      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

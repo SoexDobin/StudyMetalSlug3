@@ -26,6 +26,7 @@ void CCollisionManager::RTRCollision(list<CGameObject*>& _Src1, list<CGameObject
 {
 	for (auto& Src1 : _Src1)
 	{
+		if (Src1->GetCollider() == nullptr) continue;
 #ifdef _DEBUG
 		if (m_bIsRender)
 			Src1->GetCollider()->EnableShowCollision();
@@ -33,17 +34,15 @@ void CCollisionManager::RTRCollision(list<CGameObject*>& _Src1, list<CGameObject
 			Src1->GetCollider()->DisableShowCollision();
 #endif
 
-		if (Src1->GetCollider() == nullptr) continue;
-
 		for (auto& Src2 : _Src2)
 		{
+			if (Src2->GetCollider() == nullptr) continue;
 #ifdef _DEBUG
 			if (m_bIsRender)
 				Src2->GetCollider()->EnableShowCollision();
 			else
 				Src2->GetCollider()->DisableShowCollision();
 #endif
-			if (Src2->GetCollider() == nullptr) continue;
 
 			Vector2 vFrom(Src1->GetPivot()), vTo(Src2->GetPivot());
 			Vector2 vDst = vFrom - vTo;

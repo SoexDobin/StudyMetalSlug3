@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Define.h"
 #include "CScrollManager.h"
 
 CScrollManager::CScrollManager() : m_fScrollX(0.f), m_fScrollY(0.f)

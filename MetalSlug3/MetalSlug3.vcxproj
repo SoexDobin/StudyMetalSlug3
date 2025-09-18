@@ -136,6 +136,7 @@
     <ClInclude Include="CBmpManager.h" />
     <ClInclude Include="CBmpObject.h" />
     <ClInclude Include="CCollider.h" />
+    <ClInclude Include="CColliderFactory.h" />
     <ClInclude Include="CCollisionManager.h" />
     <ClInclude Include="CEri.h" />
     <ClInclude Include="CGame.h" />
@@ -167,7 +168,6 @@
     <ClCompile Include="CEri.cpp" />
     <ClCompile Include="CGame.cpp" />
     <ClCompile Include="CGameObject.cpp" />
-    <ClCompile Include="CGameObjectFactory.cpp" />
     <ClCompile Include="CHitBox.cpp" />
     <ClCompile Include="CKeyManager.cpp" />
     <ClCompile Include="CObjectManager.cpp" />

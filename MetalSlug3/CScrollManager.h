@@ -1,13 +1,12 @@
 #pragma once
-#include "Define.h"
 #include "CSingleTon.h"
 
-class CScrollManager : public CSingleTon<CScrollManager>
+class CScrollManager final : public CSingleTon<CScrollManager>
 {
-	friend class SingleTon;
+	friend class CSingleTon;
 private:
 	CScrollManager();
-	~CScrollManager();
+	~CScrollManager() override;
 
 public:
 	void		SetScrollX(float _X)	{ m_fScrollX += _X; }

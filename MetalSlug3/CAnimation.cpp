@@ -5,6 +5,7 @@
 // Managers
 #include "CBmpManager.h"
 #include "CTimeManager.h"
+#include "CScrollManager.h"
 
 CAnimation::CAnimation()
 	: m_pParentObject(nullptr), m_iLastFacingX(1)
@@ -120,11 +121,14 @@ void CAnimation::RenderAnimation(HDC _hDC)
 {
 	if (m_pParentObject == nullptr) return;
 
+	int iX = static_cast<int>(CScrollManager::GetInstance().GetScrollX());
+	int iY = static_cast<int>(CScrollManager::GetInstance().GetScrollY());
+
 	HDC	hMemDC = CBmpManager::GetInstance().FindBmpImg(m_szCurFrameKey);
 
 	GdiTransparentBlt(_hDC,
-		m_pParentObject->GetRect().left, //+ iScrollX,
-		m_pParentObject->GetRect().top,	//+ iScrollY,
+		m_pParentObject->GetRect().left + iX,
+		m_pParentObject->GetRect().top + iY,
 		(int)m_pParentObject->GetSize().x,
 		(int)m_pParentObject->GetSize().y,
 		hMemDC,

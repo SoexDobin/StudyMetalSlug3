@@ -1,7 +1,8 @@
 #pragma once
 #include "CSingleTon.h"
+#include "CGameObject.h"
 
-class CCollisionManager : public CSingleTon<CCollisionManager>
+class CCollisionManager final : public CSingleTon<CCollisionManager>
 {
 	friend class CSingleTon;
 public:

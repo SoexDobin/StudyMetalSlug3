@@ -13,7 +13,7 @@ public:
 		return pObject;
 	}
 
-	static CObject* Create(float fX, float fY)
+	static CGameObject* Create(float fX, float fY)
 	{
 		CGameObject* pObject = new T;
 		pObject->Initialize();

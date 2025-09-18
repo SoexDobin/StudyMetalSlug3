@@ -4,7 +4,7 @@ template <typename T>
 class CSingleTon
 {
 protected:
-	CSingleTon() {};
+	CSingleTon() { };
 	virtual ~CSingleTon() { };
 
 private:

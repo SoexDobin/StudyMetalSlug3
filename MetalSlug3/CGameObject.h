@@ -1,4 +1,5 @@
 #pragma once
+#include "Define.h"
 #include "CCollider.h"
 
 class CGameObject
@@ -39,7 +40,7 @@ protected:
 
 protected:
 	RECT			m_tRect;
-	CCollider* m_pColBox;
+	CCollider*		m_pColBox;
 	OBJECT_TYPE		m_eType;
 	bool			m_bDestroy;
 	int				m_iHp;

@@ -3,6 +3,8 @@
 
 // Managers
 #include "CObjectManager.h"
+#include "CBmpManager.h"
+#include "CScrollManager.h"
 
 CArmoryScene::CArmoryScene()
 {
@@ -15,6 +17,8 @@ CArmoryScene::~CArmoryScene()
 
 void CArmoryScene::Initialize()
 {
+    CBmpManager::GetInstance().InsertBmp(L"../Resource/Landscape/BackGround/4-1_Dessert_Background.bmp"
+        , L"4-1_Dessert_Background");
 }
 
 pair<bool, SCENETAG> CArmoryScene::Update()
@@ -35,6 +39,20 @@ void CArmoryScene::LateUpdate()
 
 void CArmoryScene::Render(HDC _hDC)
 {
+    int iScrollX = (int)CScrollManager::GetInstance().GetScrollX();
+    int iScrollY = (int)CScrollManager::GetInstance().GetScrollY();
+
+    HDC	hMemDC = CBmpManager::GetInstance().FindBmpImg(L"4-1_Dessert_Background");
+
+    BitBlt(_hDC,
+        512 + iScrollX / 4,
+        128 + iScrollY / 4,
+        512,
+        128,
+        hMemDC,
+        0,
+        0,
+        SRCCOPY);
     CObjectManager::GetInstance().Render(_hDC);
 }
 

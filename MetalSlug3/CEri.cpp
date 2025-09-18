@@ -5,12 +5,14 @@
 // Managers
 #include "CBmpManager.h"
 #include "CKeyManager.h"
+#include "CTimeManager.h"
+#include "CScrollManager.h"
 
 CEri::CEri()
 	: m_pBodyAnim(nullptr), m_pLegAnim(nullptr)
 	, m_eCurBodyState(PLAYER_STATE_END), m_ePrevBodyState(PLAYER_STATE_END)
 	, m_eCurLegState(PLAYER_STATE_END), m_ePrevLegState(PLAYER_STATE_END)
-	, m_iLastFaceX(1)
+	, m_fMoveSpeed(0.f), m_fCrawlSpeed(0.f)
 {
 }
 
@@ -25,6 +27,8 @@ void CEri::Initialize()
 	m_vSize = Vector2(PLAYER_BMPX, PLAYER_BMPY);
 	m_vFace = Vector2::UnitX;
 	m_vDirection = Vector2(0.f, 0.f);
+	m_fMoveSpeed = 200.f;
+	m_fCrawlSpeed = 100.f;
 	m_eType = PLAYER;
 
 	LoadEriBmp();
@@ -41,6 +45,8 @@ int CEri::Update()
 	m_pBodyAnim->UpdateAnimation();
 	m_pLegAnim->UpdateAnimation();
 	__super::UpdateGameObject();
+
+	Move();
 
 	return OBJ_NOEVENT;
 }
@@ -139,7 +145,7 @@ void CEri::AttackKeyInput()
 		{
 			m_vFace = Vector2::UnitX;
 			m_vDirection = Vector2::UnitX;
-			m_iLastFaceX = m_vFace.x;
+			
 			m_eCurLegState = MOVE;
 			m_pLegAnim->ChangeAnimation(L"Eri_Sit_Move");
 		}
@@ -147,7 +153,7 @@ void CEri::AttackKeyInput()
 		{
 			m_vFace = Vector2::UnitX * -1.f;
 			m_vDirection = Vector2::UnitX * -1.f;
-			m_iLastFaceX = m_vFace.x;
+			
 			m_eCurLegState = MOVE;
 			m_pLegAnim->ChangeAnimation(L"Eri_Sit_Move");
 		}
@@ -170,8 +176,6 @@ void CEri::AttackKeyInput()
 		if (CKeyManager::GetInstance().KeyPressing(m_cAttackKey))
 		{
 			m_eCurBodyState = SHOOT;
-			
-			
 			
 			if (CKeyManager::GetInstance().KeyPressing(VK_UP)
 				&& CKeyManager::GetInstance().KeyPressing(VK_RIGHT))
@@ -211,6 +215,26 @@ void CEri::AttackKeyInput()
 			m_eCurBodyState = IDLE;
 			m_pBodyAnim->ChangeAnimation(L"Eri_Standing_Idle_Body");
 		}
+	}
+}
+
+void CEri::Move()
+{
+	float iX = CScrollManager::GetInstance().GetScrollX();
+	float iY = CScrollManager::GetInstance().GetScrollY();
+	float fSpeed(0.f);
+	if (m_eCurBodyState == SIT)
+	{
+		fSpeed = m_fCrawlSpeed * CTimeManager::GetInstance().GetDeltaTime() * m_vDirection.x;;
+		WinOffset(fSpeed);
+		
+		m_vPivot.x += static_cast<int>(fSpeed);
+	}	
+	else if (m_eCurLegState == MOVE || m_eCurLegState == MOVEJUMP)
+	{
+		fSpeed = m_fMoveSpeed * CTimeManager::GetInstance().GetDeltaTime() * m_vDirection.x;
+		WinOffset(fSpeed);
+		m_vPivot.x += static_cast<int>(fSpeed);
 	}
 }
 
@@ -308,4 +332,28 @@ void CEri::LoadEriBmp()
 	m_pLegAnim->Initialize();
 	m_pBodyAnim->SetParent(this);
 	m_pLegAnim->SetParent(this);
+}
+
+void CEri::WinOffset(const float& _fCurSpeed)
+{
+	int iOffsetminX = 100;
+	int iOffsetmaxX = static_cast<int>(WINCX * 0.5f);
+
+	int iOffsetminY = 100;
+	int iOffsetmaxY = 500;
+
+
+	int iScrollX = (int)CScrollManager::GetInstance().GetScrollX();
+	int iScrollY = (int)CScrollManager::GetInstance().GetScrollY();
+
+	if (iOffsetminX > m_vPivot.x + iScrollX)
+		CScrollManager::GetInstance().SetScrollX(_fCurSpeed);
+	if (iOffsetmaxX < m_vPivot.x + iScrollX)
+		CScrollManager::GetInstance().SetScrollX(-_fCurSpeed);
+
+	if (iOffsetminX > m_vPivot.y + iScrollY)
+		CScrollManager::GetInstance().SetScrollY(_fCurSpeed);
+
+	if (iOffsetminX > m_vPivot.y + iScrollY)
+		CScrollManager::GetInstance().SetScrollY(-_fCurSpeed);
 }
