@@ -9,6 +9,8 @@ public:
 	virtual ~CAnimation();
 
 public:
+	int				GetLastFacingX();
+	bool			GetRepeat();
 	int				GetStartFrameIndex();
 	int				GetEndFrameIndex();
 	int				GetCurrentFrameIndex();
@@ -19,6 +21,8 @@ public:
 	COLORREF		GetEaseColor();
 
 	void			SetParent(CGameObject* _pObj);
+	void			SetLastFacingX(int _idx);
+	void			SetRepeat(bool _bIsRepeat);
 	void			SetStartFrameIndex(int _idx);
 	void			SetEndFrameIndex(int _idx);
 	void			SetCurrentFrameIndex(int _idx);
@@ -44,6 +48,7 @@ public:
 
 private:
 	int				m_iLastFacingX;
+	bool			m_bRepeat;
 
 protected:
 	CGameObject*	m_pParentObject;

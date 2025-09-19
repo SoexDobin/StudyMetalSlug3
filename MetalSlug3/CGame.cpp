@@ -11,6 +11,10 @@
 #include "CBmpManager.h"
 #include "CTimeManager.h"
 #include "CSceneManager.h"
+#include "CLineManager.h"
+#include "CCollisionManager.h"
+#include "CScrollManager.h"
+#include "CParticleManager.h"
 
 CGame::CGame()
 	: m_hDC(nullptr)
@@ -47,20 +51,22 @@ void CGame::Initialize()
 
 	CObjectManager::GetInstance().Initialize();
 	CSceneManager::GetInstance().Initialize();
+	CParticleManager::GetInstance().Initialize();
 	CTimeManager::GetInstance().Initialize();
 }
 
 void CGame::Update()
 {
 	CTimeManager::GetInstance().Update();
-
 	CSceneManager::GetInstance().Update();
+	CParticleManager::GetInstance().Update();
 }
 
 void CGame::LateUpdate()
 {
-	CKeyManager::GetInstance().KeyUpdate();
 	CSceneManager::GetInstance().LateUpdate();
+
+	CKeyManager::GetInstance().KeyUpdate();
 }
 
 void CGame::Render()
@@ -69,7 +75,7 @@ void CGame::Render()
 	PatBlt(m_hDCBack, 0, 0, m_tRect.right, m_tRect.bottom, WHITENESS);
 
 	CSceneManager::GetInstance().Render(m_hDCBack);
-
+	CParticleManager::GetInstance().Render(m_hDCBack);
 	
 
 }
@@ -85,6 +91,10 @@ FreeConsole();
 	CBmpManager::DeleteInstance();
 	CObjectManager::DeleteInstance();
 	CTimeManager::DeleteInstance();
+	CLineManager::DeleteInstance();
+	CCollisionManager::DeleteInstance();
+	CScrollManager::DeleteInstance();
+	CParticleManager::DeleteInstance();
 
 	ReleaseDC(g_hWnd, m_hDC);
 }

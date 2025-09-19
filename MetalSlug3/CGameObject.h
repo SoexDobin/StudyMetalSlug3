@@ -23,7 +23,7 @@ public:
 	void			SetDestroy()								{ m_bDestroy = true; }
 	void			SetHp(const int& _iHp)						{ m_iHp = _iHp; }
 	void			SetPivot(const Vector2& _vPivot)			{ m_vPivot = _vPivot; }
-	void			SetSize(const Vector2& _vSize)				{ m_vPivot = _vSize; }
+	void			SetSize(const Vector2& _vSize)				{ m_vSize = _vSize; }
 	void			SetFace(const Vector2& _vFace)				{ m_vFace = _vFace; }
 	void			SetDirection(const Vector2& _vDirection)	{ m_vDirection = _vDirection; }
 

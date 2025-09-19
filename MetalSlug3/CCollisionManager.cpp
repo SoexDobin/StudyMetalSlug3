@@ -18,8 +18,8 @@ void CCollisionManager::CheckCollision(list<CGameObject*>& _Src1, list<CGameObje
 
 void CCollisionManager::RenderCollisionBox(HDC _hDC)
 {
-	if (CKeyManager::GetInstance().KeyDown(VK_ADD))
-		m_bIsRender = !m_bIsRender;
+	if (CKeyManager::GetInstance().KeyPressing(VK_END))
+		m_bIsRender = true;
 }
 
 void CCollisionManager::RTRCollision(list<CGameObject*>& _Src1, list<CGameObject*>& _Src2)

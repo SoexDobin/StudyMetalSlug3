@@ -8,7 +8,7 @@
 #include "CScrollManager.h"
 
 CAnimation::CAnimation()
-	: m_pParentObject(nullptr), m_iLastFacingX(1)
+	: m_pParentObject(nullptr), m_iLastFacingX(1), m_bRepeat(true)
 	,m_iStartFrame(0), m_iEndFrame(0), m_iCurFrame(0), m_iLayer(0)
 	, m_fDeltaFrame(0.f), m_fFrameSpeed(0.f)
 	, m_szCurFrameKey(L"")
@@ -21,6 +21,8 @@ CAnimation::~CAnimation()
 	Release();
 }
 
+int CAnimation::GetLastFacingX()				{ return m_iLastFacingX; }
+bool CAnimation::GetRepeat()					{ return m_bRepeat; }
 int CAnimation::GetStartFrameIndex()			{ return m_iStartFrame; }
 int CAnimation::GetEndFrameIndex()				{ return m_iEndFrame; }
 int CAnimation::GetCurrentFrameIndex()			{ return m_iCurFrame; }
@@ -31,6 +33,8 @@ const TCHAR* CAnimation::GetCurrentFrameKey()	{ return m_szCurFrameKey; }
 
 COLORREF CAnimation::GetEaseColor()				{ return m_dwEaseColor; }
 void CAnimation::SetParent(CGameObject* _pObj)	{ m_pParentObject = _pObj; }
+void CAnimation::SetLastFacingX(int _idx)		{ m_iLastFacingX = _idx; }
+void CAnimation::SetRepeat(bool _bIsRepeat)		{ m_bRepeat = _bIsRepeat; }
 void CAnimation::SetStartFrameIndex(int _idx)	{ m_iStartFrame = _idx; }
 void CAnimation::SetEndFrameIndex(int _idx)		{ m_iEndFrame = _idx; }
 void CAnimation::SetCurrentFrameIndex(int _idx)	{ m_iCurFrame = _idx; }
@@ -88,7 +92,8 @@ void CAnimation::UpdateAnimation()
 		else m_iLayer = 1;
 	}
 		
-	
+	if (m_bRepeat == false && m_iCurFrame == m_iEndFrame - 1) return;
+
 	m_fDeltaFrame += CTimeManager::GetInstance().GetDeltaTime();
 	
 	if (m_fDeltaFrame >= m_fFrameSpeed)
@@ -141,7 +146,7 @@ void CAnimation::RenderAnimation(HDC _hDC)
 
 void CAnimation::Release()
 {
-	m_pParentObject = nullptr;
+
 }
 
 void CAnimation::PlayAnimation()

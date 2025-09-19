@@ -1,5 +1,8 @@
 #pragma once
 #include "CScene.h"
+
+class CAnimation;
+
 class CArmoryScene : public CScene
 {
 public:

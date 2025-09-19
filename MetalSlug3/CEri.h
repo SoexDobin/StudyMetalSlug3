@@ -6,7 +6,7 @@ class CCollider;
 
 class CEri : public CGameObject
 {
-	enum PLAYER_STATE { SIT, IDLE, MOVE, SHOOT, CQC, JUMP, MOVEJUMP, DROP, PLAYER_STATE_END };
+	enum PLAYER_STATE { SIT, STAND, IDLE, MOVE, SHOOT, CQC, JUMP, MOVEJUMP, DROP, PLAYER_STATE_END };
 public:
 	CEri();
 	virtual ~CEri() override;
@@ -24,8 +24,12 @@ private:
 	void		BehaviourKeyInput();
 	void		AttackKeyInput();
 	void		Move();
+	void		Jump();
+	void		Drop();
+	void		Shoot();
 
 	void		LoadEriBmp();
+	void		LoadProjectileBmp();
 	void		WinOffset(const float& _fCurSpeed);
 
 private:
@@ -38,11 +42,17 @@ private:
 	PLAYER_STATE	m_eCurLegState;
 	PLAYER_STATE	m_ePrevLegState;
 
+	int				m_iScatterIdx;
+
 	float			m_fMoveSpeed;
 	float			m_fCrawlSpeed;
 	
+	bool			m_bIsJump;
+	float			m_fJumpDeltaTime;
 	
 private:
+	const float		m_fGravity = 1.f;
+	const float		m_fJumpSeed = 1.f;
 	const char		m_cJumpKey = 'D';
 	const char		m_cAttackKey = 'A';
 };

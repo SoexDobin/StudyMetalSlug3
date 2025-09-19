@@ -84,4 +84,3 @@ void	SafeDelete(T& _p)
 		_p = nullptr;
 	}
 }
-

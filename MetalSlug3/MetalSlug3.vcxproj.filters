@@ -73,8 +73,44 @@
     <Filter Include="92. Factory">
       <UniqueIdentifier>{ade14161-3b75-48e9-a44a-14cda03f79b5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. GameObject\01. CQCField">
+    <Filter Include="01. GameObject\02. Field">
+      <UniqueIdentifier>{0c26eb7f-fa61-41c1-893a-e8351d9c3edf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\01. CQCArea">
       <UniqueIdentifier>{207959b0-894e-47ff-8d9a-663d14f8192d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="91. LineManager">
+      <UniqueIdentifier>{e82ae2a7-caba-4c68-a901-b0f178bdbd6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="91. LineManager\00. Line">
+      <UniqueIdentifier>{569d28a4-b50f-44f4-be2a-693006ec39df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\04. Enemy">
+      <UniqueIdentifier>{37971a0b-88c3-47ed-816b-874179e5f34f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\03. Projectile">
+      <UniqueIdentifier>{2f85d13f-78c8-4776-9ba4-a978cfe40c83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Scene\01. Mission4">
+      <UniqueIdentifier>{06f67e72-fc82-46d8-8e43-ff496ff4a5fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="90. ParticleManager">
+      <UniqueIdentifier>{ce4a2a80-8119-4c89-9223-24f16b22cb82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\05. Particle">
+      <UniqueIdentifier>{3ae2cff4-8d62-466c-a452-387b0a414079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\05. Particle\00. BulletHit">
+      <UniqueIdentifier>{56a1d541-04cd-4d57-a624-839b4e34eedc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="92. Factory\02. ProjectileFactory">
+      <UniqueIdentifier>{e912a1e0-0814-4dfc-894f-aac5eb5fb33d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="92. Factory\01. ColliderFactory">
+      <UniqueIdentifier>{65d912c0-4658-45a4-b3db-4b2f3f2ffffe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="92. Factory\00. GameObjectFactory">
+      <UniqueIdentifier>{e581131e-d9b4-4265-b079-770c66504988}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -150,11 +186,53 @@
     <ClInclude Include="CCollisionManager.h">
       <Filter>96. CollisionManager</Filter>
     </ClInclude>
+    <ClInclude Include="CField.h">
+      <Filter>01. GameObject\02. Field</Filter>
+    </ClInclude>
+    <ClInclude Include="CLineManager.h">
+      <Filter>91. LineManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CLine.h">
+      <Filter>91. LineManager\00. Line</Filter>
+    </ClInclude>
+    <ClInclude Include="tagLine.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CCQCArea.h">
+      <Filter>01. GameObject\01. CQCArea</Filter>
+    </ClInclude>
+    <ClInclude Include="CEnemy.h">
+      <Filter>01. GameObject\04. Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="CManEater.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CProjectile.h">
+      <Filter>01. GameObject\03. Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="CMission4.h">
+      <Filter>03. Scene\01. Mission4</Filter>
+    </ClInclude>
+    <ClInclude Include="CHMProjectile.h">
+      <Filter>01. GameObject\03. Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="CParticleManager.h">
+      <Filter>90. ParticleManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CParticle.h">
+      <Filter>01. GameObject\05. Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="CBulletHitParticle.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="CGameObjectFactory.h">
-      <Filter>92. Factory</Filter>
+      <Filter>92. Factory\00. GameObjectFactory</Filter>
     </ClInclude>
     <ClInclude Include="CColliderFactory.h">
-      <Filter>92. Factory</Filter>
+      <Filter>92. Factory\01. ColliderFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="CProjectileFactory.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -214,6 +292,42 @@
     </ClCompile>
     <ClCompile Include="CCollisionManager.cpp">
       <Filter>96. CollisionManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CField.cpp">
+      <Filter>01. GameObject\02. Field</Filter>
+    </ClCompile>
+    <ClCompile Include="CLineManager.cpp">
+      <Filter>91. LineManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CLine.cpp">
+      <Filter>91. LineManager\00. Line</Filter>
+    </ClCompile>
+    <ClCompile Include="CCQCArea.cpp">
+      <Filter>01. GameObject\01. CQCArea</Filter>
+    </ClCompile>
+    <ClCompile Include="CEnemy.cpp">
+      <Filter>01. GameObject\04. Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="CManEater.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CProjectile.cpp">
+      <Filter>01. GameObject\03. Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="CMission4.cpp">
+      <Filter>03. Scene\01. Mission4</Filter>
+    </ClCompile>
+    <ClCompile Include="CHMProjectile.cpp">
+      <Filter>01. GameObject\03. Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="CParticleManager.cpp">
+      <Filter>90. ParticleManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CParticle.cpp">
+      <Filter>01. GameObject\05. Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="CBulletHitParticle.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

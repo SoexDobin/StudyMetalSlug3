@@ -3,6 +3,7 @@
 #include "CEri.h"
 #include "CScene.h"
 #include "CArmoryScene.h"
+#include "CMission4.h"
 
 // Managers
 #include "CObjectManager.h"
@@ -21,11 +22,12 @@ CSceneManager::~CSceneManager()
 void CSceneManager::Initialize()
 {
 	// TODO : 게임 흐름 구축 시 변경 해야 합니다.
-	m_eCurScene = ARMORY_SCENE;
+	m_eCurScene = MISSION_SCENE;
 	ChangeScene(m_eCurScene);
 	CObjectManager::GetInstance().GetGameObjectList(PLAYER).push_back(new CEri());
 	CObjectManager::GetInstance().GetGameObjectList(PLAYER).front()->Initialize();
 	ref_pPlayer = CObjectManager::GetInstance().GetGameObjectList(PLAYER).front();
+
 }
 
 void CSceneManager::Update()
@@ -52,8 +54,15 @@ void CSceneManager::Render(HDC _hDC)
 {
 	m_pScene->Render(_hDC);
 
+	CCollisionManager::GetInstance().RenderCollisionBox(_hDC);
+
 	CCollisionManager::GetInstance().CheckCollision(
 		CObjectManager::GetInstance().GetGameObjectList(PLAYER)
+		, CObjectManager::GetInstance().GetGameObjectList(ENEMY)
+		, RECT_TO_RECT);
+
+	CCollisionManager::GetInstance().CheckCollision(
+		CObjectManager::GetInstance().GetGameObjectList(PROJECTILE)
 		, CObjectManager::GetInstance().GetGameObjectList(ENEMY)
 		, RECT_TO_RECT);
 }
@@ -77,7 +86,7 @@ SCENETAG CSceneManager::ChangeScene(SCENETAG _eTag)
 	case MAIN_SCENE:		break;
 	case SELECT_SCENE:		break;
 	case ARMORY_SCENE:		m_pScene = new CArmoryScene();		break;
-	case MISSION_SCENE:		break;
+	case MISSION_SCENE:		m_pScene = new CMission4();			 break;
 	case EDIT:				break;
 
 	case SCENE_END:

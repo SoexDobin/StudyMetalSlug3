@@ -3,7 +3,7 @@
 #include "CCollider.h"
 
 CGameObject::CGameObject()
-	: m_pColBox(nullptr), m_iHp(1), m_bDestroy(false)
+	: m_pColBox(nullptr), m_iHp(1), m_bDestroy(false), m_eType(OBJECT_END)
 {
 	ZeroMemory(&m_tRect, sizeof(RECT));
 	ZeroMemory(&m_vPivot, sizeof(Vector2));
@@ -23,4 +23,7 @@ void CGameObject::UpdateGameObject()
 	m_tRect.top		= LONG(m_vPivot.y - (m_vSize.y / 2.f));
 	m_tRect.right	= LONG(m_vPivot.x + (m_vSize.x / 2.f));
 	m_tRect.bottom	= LONG(m_vPivot.y + (m_vSize.y / 2.f));
+
+	if (m_pColBox != nullptr)
+		m_pColBox->UpdateCollision();
 }

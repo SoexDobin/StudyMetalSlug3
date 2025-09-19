@@ -1,5 +1,6 @@
 #pragma once
 #include "CCollider.h"
+
 class CHitBox : public CCollider
 {
 public:

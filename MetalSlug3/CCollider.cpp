@@ -32,21 +32,30 @@ void CCollider::UpdateCollision()
 	m_tRect.bottom	= LONG(m_vPivot.y + (m_vSize.y / 2.f));
 }
 
-void CCollider::RenderCollision(HDC hDC)
+void CCollider::RenderCollision(HDC _hDC)
 {
-	int iX = static_cast<int>(CScrollManager::GetInstance().GetScrollX());
-	int iY = static_cast<int>(CScrollManager::GetInstance().GetScrollY());
+	if (m_bShowCol == false) return;
+	int iX = 0; static_cast<int>(CScrollManager::GetInstance().GetScrollX());
+	int iY = 0; static_cast<int>(CScrollManager::GetInstance().GetScrollY());
+	PAINTSTRUCT tPT;
+	BeginPaint(g_hWnd, &tPT);
+	m_hColPen = CreatePen(PS_SOLID, 10, m_dwRGB);
+	HPEN hPrevPen = (HPEN)SelectObject(_hDC, m_hColPen);
 
 	switch (m_eRenderType)
 	{
-	case RECT_COL: Rectangle(hDC, m_tRect.left + iX, m_tRect.top + iY, m_tRect.right + iX, m_tRect.bottom + iY);
+	case RECT_COL: Rectangle(_hDC, m_tRect.left + iX, m_tRect.top + iY, m_tRect.right + iX, m_tRect.bottom + iY);
 		break;
-	case CIRCLE_COL: Ellipse(hDC, m_tRect.left + iX, m_tRect.top + iY, m_tRect.right + iX, m_tRect.bottom + iY);
+	case CIRCLE_COL: Ellipse(_hDC, m_tRect.left + iX, m_tRect.top + iY, m_tRect.right + iX, m_tRect.bottom + iY);
 		break;
 	}
+
+	SelectObject(_hDC, hPrevPen);
+	DeleteObject(m_hColPen);
+	EndPaint(g_hWnd, &tPT);
 }
 
 void CCollider::Release()
 {
-
+	
 }

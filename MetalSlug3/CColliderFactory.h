@@ -1,6 +1,8 @@
 #pragma once
+
 #include "CGameObject.h"
 class CCollider;
+
 
 template <typename T>
 class CColliderFactory
@@ -9,16 +11,16 @@ public:
 	static CCollider* CreateHitBox(CGameObject* _pParent)
 	{
 		CCollider* pCol = new T();
-		pCol->SetParent(pCol);
+		pCol->SetParent(_pParent);
 		pCol->SetPivot(_pParent->GetPivot());
-		pCol->SetRenderType(HITBOX);
+		pCol->SetSize(_pParent->GetSize());
+		pCol->SetColType(HITBOX);
 		pCol->SetPenColor(RGB(0, 255, 0));
-
 
 		return pCol;
 	}
 
-	static CCollider* CreateTrigger(CGameObject* _pParent)
+	/*static CCollider* CreateTrigger(CGameObject* _pParent)
 	{
 		CCollider* pCol = new T();
 		pCol->SetParent(pCol);
@@ -28,6 +30,6 @@ public:
 
 
 		return pCol;
-	}
+	}*/
 };
 
