@@ -10,7 +10,7 @@
 #include "CBmpManager.h"
 
 CHMProjectile::CHMProjectile()
-    : m_vSpeed({ 40.f, 40.f })
+    : m_vSpeed({ 1000.f, 1000.f })
 {
 }
 
@@ -43,18 +43,19 @@ void CHMProjectile::LateUpdate()
 }
 
 void CHMProjectile::Render(HDC _hDC)
-{
-    int iX = static_cast<int>(CScrollManager::GetInstance().GetScrollX());
-    int iY = static_cast<int>(CScrollManager::GetInstance().GetScrollY());
-    
+{   
     HDC hMemDC = CBmpManager::GetInstance().FindBmpImg(m_szImgKey);
+
+    int iSizeX = static_cast<int>(m_vSize.x);
+    int iSizeY = static_cast<int>(m_vSize.y);
+
     GdiTransparentBlt(_hDC
-        , m_tRect.left + iX, m_tRect.top + iY
-        , m_vSize.x, m_vSize.y
+        , m_tRect.left + SCROLLX, m_tRect.top + SCROLLY
+        , iSizeX, iSizeY
         , hMemDC
         , 0
-        , m_vSize.y * m_iLayer
-        , m_vSize.x, m_vSize.y
+        , iSizeY * m_iLayer
+        , iSizeX, iSizeY
         , RGB(255, 255, 255));
 
 }
@@ -66,11 +67,11 @@ void CHMProjectile::Release()
 
 void CHMProjectile::OnCollision(CGameObject* _pCol, Vector2 _vColSize)
 {
-    if (_pCol->GetObjectType() == ENEMY)
+    if (_pCol->GetObjectType() == ENEMY && m_bDestroy == false)
     {
-        CParticleManager::GetInstance().CreateParticle<CBulletHitParticle>();
+        CParticleManager::GetInstance().CreateParticle<CBulletHitParticle>(m_vPivot);
 
         m_bDestroy = OBJ_DESTROY;
-        SafeDelete<CCollider*>(m_pColBox);
+        m_eType = OBJECT_END;
     }
 }

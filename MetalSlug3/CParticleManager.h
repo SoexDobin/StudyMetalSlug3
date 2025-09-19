@@ -2,6 +2,7 @@
 #include "CSingleTon.h"
 #include "CParticle.h"
 
+
 class CParticleManager final : public CSingleTon<CParticleManager>
 {
 	friend class CSingleTon;
@@ -11,11 +12,23 @@ public:
 
 public:
 	template <typename T>
-	void CreateParticle();
+	void CreateParticle()
+	{
+		CParticle* pParticle = new T();
+		m_ParticleList.push_back(pParticle);
+		pParticle->Initialize();
+	}
 	template <typename T>
-	void CreateParticle(Vector2 _vPivot);
+	void CreateParticle(Vector2 _vPivot)
+	{
+		CParticle* pParticle = new T();
+		m_ParticleList.push_back(pParticle);
+		pParticle->Initialize();
+		pParticle->SetPivot(_vPivot);
+	}
 
 	void Update();
+	void LateUpdate();
 	void Render(HDC _hDC);
 	void Release();
 
@@ -24,19 +37,3 @@ public:
 private:
 	list<CParticle*>	m_ParticleList;
 };
-
-template<typename T>
-inline void CParticleManager::CreateParticle()
-{
-	CParticle* pParticle = new T();
-	m_ParticleList.push_back(pParticle);
-	pParticle->Initialize();
-}
-template<typename T>
-inline void CParticleManager::CreateParticle(Vector2 _vPivot)
-{
-	CParticle* pParticle = new T();
-	m_ParticleList.push_back(pParticle);
-	pParticle->Initalize();
-	pParticle->SetPivot(_vPivot);
-}

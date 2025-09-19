@@ -3,6 +3,7 @@
 
 CParticle::CParticle()
 {
+	m_eType = PARTICLE;
 }
 
 CParticle::~CParticle()

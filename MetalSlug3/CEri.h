@@ -43,6 +43,7 @@ private:
 	PLAYER_STATE	m_ePrevLegState;
 
 	int				m_iScatterIdx;
+	float			m_fShootDelta;
 
 	float			m_fMoveSpeed;
 	float			m_fCrawlSpeed;
@@ -51,9 +52,12 @@ private:
 	float			m_fJumpDeltaTime;
 	
 private:
-	const float		m_fGravity = 1.f;
-	const float		m_fJumpSeed = 1.f;
-	const char		m_cJumpKey = 'D';
-	const char		m_cAttackKey = 'A';
+	const Vector2	n_vStandOffset = Vector2(0.f, 60.f);
+	const Vector2	n_vSitOffset = Vector2(0.f, 80.f);
+	const float		n_fScatterArg[5] = { 0.f, 0.02f, -0.01, 0.01f, -0.03f };
+	const float		n_fGravity = 1.f;
+	const float		n_fJumpSeed = 1.f;
+	const char		n_cJumpKey = 'D';
+	const char		n_cAttackKey = 'A';
 };
 

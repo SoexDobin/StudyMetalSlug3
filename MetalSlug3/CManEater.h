@@ -1,11 +1,13 @@
 #pragma once
 #include "CEnemy.h"
 
+class CAnimation;
+
 class CManEater final : public CEnemy
 {
 public:
 	CManEater();
-	virtual ~CManEater() override;
+	~CManEater() override;
 
 public:
 	void		Initialize()										override;
@@ -16,6 +18,15 @@ public:
 	void		OnCollision(CGameObject* _pCol, Vector2 _vColSize)	override;
 
 private:
+	void		ChasePlayer();
+	void		Jump();
+	void		Attack();
 
+
+	void		LoadAnimation();
+	
+private:		
+	CAnimation*		m_pAnim;
+	CGameObject*	 m_pRefPlayer;
 };
 

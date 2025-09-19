@@ -65,7 +65,7 @@ void CGame::Update()
 void CGame::LateUpdate()
 {
 	CSceneManager::GetInstance().LateUpdate();
-
+	CParticleManager::GetInstance().LateUpdate();
 	CKeyManager::GetInstance().KeyUpdate();
 }
 

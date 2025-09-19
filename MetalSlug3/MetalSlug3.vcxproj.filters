@@ -186,7 +186,7 @@
     <ClInclude Include="CCollisionManager.h">
       <Filter>96. CollisionManager</Filter>
     </ClInclude>
-    <ClInclude Include="CField.h">
+    <ClInclude Include="CPlatform.h">
       <Filter>01. GameObject\02. Field</Filter>
     </ClInclude>
     <ClInclude Include="CLineManager.h">
@@ -204,9 +204,6 @@
     <ClInclude Include="CEnemy.h">
       <Filter>01. GameObject\04. Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="CManEater.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="CProjectile.h">
       <Filter>01. GameObject\03. Projectile</Filter>
     </ClInclude>
@@ -222,9 +219,6 @@
     <ClInclude Include="CParticle.h">
       <Filter>01. GameObject\05. Particle</Filter>
     </ClInclude>
-    <ClInclude Include="CBulletHitParticle.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="CGameObjectFactory.h">
       <Filter>92. Factory\00. GameObjectFactory</Filter>
     </ClInclude>
@@ -233,6 +227,12 @@
     </ClInclude>
     <ClInclude Include="CProjectileFactory.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CManEater.h">
+      <Filter>01. GameObject\04. Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="CBulletHitParticle.h">
+      <Filter>01. GameObject\05. Particle\00. BulletHit</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -293,7 +293,7 @@
     <ClCompile Include="CCollisionManager.cpp">
       <Filter>96. CollisionManager</Filter>
     </ClCompile>
-    <ClCompile Include="CField.cpp">
+    <ClCompile Include="CPlatform.cpp">
       <Filter>01. GameObject\02. Field</Filter>
     </ClCompile>
     <ClCompile Include="CLineManager.cpp">
@@ -307,9 +307,6 @@
     </ClCompile>
     <ClCompile Include="CEnemy.cpp">
       <Filter>01. GameObject\04. Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="CManEater.cpp">
-      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CProjectile.cpp">
       <Filter>01. GameObject\03. Projectile</Filter>
@@ -326,8 +323,11 @@
     <ClCompile Include="CParticle.cpp">
       <Filter>01. GameObject\05. Particle</Filter>
     </ClCompile>
+    <ClCompile Include="CManEater.cpp">
+      <Filter>01. GameObject\04. Enemy</Filter>
+    </ClCompile>
     <ClCompile Include="CBulletHitParticle.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>01. GameObject\05. Particle\00. BulletHit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

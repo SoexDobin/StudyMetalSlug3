@@ -21,11 +21,19 @@ void CParticleManager::Update()
 		if (bIsDestroy)
 		{
 			it = m_ParticleList.erase(it);
-			(*it)->Update();
 		}
-
-		(*it)->LateUpdate();
+		else
+			++it;
 	}
+}
+
+void CParticleManager::LateUpdate()
+{
+	for_each(m_ParticleList.begin(), m_ParticleList.end()
+		, [](CParticle* pParticle) -> void
+		{
+			pParticle->LateUpdate();
+		});
 }
 
 void CParticleManager::Render(HDC _hDC)

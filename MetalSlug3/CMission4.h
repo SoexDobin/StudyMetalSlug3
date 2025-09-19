@@ -17,8 +17,9 @@ public:
 private:
 	void					RenderLandscape(HDC _hDC);
 	void					RenderFrontLandscape(HDC _hDC);
-	void					LoadImageLandscape();
-	
+
+	void					LoadBmpLandscape();
+	void					LoadBmpEnemy();
 
 private:
 	float					m_fDelta;

@@ -14,6 +14,7 @@
 #include "CGameObjectFactory.h"
 #include "CObjectManager.h"
 #include "CProjectileFactory.h"
+#include "CManEater.h"
 
 CEri::CEri()
 	: m_pBodyAnim(nullptr), m_pLegAnim(nullptr)
@@ -21,7 +22,7 @@ CEri::CEri()
 	, m_eCurLegState(PLAYER_STATE_END), m_ePrevLegState(PLAYER_STATE_END)
 	, m_fMoveSpeed(0.f), m_fCrawlSpeed(0.f)
 	, m_fJumpDeltaTime(0.f), m_bIsJump(false)
-	, m_iScatterIdx(-1)
+	, m_iScatterIdx(0), m_fShootDelta(0.f)
 {
 }
 
@@ -38,12 +39,14 @@ void CEri::Initialize()
 	m_vDirection = Vector2(0.f, 0.f);
 	m_fMoveSpeed = 200.f;
 	m_fCrawlSpeed = 100.f;
+	m_fShootDelta = 100.f;
 	m_eType = PLAYER;
 
 	m_pCQCCollider = CGameObjectFactory<CCQCArea>::Create();
 	CObjectManager::GetInstance().AddGameObject(m_pCQCCollider, PLAYER);
 	m_pColBox = CColliderFactory<CHitBox>::CreateHitBox(this);
 
+	LoadProjectileBmp();
 	LoadEriBmp();
 	m_ePrevBodyState = IDLE;
 	m_ePrevLegState = IDLE;
@@ -60,7 +63,7 @@ int CEri::Update()
 	m_pBodyAnim->UpdateAnimation();
 	m_pLegAnim->UpdateAnimation();
 	__super::UpdateGameObject();
-
+	m_fShootDelta -= 960.f * DELTA;
 
 	BehaviourKeyInput();
 	AttackKeyInput();
@@ -117,7 +120,7 @@ void CEri::BehaviourKeyInput()
 		m_eCurBodyState = STAND;
 	}
 		
-	if (CKeyManager::GetInstance().KeyDown(m_cJumpKey))
+	if (CKeyManager::GetInstance().KeyDown(n_cJumpKey))
 	{
 		if (m_bIsJump) return;
 		// TODO : 점프 중일 때는 현재 프레임 받아와서 그시점부터 적용
@@ -144,11 +147,14 @@ void CEri::BehaviourKeyInput()
 		}
 
 		m_eCurLegState = MOVE;
+
 		m_pLegAnim->ChangeAnimation(L"Eri_Standing_Move_Leg");
 		// TODO 테스트 코드 입니다.
 		m_pLegAnim->SetDeltaFrame(m_pLegAnim->GetDeltaFrame() * 2.f);
 
 		m_pLegAnim->SetRepeat(true);
+		m_pLegAnim->SetLastFacingX(1);
+		m_pBodyAnim->SetLastFacingX(1);
 	}
 	else if (CKeyManager::GetInstance().KeyPressing(VK_LEFT))
 	{
@@ -164,8 +170,15 @@ void CEri::BehaviourKeyInput()
 		}
 
 		m_eCurLegState = MOVE;
+
 		m_pLegAnim->ChangeAnimation(L"Eri_Standing_Move_Leg");
+
+		// TODO 테스트 코드 입니다.
+		m_pLegAnim->SetDeltaFrame(m_pLegAnim->GetDeltaFrame() * 2.f);
+
 		m_pLegAnim->SetRepeat(true);
+		m_pLegAnim->SetLastFacingX(-1);
+		m_pBodyAnim->SetLastFacingX(-1);
 	}
 	else
 	{
@@ -186,7 +199,7 @@ void CEri::AttackKeyInput()
 	{
 		// TODO 근접 공격 여부 조건 추가
 		m_pBodyAnim->SetRepeat(true);
-		if (CKeyManager::GetInstance().KeyPressing(m_cAttackKey))
+		if (CKeyManager::GetInstance().KeyPressing(n_cAttackKey))
 		{
 			if (CKeyManager::GetInstance().KeyPressing(VK_RIGHT))
 				m_vFace = Vector2::UnitX;
@@ -237,7 +250,7 @@ void CEri::AttackKeyInput()
 	{
 		
 		// TODO 근접 공격 여부 조건 추가
-		if (CKeyManager::GetInstance().KeyPressing(m_cAttackKey))
+		if (CKeyManager::GetInstance().KeyPressing(n_cAttackKey))
 		{
 			if (bHasEnemy)
 			{
@@ -253,19 +266,7 @@ void CEri::AttackKeyInput()
 
 			m_eCurBodyState = SHOOT;
 			m_pBodyAnim->SetRepeat(true);
-			if (CKeyManager::GetInstance().KeyPressing(VK_UP)
-				&& CKeyManager::GetInstance().KeyPressing(VK_RIGHT))
-			{
-				m_vFace = Vector2::UnitX;
-				m_pBodyAnim->ChangeAnimation(L"Eri_Standing_ShootUp_Body");
-			}
-			else if (CKeyManager::GetInstance().KeyPressing(VK_UP)
-				&& CKeyManager::GetInstance().KeyPressing(VK_LEFT))
-			{
-				m_vFace = Vector2::UnitX * -1.f;
-				m_pBodyAnim->ChangeAnimation(L"Eri_Standing_ShootUp_Body");
-			}
-			else if (CKeyManager::GetInstance().KeyPressing(VK_UP))
+			if (CKeyManager::GetInstance().KeyPressing(VK_UP))
 			{
 				m_vFace = Vector2::UnitY * -1.f;
 				m_pBodyAnim->ChangeAnimation(L"Eri_Standing_ShootUp_Body");
@@ -282,6 +283,7 @@ void CEri::AttackKeyInput()
 			}
 			else
 			{
+				m_vFace = Vector2(m_pBodyAnim->GetLastFacingX(), 0);
 				m_pBodyAnim->ChangeAnimation(L"Eri_Standing_ShootFront_Body");
 			}
 		}
@@ -307,17 +309,21 @@ void CEri::Move()
 	float fSpeed(0.f);
 	if (m_eCurBodyState == SIT)
 	{
-		fSpeed = m_fCrawlSpeed * CTimeManager::GetInstance().GetDeltaTime() * m_vDirection.x;;
+		fSpeed = m_fCrawlSpeed * DELTA * m_vDirection.x;;
 		WinOffset(fSpeed);
 		
 		m_vPivot.x += static_cast<int>(fSpeed);
 	}	
 	else if (m_eCurLegState == MOVE || m_eCurLegState == MOVEJUMP)
 	{
-		fSpeed = m_fMoveSpeed * CTimeManager::GetInstance().GetDeltaTime() * m_vDirection.x;
+		fSpeed = m_fMoveSpeed * DELTA * m_vDirection.x;
 		WinOffset(fSpeed);
 		m_vPivot.x += static_cast<int>(fSpeed);
 	}
+}
+
+void CManEater::ChasePlayer()
+{
 }
 
 void CEri::Jump()
@@ -362,6 +368,10 @@ void CEri::Jump()
 
 }
 
+void CManEater::Attack()
+{
+}
+
 void CEri::Drop()
 {
 
@@ -369,28 +379,46 @@ void CEri::Drop()
 
 void CEri::Shoot()
 {
-	if (m_eCurBodyState != SHOOT) return;
+	if (m_fShootDelta > 0.f) return;
 
-	m_iScatterIdx *= -1;
+	bool bIsShoot = false;
+	if (m_eCurBodyState == SIT && m_eCurLegState == SHOOT)
+		bIsShoot = true;
+	else if (m_eCurBodyState == SHOOT) 
+		bIsShoot = true;
+
+	if (bIsShoot == false) return;
+	
 	Vector2 vPos = m_vPivot + m_vFace * (m_vSize.x / 2.f);
+
+	if (m_eCurBodyState == SIT)
+		vPos += n_vSitOffset;
+	else
+		vPos += n_vStandOffset;
+
 	if (m_vFace.x >= Vector2::UnitX.x && m_vFace.y == 0.f)
 	{
 		CProjectileFactory<CHMProjectile>
-			::CreateProjectile(vPos, Vector2(1.f, 0.001f * m_iScatterIdx), L"HeavyMachineGunProjectile_Front", 0);
+			::CreateProjectile(vPos, Vector2(m_vFace.x, n_fScatterArg[m_iScatterIdx]), L"HeavyMachineGunProjectile_Front", 0);
 	}
-	else if (m_vFace.x >= Vector2::UnitX.x * -1.f && m_vFace.y == 0.f)
+	else if (m_vFace.x <= Vector2::UnitX.x && m_vFace.y == 0.f)
 	{
 		CProjectileFactory<CHMProjectile>
-			::CreateProjectile(vPos, Vector2(-1.f, 0.001f * m_iScatterIdx), L"HeavyMachineGunProjectile_Up", 1);
+			::CreateProjectile(vPos, Vector2(m_vFace.x, n_fScatterArg[m_iScatterIdx]), L"HeavyMachineGunProjectile_Front", 1);
 	}
-	else if (m_vFace.y <= Vector2::UnitY.x * -1.f && m_vFace.y == 0.f)
+	else if (m_vFace.y >= Vector2::UnitY.y * -1.f && m_vFace.x == 0.f)
 	{
 		CProjectileFactory<CHMProjectile>
-			::CreateProjectile(vPos, Vector2(0.001f * m_iScatterIdx, -1.f), L"HeavyMachineGunProjectile_Down", 0);
+			::CreateProjectile(vPos, Vector2(n_fScatterArg[m_iScatterIdx], -1.f), L"HeavyMachineGunProjectile_Up", 0);
+	}
+	else if (m_vFace.y <= Vector2::UnitY.y * 1.f && m_vFace.x == 0.f)
+	{
+		CProjectileFactory<CHMProjectile>
+			::CreateProjectile(vPos, Vector2(n_fScatterArg[m_iScatterIdx], 1.f), L"HeavyMachineGunProjectile_Down", 0);
 	}
 	
-		
-
+	m_iScatterIdx = (m_iScatterIdx + 1) % 5;
+	m_fShootDelta = 100.f;
 }
 
 void CEri::LoadEriBmp()

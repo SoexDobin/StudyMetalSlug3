@@ -1,29 +1,33 @@
 #include "pch.h"
 #include "CManEater.h"
 #include "CHitBox.h"
+#include "CAnimation.h"
 
 #include "CColliderFactory.h"
 #include "CScrollManager.h"
 
 CManEater::CManEater()
+    : m_pAnim(nullptr), m_pRefPlayer(nullptr)
 {
 }
 
 CManEater::~CManEater()
 {
+    Release();
 }
 
 void CManEater::Initialize()
 {
-    m_vPivot = Vector2(500, 500);
-    m_vSize = Vector2(PLAYER_BMPX, PLAYER_BMPY);
+    LoadAnimation();
+
+    m_vPivot = Vector2(800.f, 500.f);
+    m_vSize = Vector2(192.f, 192.f);
     m_pColBox = CColliderFactory<CHitBox>::CreateHitBox(this);
 }
 
 int CManEater::Update()
 {
     if (m_bDestroy) return OBJ_DESTROY;
-
 
     __super::UpdateGameObject();
 
@@ -32,20 +36,33 @@ int CManEater::Update()
 
 void CManEater::LateUpdate()
 {
+    m_pAnim->UpdateAnimation();
 }
 
 void CManEater::Render(HDC _hDC)
 {
-    int iX = CScrollManager::GetInstance().GetScrollX();
-    int iY = CScrollManager::GetInstance().GetScrollY();
-
-    Rectangle(_hDC, m_tRect.left + iX, m_tRect.top + iY, m_tRect.right + iX, m_tRect.bottom + iY);
+    m_pAnim->RenderAnimation(_hDC);
 }
 
 void CManEater::Release()
 {
+    SafeDelete<CAnimation*>(m_pAnim);
 }
 
 void CManEater::OnCollision(CGameObject* _pCol, Vector2 _vColSize)
 {
+    
+}
+
+void CManEater::LoadAnimation()
+{
+    m_pAnim = new CAnimation();
+
+
+    m_pAnim->AddAnimation(L"ManEater_Idle", pair<int, int>{ 0, 12 });
+
+    m_pAnim->Initialize();
+    m_pAnim->SetParent(this);
+    m_pAnim->ChangeAnimation(L"ManEater_Idle");
+    m_pAnim->SetFrameSpeed(0.1f);
 }

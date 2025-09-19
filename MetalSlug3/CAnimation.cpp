@@ -94,7 +94,7 @@ void CAnimation::UpdateAnimation()
 		
 	if (m_bRepeat == false && m_iCurFrame == m_iEndFrame - 1) return;
 
-	m_fDeltaFrame += CTimeManager::GetInstance().GetDeltaTime();
+	m_fDeltaFrame += DELTA;
 	
 	if (m_fDeltaFrame >= m_fFrameSpeed)
 	{
@@ -126,21 +126,21 @@ void CAnimation::RenderAnimation(HDC _hDC)
 {
 	if (m_pParentObject == nullptr) return;
 
-	int iX = static_cast<int>(CScrollManager::GetInstance().GetScrollX());
-	int iY = static_cast<int>(CScrollManager::GetInstance().GetScrollY());
+	int iImgSizeX = static_cast<int>(m_pParentObject->GetSize().x);
+	int iImgSizeY = static_cast<int>(m_pParentObject->GetSize().y);
 
 	HDC	hMemDC = CBmpManager::GetInstance().FindBmpImg(m_szCurFrameKey);
 
 	GdiTransparentBlt(_hDC,
-		m_pParentObject->GetRect().left + iX,
-		m_pParentObject->GetRect().top + iY,
-		(int)m_pParentObject->GetSize().x,
-		(int)m_pParentObject->GetSize().y,
+		m_pParentObject->GetRect().left + SCROLLX,
+		m_pParentObject->GetRect().top + SCROLLY,
+		iImgSizeX,
+		iImgSizeY,
 		hMemDC,
-		m_iCurFrame * (int)m_pParentObject->GetSize().x,
-		m_iLayer * (int)m_pParentObject->GetSize().y,
-		(int)m_pParentObject->GetSize().x,
-		(int)m_pParentObject->GetSize().y,
+		m_iCurFrame * iImgSizeX,
+		m_iLayer * iImgSizeY,
+		iImgSizeX,
+		iImgSizeY,
 		m_dwEaseColor);
 }
 

@@ -1,10 +1,13 @@
 #include "pch.h"
 #include "CMission4.h"
+#include "CManEater.h"
 
 #include "CBmpManager.h"
 #include "CObjectManager.h"
 #include "CScrollManager.h"
 #include "CTimeManager.h"
+#include "CGameObjectFactory.h"
+
 
 CMission4::CMission4() 
     : m_fDelta(0.f)
@@ -17,17 +20,20 @@ CMission4::~CMission4()
 
 void CMission4::Initialize()
 {
-    LoadImageLandscape();
+    LoadBmpLandscape();
+    LoadBmpEnemy();
+
+
+    CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CManEater>::Create(), ENEMY);
 }
 
 pair<bool, SCENETAG> CMission4::Update()
 {
     if (m_bDestroyScene) return pair<bool, SCENETAG>{SCENE_NOEVENT, SCENE_END};
 
-
     CObjectManager::GetInstance().Update();
 
-    m_fDelta += 4000.f * CTimeManager::GetInstance().GetDeltaTime();
+    m_fDelta += 4000.f * DELTA;
 
     return pair<bool, SCENETAG>{SCENE_NOEVENT, SCENE_END};
 }
@@ -141,7 +147,7 @@ void CMission4::RenderFrontLandscape(HDC _hDC)
     }
 }
 
-void CMission4::LoadImageLandscape()
+void CMission4::LoadBmpLandscape()
 {
 
     CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Landscape/BackGround/4-1_Dessert_Background.bmp"
@@ -184,4 +190,10 @@ void CMission4::LoadImageLandscape()
     m_vecDessertFrontgroundKey.push_back(L"4-1_Dessert_Frontground2");
     m_vecDessertFrontgroundKey.push_back(L"4-1_Dessert_Frontground3");
     m_vecDessertFrontgroundKey.push_back(L"4-1_Dessert_Frontground4");
+}
+
+void CMission4::LoadBmpEnemy()
+{
+    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/ManEater/ManEater_Idle.bmp"
+        , L"ManEater_Idle");
 }

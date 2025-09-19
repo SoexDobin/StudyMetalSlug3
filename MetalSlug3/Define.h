@@ -15,6 +15,10 @@
 #define			SCENE_DESTROY		1
 #define			SCENE_NOEVENT		0
 
+#define			DELTA				CTimeManager::GetInstance().GetDeltaTime()
+#define			SCROLLX				static_cast<int>(CScrollManager::GetInstance().GetScrollX())
+#define			SCROLLY				static_cast<int>(CScrollManager::GetInstance().GetScrollY())
+
 // World Variable
 extern HWND			g_hWnd;
 

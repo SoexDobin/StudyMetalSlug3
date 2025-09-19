@@ -143,7 +143,7 @@
     <ClInclude Include="CCQCArea.h" />
     <ClInclude Include="CEnemy.h" />
     <ClInclude Include="CEri.h" />
-    <ClInclude Include="CField.h" />
+    <ClInclude Include="CPlatform.h" />
     <ClInclude Include="CGame.h" />
     <ClInclude Include="CGameObject.h" />
     <ClInclude Include="CGameObjectFactory.h" />
@@ -184,7 +184,7 @@
     <ClCompile Include="CCQCArea.cpp" />
     <ClCompile Include="CEnemy.cpp" />
     <ClCompile Include="CEri.cpp" />
-    <ClCompile Include="CField.cpp" />
+    <ClCompile Include="CPlatform.cpp" />
     <ClCompile Include="CGame.cpp" />
     <ClCompile Include="CGameObject.cpp" />
     <ClCompile Include="CHMProjectile.cpp" />

@@ -26,7 +26,7 @@ void CBulletHitParticle::Initialize()
 
     m_pAnim->ChangeAnimation(m_szFrameKey);
     m_pAnim->SetRepeat(false);
-    m_pAnim->SetFrameSpeed(0.1f);
+    m_pAnim->SetFrameSpeed(10.f);
 }
 
 int CBulletHitParticle::Update()
