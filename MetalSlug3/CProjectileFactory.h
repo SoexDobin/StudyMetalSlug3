@@ -17,11 +17,14 @@ public:
 	static void CreateProjectile(Vector2 _vPivot, Vector2 _vDir, const TCHAR* _szImgKey, int _iLayer)
 	{
 		CProjectile* pProjectile = new T();
-		pProjectile->Initialize();
+
 		pProjectile->SetPivot(_vPivot);
 		pProjectile->SetDirection(_vDir);
 		pProjectile->SetImgKey(_szImgKey);
 		pProjectile->SetImgLayer(_iLayer);
+
+		pProjectile->Initialize();
+
 		CObjectManager::GetInstance().AddGameObject(pProjectile, PROJECTILE);
 	}
 };

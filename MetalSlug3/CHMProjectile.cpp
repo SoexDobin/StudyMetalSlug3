@@ -23,7 +23,9 @@ void CHMProjectile::Initialize()
 {
     m_vSize = Vector2( 96.f, 96.f);
     m_pColBox = CColliderFactory<CHitBox>::CreateHitBox(this);
-
+    m_pColBox->SetSize( m_vSize/ 3.f );
+    
+    __super::UpdateGameObject();
 }
 
 int CHMProjectile::Update()
@@ -32,14 +34,14 @@ int CHMProjectile::Update()
 
     __super::UpdateGameObject();
 
-    m_vPivot += m_vDirection * (m_vSpeed * CTimeManager::GetInstance().GetDeltaTime());
+    m_vPivot += m_vSpeed * m_vDirection * DELTA;
 
     return OBJ_NOEVENT;
 }
 
 void CHMProjectile::LateUpdate()
 {
-
+    __super::CheckOutOfWindow();
 }
 
 void CHMProjectile::Render(HDC _hDC)
@@ -65,12 +67,31 @@ void CHMProjectile::Release()
     SafeDelete<CCollider*>(m_pColBox);
 }
 
-void CHMProjectile::OnCollision(CGameObject* _pCol, Vector2 _vColSize)
+void CHMProjectile::OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)
 {
-    if (_pCol->GetObjectType() == ENEMY && m_bDestroy == false)
-    {
-        CParticleManager::GetInstance().CreateParticle<CBulletHitParticle>(m_vPivot);
+    if (m_bDestroy) return;
 
+    if (_pCol->GetObjectType() == ENEMY || _pCol->GetObjectType() == PLATFORM)
+    {
+        Vector2 vParticleOffset{ 0.f, 0.f };
+
+        switch (_eFlag)
+        {
+        case LEFT_COL:  vParticleOffset = Vector2(-m_vSize.x / 2.f, 0.f);
+            break;
+        case RIGHT_COL: vParticleOffset = Vector2(m_vSize.x / 2.f, 0.f);
+            break;
+        case UP_COL:    vParticleOffset = Vector2(0.f, -m_vSize.y / 2.f);
+            break;
+        case DOWN_COL:  vParticleOffset = Vector2(0.f, m_vSize.y / 2.f);
+            break;
+        case COL_END:
+            break;
+        default:
+            break;
+        }
+
+        CParticleManager::GetInstance().CreateParticle<CBulletHitParticle>(m_vPivot + vParticleOffset);
         m_bDestroy = OBJ_DESTROY;
         m_eType = OBJECT_END;
     }

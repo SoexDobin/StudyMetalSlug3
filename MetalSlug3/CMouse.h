@@ -1,15 +1,11 @@
 #pragma once
 #include "CGameObject.h"
 
-class CAnimation;
-
-class CPlatform : public CGameObject
+class CMouse final : public CGameObject
 {
 public:
-	CPlatform();
-	virtual ~CPlatform() override;
-
-
+	CMouse();
+	~CMouse() override;
 
 public:
 	void	Initialize()										override;
@@ -20,11 +16,17 @@ public:
 	void	OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)	override;
 
 private:
-	void	PlayerPlatformCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag);
-	void	EnemyPlatformCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag);
+	void	UpdateMouseFunction();
 
 private:
+	Vector2 m_vCurPos;
+	Vector2 m_vFromPos;
+	Vector2 m_vToPos;
+	Vector2 m_vDistance;
 
-	const TCHAR*		m_szImgKey;
+	TCHAR	m_szCurPosBuffer[256];
+	TCHAR	m_szFromPosBuffer[256];
+	TCHAR	m_szToPosBuffer[256];
+	TCHAR	m_szDistanceBuffer[256];
 };
 

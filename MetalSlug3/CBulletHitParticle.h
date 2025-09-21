@@ -15,7 +15,7 @@ public:
 	void        LateUpdate()                                         override;
 	void        Render(HDC _hDC)                                     override;
 	void        Release()                                            override;
-	void        OnCollision(CGameObject* _pCol, Vector2 _vColSize)   override;
+	void        OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)   override;
 
 private:
 	CAnimation*		m_pAnim;

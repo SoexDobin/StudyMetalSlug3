@@ -112,11 +112,14 @@
     <Filter Include="92. Factory\00. GameObjectFactory">
       <UniqueIdentifier>{e581131e-d9b4-4265-b079-770c66504988}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. GameObject\06. CheckPlatform">
+      <UniqueIdentifier>{de79b4b9-9b4c-45ee-ba7a-be2f52330bcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\07. MouseVector2">
+      <UniqueIdentifier>{cbf947fb-32e4-4e13-aa1f-457cf1cb5c9c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MetalSlug3.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -234,6 +237,15 @@
     <ClInclude Include="CBulletHitParticle.h">
       <Filter>01. GameObject\05. Particle\00. BulletHit</Filter>
     </ClInclude>
+    <ClInclude Include="CPlatformChecker.h">
+      <Filter>01. GameObject\06. CheckPlatform</Filter>
+    </ClInclude>
+    <ClInclude Include="MetalSlug3.h">
+      <Filter>헤더 파일\VSHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="CMouse.h">
+      <Filter>01. GameObject\07. MouseVector2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MetalSlug3.cpp">
@@ -328,6 +340,12 @@
     </ClCompile>
     <ClCompile Include="CBulletHitParticle.cpp">
       <Filter>01. GameObject\05. Particle\00. BulletHit</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlatformChecker.cpp">
+      <Filter>01. GameObject\06. CheckPlatform</Filter>
+    </ClCompile>
+    <ClCompile Include="CMouse.cpp">
+      <Filter>01. GameObject\07. MouseVector2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

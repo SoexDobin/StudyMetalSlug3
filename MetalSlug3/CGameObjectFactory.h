@@ -13,11 +13,13 @@ public:
 		return pObject;
 	}
 
-	static CGameObject* Create(float fX, float fY)
+	static CGameObject* Create(const Vector2& _vPivot, const Vector2& _vSize, CGameObject* _pParent = nullptr)
 	{
 		CGameObject* pObject = new T;
+		pObject->SetPivot(_vPivot);
+		pObject->SetSize(_vSize);
+		pObject->SetParent(_pParent);
 		pObject->Initialize();
-		pObject->SetPivot(Vector2(fX, fY));
 
 		return pObject;
 	}

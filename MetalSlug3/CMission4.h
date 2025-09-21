@@ -18,6 +18,7 @@ private:
 	void					RenderLandscape(HDC _hDC);
 	void					RenderFrontLandscape(HDC _hDC);
 
+	void					CreatePlatform();
 	void					LoadBmpLandscape();
 	void					LoadBmpEnemy();
 

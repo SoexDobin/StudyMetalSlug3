@@ -10,6 +10,7 @@ public:
 
 public:
 	const RECT&		GetRect() const			{ return m_tRect; }
+	CGameObject*	GetParent()				{ return m_pParent; }
 	CCollider*		GetCollider() const		{ return m_pColBox; }
 	OBJECT_TYPE		GetObjectType() const	{ return m_eType; }
 	bool			IsDestroy() const		{ return m_bDestroy; }
@@ -19,6 +20,7 @@ public:
 	Vector2			GetFace() const			{ return m_vFace; }
 	Vector2			GetDirection() const	{ return m_vDirection; }
 	
+	void			SetParent(CGameObject* _pParent)			{ m_pParent = _pParent; }
 	void			SetObjectType(OBJECT_TYPE _eType)			{ m_eType = _eType; }
 	void			SetDestroy()								{ m_bDestroy = true; }
 	void			SetHp(const int& _iHp)						{ m_iHp = _iHp; }
@@ -33,13 +35,14 @@ public:
 	virtual void	LateUpdate()										PURE;
 	virtual void	Render(HDC _hDC)									PURE;
 	virtual void	Release()											PURE;
-	virtual void	OnCollision(CGameObject* _pCol, Vector2 _vColSize)	PURE;
+	virtual void	OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)	PURE;
 
 protected:
 	void			UpdateGameObject();
 
 protected:
 	RECT			m_tRect;
+	CGameObject*	m_pParent;
 	CCollider*		m_pColBox;
 	OBJECT_TYPE		m_eType;
 	bool			m_bDestroy;

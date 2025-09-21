@@ -4,6 +4,7 @@
 #include "CAnimation.h"
 #include "CCQCArea.h"
 #include "CHMProjectile.h"
+#include "CPlatformChecker.h"
 
 // Managers
 #include "CBmpManager.h"
@@ -14,14 +15,14 @@
 #include "CGameObjectFactory.h"
 #include "CObjectManager.h"
 #include "CProjectileFactory.h"
-#include "CManEater.h"
 
 CEri::CEri()
-	: m_pBodyAnim(nullptr), m_pLegAnim(nullptr)
+	: m_pBodyAnim(nullptr), m_pLegAnim(nullptr), m_pCQCCol(nullptr)
 	, m_eCurBodyState(PLAYER_STATE_END), m_ePrevBodyState(PLAYER_STATE_END)
 	, m_eCurLegState(PLAYER_STATE_END), m_ePrevLegState(PLAYER_STATE_END)
 	, m_fMoveSpeed(0.f), m_fCrawlSpeed(0.f)
-	, m_fJumpDeltaTime(0.f), m_bIsJump(false)
+	, m_fJumpSpeed(0.f), m_bIsJump(false)
+	, m_bIsDrop(true)
 	, m_iScatterIdx(0), m_fShootDelta(0.f)
 {
 }
@@ -33,27 +34,36 @@ CEri::~CEri()
 
 void CEri::Initialize()
 {
-	m_vPivot = Vector2(200, 500);
+	m_vPivot = Vector2(200, 480);
 	m_vSize = Vector2(PLAYER_BMPX, PLAYER_BMPY);
 	m_vFace = Vector2::UnitX;
 	m_vDirection = Vector2(0.f, 0.f);
-	m_fMoveSpeed = 200.f;
+	m_fMoveSpeed = 300.f;
 	m_fCrawlSpeed = 100.f;
-	m_fShootDelta = 100.f;
+	m_fShootDelta = n_fShootDelta;
 	m_eType = PLAYER;
 
-	m_pCQCCollider = CGameObjectFactory<CCQCArea>::Create();
-	CObjectManager::GetInstance().AddGameObject(m_pCQCCollider, PLAYER);
 	m_pColBox = CColliderFactory<CHitBox>::CreateHitBox(this);
+
+	m_pCQCCol = CGameObjectFactory<CCQCArea>::Create(Vector2::Zero, Vector2::Zero, this);
+	CObjectManager::GetInstance().AddGameObject(m_pCQCCol, PLAYER);
+
+	m_pPlatformCol = CGameObjectFactory<CPlatformChecker>::Create(Vector2::Zero, Vector2::Zero, this);
+	CObjectManager::GetInstance().AddGameObject(m_pPlatformCol, NEUTRAL);
+
+	SetStandCollider();
 
 	LoadProjectileBmp();
 	LoadEriBmp();
 	m_ePrevBodyState = IDLE;
 	m_ePrevLegState = IDLE;
 	m_pBodyAnim->ChangeAnimation(L"Eri_Standing_Idle_Body");
+	m_pBodyAnim->SetFrameSpeed(0.07f);
 	m_pLegAnim->ChangeAnimation(L"Eri_Standing_Idle_Leg");
+	m_pLegAnim->SetFrameSpeed(0.07f);
 
-	srand(GetTickCount64());
+	srand(DELTA);
+	m_fJumpSpeed = n_fSeedJumpSpeed;
 }
 
 int CEri::Update()
@@ -63,19 +73,23 @@ int CEri::Update()
 	m_pBodyAnim->UpdateAnimation();
 	m_pLegAnim->UpdateAnimation();
 	__super::UpdateGameObject();
-	m_fShootDelta -= 960.f * DELTA;
 
+	m_fShootDelta -= 1000.f * DELTA;
+
+	CheckPlatform();
 	BehaviourKeyInput();
 	AttackKeyInput();
-
-	
 
 	return OBJ_NOEVENT;
 }
 
 void CEri::LateUpdate()
 {
-	// DROP여부 미리 확인해서 키입력에 활용할 것
+	if (m_eCurBodyState == SIT)
+		SetSitCollider();
+	else
+		SetStandCollider();
+
 	Move();
 	Jump();
 	Drop();
@@ -98,17 +112,26 @@ void CEri::Release()
 	SafeDelete<CAnimation*>(m_pLegAnim);
 }
 
-void CEri::OnCollision(CGameObject* _pCol, Vector2 _vColSize)
+void CEri::OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)
 {
-	// TODO 좌우 상항 충돌 enum 전달해서 해당 Rect 포지션에서 발생
+	switch (_pCol->GetObjectType())
+	{
+	case ENEMY:
+		break;
+	case PLATFORM:
+		break;
+	default:
+		break;
+	}
 }
 
 void CEri::BehaviourKeyInput()
 {
-
 	if (CKeyManager::GetInstance().KeyPressing(VK_DOWN)
 		&& !CKeyManager::GetInstance().KeyPressing(VK_UP))
 	{
+		if (m_bIsJump || m_bIsDrop) return;
+
 		m_eCurBodyState = SIT;
 		m_pBodyAnim->ChangeAnimation(L"Eri_Blank_Body");
 		m_pLegAnim->SetRepeat(true);
@@ -120,17 +143,38 @@ void CEri::BehaviourKeyInput()
 		m_eCurBodyState = STAND;
 	}
 		
-	if (CKeyManager::GetInstance().KeyDown(n_cJumpKey))
+	if (m_bIsDrop)
 	{
-		if (m_bIsJump) return;
-		// TODO : 점프 중일 때는 현재 프레임 받아와서 그시점부터 적용
-		// TODO : DROP도 동일 && 단 DROP은 마지막 프레임이면 마지막으로 고정
-		std::wcout << L"Press" << L"\n";
+		SetLegAnim(L"Eri_Standing_Drop_Leg", false, DROP);
+
+		if (CKeyManager::GetInstance().KeyPressing(VK_RIGHT))
+			m_vDirection = Vector2(1.f, 1.f);
+		else if (CKeyManager::GetInstance().KeyPressing(VK_LEFT))
+			m_vDirection = Vector2(-1.f, 1.f);
+
+		return;
+	}
+	if (CKeyManager::GetInstance().KeyPressing(n_cJumpKey))
 		m_bIsJump = true;
 
-		m_eCurLegState = JUMP;
-		m_pLegAnim->ChangeAnimation(L"Eri_Standing_Jump_Leg");
-		m_pLegAnim->SetRepeat(false);
+	if (m_bIsJump) 
+	{
+		if (CKeyManager::GetInstance().KeyPressing(VK_RIGHT))
+		{
+			m_vDirection = Vector2(1.f, -1.f);
+			SetLegAnim(L"Eri_Standing_JumpFront_Leg", false, MOVEJUMP);
+		}
+		else if (CKeyManager::GetInstance().KeyPressing(VK_LEFT))
+		{
+			m_vDirection = Vector2(-1.f, -1.f);
+			SetLegAnim(L"Eri_Standing_JumpFront_Leg", false, MOVEJUMP);
+		}
+		else
+		{
+			m_vDirection = Vector2::Zero;
+			SetLegAnim(L"Eri_Standing_Jump_Leg", false, JUMP);
+		}
+		return;
 	}
 
 	if (CKeyManager::GetInstance().KeyPressing(VK_RIGHT))
@@ -138,21 +182,8 @@ void CEri::BehaviourKeyInput()
 		m_vFace = Vector2::UnitX;
 		m_vDirection = Vector2::UnitX;
 
-		if (m_bIsJump)
-		{
-			m_eCurLegState == MOVEJUMP;
-			m_pLegAnim->ChangeAnimation(L"Eri_Standing_JumpFront_Leg");
-			m_pLegAnim->SetRepeat(false);
-			return;
-		}
-
-		m_eCurLegState = MOVE;
-
-		m_pLegAnim->ChangeAnimation(L"Eri_Standing_Move_Leg");
-		// TODO 테스트 코드 입니다.
+		SetLegAnim(L"Eri_Standing_Move_Leg", true, MOVE);
 		m_pLegAnim->SetDeltaFrame(m_pLegAnim->GetDeltaFrame() * 2.f);
-
-		m_pLegAnim->SetRepeat(true);
 		m_pLegAnim->SetLastFacingX(1);
 		m_pBodyAnim->SetLastFacingX(1);
 	}
@@ -161,39 +192,23 @@ void CEri::BehaviourKeyInput()
 		m_vFace = Vector2::UnitX * -1.f;
 		m_vDirection = Vector2::UnitX * -1.f;
 
-		if (m_bIsJump)
-		{
-			m_eCurLegState == MOVEJUMP;
-			m_pLegAnim->ChangeAnimation(L"Eri_Standing_JumpFront_Leg");
-			m_pLegAnim->SetRepeat(false);
-			return;
-		}
-
-		m_eCurLegState = MOVE;
-
-		m_pLegAnim->ChangeAnimation(L"Eri_Standing_Move_Leg");
-
-		// TODO 테스트 코드 입니다.
+		SetLegAnim(L"Eri_Standing_Move_Leg", true, MOVE);
 		m_pLegAnim->SetDeltaFrame(m_pLegAnim->GetDeltaFrame() * 2.f);
-
-		m_pLegAnim->SetRepeat(true);
 		m_pLegAnim->SetLastFacingX(-1);
 		m_pBodyAnim->SetLastFacingX(-1);
 	}
 	else
 	{
-		m_vDirection = Vector2::Zero;
 		if (m_bIsJump) return;
 
-		m_eCurLegState = IDLE;
-		m_pLegAnim->ChangeAnimation(L"Eri_Standing_Idle_Leg");
-		m_pLegAnim->SetRepeat(true);
+		m_vDirection = Vector2::Zero;
+		SetLegAnim(L"Eri_Standing_Idle_Leg", true, IDLE);
 	}
 }
 
 void CEri::AttackKeyInput()
 {
-	bool bHasEnemy = dynamic_cast<CCQCArea*>(m_pCQCCollider)->CatchEnemyCQCZone();
+	bool bHasEnemy = dynamic_cast<CCQCArea*>(m_pCQCCol)->CatchEnemyCQCZone();
 
 	if (m_eCurBodyState == SIT)
 	{
@@ -205,107 +220,93 @@ void CEri::AttackKeyInput()
 				m_vFace = Vector2::UnitX;
 			else if (CKeyManager::GetInstance().KeyPressing(VK_LEFT))
 				m_vFace = Vector2::UnitX * -1.f;
+			else
+				m_vFace = Vector2((float)m_pBodyAnim->GetLastFacingX(), 0.f);
 
 			m_vDirection = Vector2::Zero;
 
 			if (bHasEnemy)
 			{
-				m_eCurLegState = CQC;
-				m_pLegAnim->ChangeAnimation(L"Eri_Sit_CQC");
-				m_pBodyAnim->SetRepeat(false);
+				if (m_pBodyAnim->GetCurrentFrameIndex() < m_pBodyAnim->GetEndFrameIndex() - 1)
+					return;
+
+				SetLegAnim(L"Eri_Sit_CQC", true, CQC);
 				return;
 			}
 
-			m_eCurLegState = SHOOT;
-			m_pLegAnim->ChangeAnimation(L"Eri_Sit_Shoot");
-			m_pBodyAnim->SetRepeat(true);
+			SetLegAnim(L"Eri_Sit_Shoot", true, SHOOT);
 		}
 		else if (CKeyManager::GetInstance().KeyPressing(VK_RIGHT))
 		{
 			m_vFace = Vector2::UnitX;
 			m_vDirection = Vector2::UnitX;
-			
-			m_eCurLegState = MOVE;
-			m_pLegAnim->ChangeAnimation(L"Eri_Sit_Move");
-			m_pBodyAnim->SetRepeat(true);
+			SetLegAnim(L"Eri_Sit_Move", true, MOVE);
 		}
 		else if (CKeyManager::GetInstance().KeyPressing(VK_LEFT))
 		{
 			m_vFace = Vector2::UnitX * -1.f;
 			m_vDirection = Vector2::UnitX * -1.f;
-			
-			m_eCurLegState = MOVE;
-			m_pLegAnim->ChangeAnimation(L"Eri_Sit_Move");
-			m_pBodyAnim->SetRepeat(true);
+			SetLegAnim(L"Eri_Sit_Move", true, MOVE);
 		}
 		else
 		{
 			m_vDirection = Vector2::Zero;
-			m_eCurLegState = IDLE;
-			m_pLegAnim->ChangeAnimation(L"Eri_Sit_Idle");
-			m_pBodyAnim->SetRepeat(true);
+			SetLegAnim(L"Eri_Sit_Idle", true, IDLE);
 		}
 	}
 	else
 	{
-		
-		// TODO 근접 공격 여부 조건 추가
 		if (CKeyManager::GetInstance().KeyPressing(n_cAttackKey))
 		{
 			if (bHasEnemy)
 			{
 				int irand = rand() % 2;
-				m_eCurBodyState = CQC;
-				if (irand)
-					m_pBodyAnim->ChangeAnimation(L"Eri_Standing_AxeCQC_Body");
-				else
-					m_pBodyAnim->ChangeAnimation(L"Eri_Standing_TonfaCQC_Body");
-				m_pBodyAnim->SetRepeat(true);
+				if (m_pBodyAnim->GetCurrentFrameIndex() < m_pBodyAnim->GetEndFrameIndex() - 1)
+					return;
+
+				if (irand)		SetBodyAnim(L"Eri_Standing_AxeCQC_Body", true, CQC);
+				else			SetBodyAnim(L"Eri_Standing_TonfaCQC_Body", true, CQC);
 				return;
 			}
 
-			m_eCurBodyState = SHOOT;
-			m_pBodyAnim->SetRepeat(true);
 			if (CKeyManager::GetInstance().KeyPressing(VK_UP))
 			{
 				m_vFace = Vector2::UnitY * -1.f;
-				m_pBodyAnim->ChangeAnimation(L"Eri_Standing_ShootUp_Body");
+				SetBodyAnim(L"Eri_Standing_ShootUp_Body", true, SHOOT);
+				return;
+			}
+			else if (CKeyManager::GetInstance().KeyPressing(VK_DOWN))
+			{
+				m_vFace = Vector2::UnitY;
+				SetBodyAnim(L"Eri_Standing_ShootDown_Body", true, SHOOT);
+				return;
 			}
 			else if (CKeyManager::GetInstance().KeyPressing(VK_RIGHT))
-			{
 				m_vFace = Vector2::UnitX;
-				m_pBodyAnim->ChangeAnimation(L"Eri_Standing_ShootFront_Body");
-			}
 			else if (CKeyManager::GetInstance().KeyPressing(VK_LEFT))
-			{
 				m_vFace = Vector2::UnitX * -1.f;
-				m_pBodyAnim->ChangeAnimation(L"Eri_Standing_ShootFront_Body");
-			}
 			else
-			{
 				m_vFace = Vector2(m_pBodyAnim->GetLastFacingX(), 0);
-				m_pBodyAnim->ChangeAnimation(L"Eri_Standing_ShootFront_Body");
-			}
+			
+			SetBodyAnim(L"Eri_Standing_ShootFront_Body", true, SHOOT);
 		}
 		else if (m_eCurLegState == JUMP || m_eCurLegState == MOVEJUMP)
 		{
-			m_eCurBodyState = JUMP;
-			m_pBodyAnim->ChangeAnimation(L"Eri_Standing_Jump_Body");
-			m_pBodyAnim->SetRepeat(false);
+			SetBodyAnim(L"Eri_Standing_Jump_Body", false, JUMP);
+		}
+		else if (m_eCurLegState == DROP)
+		{
+			SetBodyAnim(L"Eri_Standing_Drop_Body", false, DROP);
 		}
 		else
 		{
-			m_eCurBodyState = IDLE;
-			m_pBodyAnim->ChangeAnimation(L"Eri_Standing_Idle_Body");
-			m_pBodyAnim->SetRepeat(true);
+			SetBodyAnim(L"Eri_Standing_Idle_Body", true, IDLE);
 		}
 	}
 }
 
 void CEri::Move()
 {
-	float iX = CScrollManager::GetInstance().GetScrollX();
-	float iY = CScrollManager::GetInstance().GetScrollY();
 	float fSpeed(0.f);
 	if (m_eCurBodyState == SIT)
 	{
@@ -314,7 +315,7 @@ void CEri::Move()
 		
 		m_vPivot.x += static_cast<int>(fSpeed);
 	}	
-	else if (m_eCurLegState == MOVE || m_eCurLegState == MOVEJUMP)
+	else if (m_eCurLegState == MOVE || m_eCurLegState == MOVEJUMP || m_eCurLegState == DROP)
 	{
 		fSpeed = m_fMoveSpeed * DELTA * m_vDirection.x;
 		WinOffset(fSpeed);
@@ -322,59 +323,36 @@ void CEri::Move()
 	}
 }
 
-void CManEater::ChasePlayer()
-{
-}
-
 void CEri::Jump()
 {
-	if (m_eCurLegState == JUMP || m_eCurLegState == MOVEJUMP)
+	if (m_bIsJump)
 	{
-		float fDT = CTimeManager::GetInstance().GetDeltaTime();
-		m_fJumpDeltaTime += fDT;
+		m_fJumpSpeed += DELTA * n_fFallSpeed;
+		m_vPivot.y += m_fJumpSpeed * DELTA;
 
-		//void CAnimateObject::Gravity(float fFallSpeed, float fMaxFallSpeed)
-		//{
-		//	if (!m_bGravityOn)
-		//		return;
-		//
-		//	m_fSpeedY += fFallSpeed * DELTA;
-		//
-		//	if (m_fSpeedY > fMaxFallSpeed)
-		//		m_fSpeedY = fMaxFallSpeed;
-		//
-		//	AddPosY(m_fSpeedY * DELTA);
-		//}
-
-		float fJumpPower = ((100.f * m_fJumpDeltaTime) 
-			- (530.f * m_fJumpDeltaTime * m_fJumpDeltaTime * 0.5f)) * 2.f;
-		m_vPivot.y -= fJumpPower;
-
-		std::wcout << m_vPivot.y << "\t\t" << fJumpPower << L"\n";
-		//if (fJumpPower <= 0.f)
-		//{
-		//	m_fJumpDeltaTime = 0.f;
-		//
-		//	m_eCurLegState = DROP;
-		//}
-		
+		// TODO : Y스크롤 액션을 처리해야 한다.
+		//WinOffset(fSpeed);
+		if (m_fJumpSpeed > 0.f)
+		{
+			m_bIsDrop = true;
+			m_bIsJump = false;
+		}
 	}
-	if (m_tRect.bottom >= WINCY)
-	{
-		m_bIsJump = false;
-		m_fJumpDeltaTime = 0.f;
-		m_vPivot.y = WINCY - (PLAYER_BMPY / 2) - 100.f;
-	}
-
-}
-
-void CManEater::Attack()
-{
 }
 
 void CEri::Drop()
 {
+	// TODO : 그냥 드롭일 때 m_fJumpSpeed 에 -1곱해야 함
 
+	if (m_bIsDrop)
+	{
+		m_fJumpSpeed += DELTA * n_fFallSpeed;
+
+		if (m_fJumpSpeed > n_fMaxFall)
+			m_fJumpSpeed = n_fMaxFall;
+
+		m_vPivot.y += m_fJumpSpeed * DELTA;
+	}	
 }
 
 void CEri::Shoot()
@@ -392,9 +370,9 @@ void CEri::Shoot()
 	Vector2 vPos = m_vPivot + m_vFace * (m_vSize.x / 2.f);
 
 	if (m_eCurBodyState == SIT)
-		vPos += n_vSitOffset;
+		vPos += n_vShootSitOffset;
 	else
-		vPos += n_vStandOffset;
+		vPos += n_vShootOffset;
 
 	if (m_vFace.x >= Vector2::UnitX.x && m_vFace.y == 0.f)
 	{
@@ -406,19 +384,106 @@ void CEri::Shoot()
 		CProjectileFactory<CHMProjectile>
 			::CreateProjectile(vPos, Vector2(m_vFace.x, n_fScatterArg[m_iScatterIdx]), L"HeavyMachineGunProjectile_Front", 1);
 	}
-	else if (m_vFace.y >= Vector2::UnitY.y * -1.f && m_vFace.x == 0.f)
+	else if (m_vFace.y <= Vector2::UnitY.y * -1.f && m_vFace.x == 0.f)
 	{
 		CProjectileFactory<CHMProjectile>
 			::CreateProjectile(vPos, Vector2(n_fScatterArg[m_iScatterIdx], -1.f), L"HeavyMachineGunProjectile_Up", 0);
 	}
-	else if (m_vFace.y <= Vector2::UnitY.y * 1.f && m_vFace.x == 0.f)
+	else if (m_vFace.y >= Vector2::UnitY.y && m_vFace.x == 0.f)
 	{
 		CProjectileFactory<CHMProjectile>
 			::CreateProjectile(vPos, Vector2(n_fScatterArg[m_iScatterIdx], 1.f), L"HeavyMachineGunProjectile_Down", 0);
 	}
+
 	
 	m_iScatterIdx = (m_iScatterIdx + 1) % 5;
-	m_fShootDelta = 100.f;
+	m_fShootDelta = n_fShootDelta;
+}
+
+void CEri::CheckPlatform()
+{
+	bool bColPlatform = dynamic_cast<CPlatformChecker*>(m_pPlatformCol)->GetHasColWithPlatform();
+	//if (bColPlatform)
+	//{ 
+	//	float fPosY = dynamic_cast<CPlatformChecker*>(m_pPlatformCol)->GetColTopPosition();
+	//	m_vPivot.y = fPosY - (m_pColBox->GetSize().y / 2.f) - m_pColBox->GetOffset().y;
+	//	//m_vPivot.y -= fabsf(fPosY - (m_pColBox->GetPivot().y + m_pColBox->GetSize().y / 2.f));
+	//}	
+
+	if (!bColPlatform && !m_bIsJump && !m_bIsDrop)
+	{
+		m_bIsDrop = true;
+		m_fJumpSpeed = -n_fSeedJumpSpeed / 10.f;
+	}
+	if (m_bIsJump || !m_bIsDrop) return;
+
+	if (m_bIsDrop && bColPlatform)
+	{
+		float fPosY = dynamic_cast<CPlatformChecker*>(m_pPlatformCol)->GetColTopPosition();
+		m_bIsDrop = false;
+		m_vPivot.y = fPosY - (m_pColBox->GetSize().y / 2.f) - m_pColBox->GetOffset().y;
+		m_eCurLegState = STAND;
+		m_fJumpSpeed = n_fSeedJumpSpeed;
+		return;
+	}
+	else if (bColPlatform == false)
+	{	
+		m_bIsDrop = true;
+		m_eCurBodyState == DROP;
+		m_eCurLegState == DROP;
+	}
+}
+
+void CEri::IdentifyPlatform(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)
+{
+	switch (_eFlag)
+	{
+	case LEFT_COL:
+		break;
+	case RIGHT_COL:
+		break;
+	case UP_COL:
+		break;
+	case DOWN_COL:
+		break;
+	case COL_END:
+		break;
+	default:
+		break;
+	}
+}
+
+inline void CEri::SetStandCollider()
+{
+	m_pColBox->SetSize(m_vSize / 3.f);
+	m_pColBox->SetOffset(n_vPlayerColOffset);
+	m_pPlatformCol->GetCollider()->SetOffset({0.f, 134.f });
+}
+
+inline void CEri::SetSitCollider()
+{
+	m_pColBox->SetSize({ m_vSize.x / 3.f, m_vSize.y / 4.f });
+	m_pColBox->SetOffset(n_vPlayerColSitOffset);
+}
+
+inline void CEri::SetLegAnim(const TCHAR* _szKey, bool _bIsRepeat, PLAYER_STATE _eLegState, int _iLastFacingX)
+{
+	m_pLegAnim->ChangeAnimation(_szKey);
+	m_pLegAnim->SetRepeat(_bIsRepeat);
+	m_eCurLegState = _eLegState;
+
+	if (_iLastFacingX == 0) return;
+	m_pLegAnim->SetLastFacingX(_iLastFacingX);
+}
+
+inline void CEri::SetBodyAnim(const TCHAR* _szKey, bool _bIsRepeat, PLAYER_STATE _eBodyState, int _iLastFacingX)
+{
+	m_pBodyAnim->ChangeAnimation(_szKey);
+	m_pBodyAnim->SetRepeat(_bIsRepeat);
+	m_eCurBodyState = _eBodyState;
+
+	if (_iLastFacingX == 0) return;
+	m_pBodyAnim->SetLastFacingX(_iLastFacingX);
 }
 
 void CEri::LoadEriBmp()

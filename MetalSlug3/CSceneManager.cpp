@@ -4,13 +4,16 @@
 #include "CScene.h"
 #include "CArmoryScene.h"
 #include "CMission4.h"
+#include "CMouse.h"
 
 // Managers
 #include "CObjectManager.h"
 #include "CCollisionManager.h"
+#include "CGameObjectFactory.h"
 
 CSceneManager::CSceneManager() 
 	: m_pScene(nullptr), m_eCurScene(SCENE_END), m_ePrevScene(SCENE_END)
+	, ref_pPlayer(nullptr)
 {
 }
 
@@ -27,7 +30,10 @@ void CSceneManager::Initialize()
 	CObjectManager::GetInstance().GetGameObjectList(PLAYER).push_back(new CEri());
 	CObjectManager::GetInstance().GetGameObjectList(PLAYER).front()->Initialize();
 	ref_pPlayer = CObjectManager::GetInstance().GetGameObjectList(PLAYER).front();
-
+	
+	CObjectManager::GetInstance().AddGameObject(
+		CGameObjectFactory<CMouse>::Create(), PLAYER);
+	CObjectManager::GetInstance().GetGameObjectList(PLAYER).back()->Initialize();
 }
 
 void CSceneManager::Update()
@@ -54,17 +60,46 @@ void CSceneManager::Render(HDC _hDC)
 {
 	m_pScene->Render(_hDC);
 
-	CCollisionManager::GetInstance().RenderCollisionBox(_hDC);
+	
 
 	CCollisionManager::GetInstance().CheckCollision(
 		CObjectManager::GetInstance().GetGameObjectList(PLAYER)
 		, CObjectManager::GetInstance().GetGameObjectList(ENEMY)
 		, RECT_TO_RECT);
+	CCollisionManager::GetInstance().CheckCollision(
+		CObjectManager::GetInstance().GetGameObjectList(PLAYER)
+		, CObjectManager::GetInstance().GetGameObjectList(PLATFORM)
+		, RECT_TO_RECT);
+
 
 	CCollisionManager::GetInstance().CheckCollision(
 		CObjectManager::GetInstance().GetGameObjectList(PROJECTILE)
 		, CObjectManager::GetInstance().GetGameObjectList(ENEMY)
 		, RECT_TO_RECT);
+	CCollisionManager::GetInstance().CheckCollision(
+		CObjectManager::GetInstance().GetGameObjectList(ENEMY)
+		, CObjectManager::GetInstance().GetGameObjectList(PLATFORM)
+		, RECT_TO_RECT);
+
+	CCollisionManager::GetInstance().CheckCollision(
+		CObjectManager::GetInstance().GetGameObjectList(NEUTRAL)
+		, CObjectManager::GetInstance().GetGameObjectList(PLATFORM)
+		, RECT_TO_RECT);
+
+	CCollisionManager::GetInstance().CheckCollision(
+		CObjectManager::GetInstance().GetGameObjectList(NEUTRAL)
+		, CObjectManager::GetInstance().GetGameObjectList(PLATFORM)
+		, RECT_TO_RECT);
+	CCollisionManager::GetInstance().CheckCollision(
+		CObjectManager::GetInstance().GetGameObjectList(PROJECTILE)
+		, CObjectManager::GetInstance().GetGameObjectList(PLATFORM)
+		, RECT_TO_RECT);
+
+	CCollisionManager::GetInstance().RenderCollisionBox(_hDC, CObjectManager::GetInstance().GetGameObjectList(PLAYER));
+	CCollisionManager::GetInstance().RenderCollisionBox(_hDC, CObjectManager::GetInstance().GetGameObjectList(ENEMY));
+	CCollisionManager::GetInstance().RenderCollisionBox(_hDC, CObjectManager::GetInstance().GetGameObjectList(PROJECTILE));
+	CCollisionManager::GetInstance().RenderCollisionBox(_hDC, CObjectManager::GetInstance().GetGameObjectList(PLATFORM));
+	CCollisionManager::GetInstance().RenderCollisionBox(_hDC, CObjectManager::GetInstance().GetGameObjectList(NEUTRAL));
 }
 
 void CSceneManager::Release()

@@ -23,6 +23,8 @@ void CManEater::Initialize()
     m_vPivot = Vector2(800.f, 500.f);
     m_vSize = Vector2(192.f, 192.f);
     m_pColBox = CColliderFactory<CHitBox>::CreateHitBox(this);
+    m_pColBox->SetSize(Vector2(144.f, 144.f));
+    m_pColBox->SetOffset(Vector2(0.f, -12.f));
 }
 
 int CManEater::Update()
@@ -49,10 +51,26 @@ void CManEater::Release()
     SafeDelete<CAnimation*>(m_pAnim);
 }
 
-void CManEater::OnCollision(CGameObject* _pCol, Vector2 _vColSize)
+void CManEater::OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)
 {
     
 }
+
+void CManEater::Jump()
+{
+
+}
+
+void CManEater::ChasePlayer()
+{
+
+}
+
+void CManEater::Attack()
+{
+
+}
+
 
 void CManEater::LoadAnimation()
 {

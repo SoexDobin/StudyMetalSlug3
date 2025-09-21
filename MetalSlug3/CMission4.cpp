@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CMission4.h"
 #include "CManEater.h"
+#include "CPlatform.h"
 
 #include "CBmpManager.h"
 #include "CObjectManager.h"
@@ -22,8 +23,8 @@ void CMission4::Initialize()
 {
     LoadBmpLandscape();
     LoadBmpEnemy();
-
-
+    
+    CreatePlatform();
     CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CManEater>::Create(), ENEMY);
 }
 
@@ -147,6 +148,17 @@ void CMission4::RenderFrontLandscape(HDC _hDC)
     }
 }
 
+void CMission4::CreatePlatform()
+{
+    for (int i = 0; i < 5; ++i)
+    {
+        CObjectManager::GetInstance()
+            .AddGameObject(CGameObjectFactory<CPlatform>
+                ::Create(Vector2(384.f + 768.f * i, (float)WINCY - 96.f)
+                    , Vector2(768.f, 64.f)), PLATFORM);
+    }
+}
+
 void CMission4::LoadBmpLandscape()
 {
 
@@ -175,6 +187,8 @@ void CMission4::LoadBmpLandscape()
         , L"4-1_Dessert_Frontground3");
     CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Landscape/FrontGround/4-1_Dessert_Frontground4.bmp"
         , L"4-1_Dessert_Frontground4");
+    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Landscape/FrontGround/4-1_Dessert_Frontground5.bmp"
+        , L"4-1_Dessert_Frontground5");
 
     CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Landscape/BackGround/4-1_Dessert_Background5.bmp"
         , L"4-1_Dessert_Background5");

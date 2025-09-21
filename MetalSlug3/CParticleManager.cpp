@@ -20,6 +20,7 @@ void CParticleManager::Update()
 
 		if (bIsDestroy)
 		{
+			SafeDelete<CParticle*>(*it);
 			it = m_ParticleList.erase(it);
 		}
 		else
@@ -30,18 +31,18 @@ void CParticleManager::Update()
 void CParticleManager::LateUpdate()
 {
 	for_each(m_ParticleList.begin(), m_ParticleList.end()
-		, [](CParticle* pParticle) -> void
+		, [](CParticle* _pParticle) -> void
 		{
-			pParticle->LateUpdate();
+			_pParticle->LateUpdate();
 		});
 }
 
 void CParticleManager::Render(HDC _hDC)
 {
 	for_each(m_ParticleList.begin(), m_ParticleList.end()
-		, [=](CParticle* pParticle) -> void
+		, [=](CParticle* _pParticle) -> void
 		{
-			pParticle->Render(_hDC);
+			_pParticle->Render(_hDC);
 		});
 }
 

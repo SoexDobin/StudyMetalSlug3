@@ -135,6 +135,8 @@
     <ClInclude Include="CArmoryScene.h" />
     <ClInclude Include="CBmpManager.h" />
     <ClInclude Include="CBmpObject.h" />
+    <ClInclude Include="CMouse.h" />
+    <ClInclude Include="CPlatformChecker.h" />
     <ClInclude Include="CProjectile.h" />
     <ClInclude Include="CBulletHitParticle.h" />
     <ClInclude Include="CCollider.h" />
@@ -177,6 +179,8 @@
     <ClCompile Include="CArmoryScene.cpp" />
     <ClCompile Include="CBmpManager.cpp" />
     <ClCompile Include="CBmpObject.cpp" />
+    <ClCompile Include="CMouse.cpp" />
+    <ClCompile Include="CPlatformChecker.cpp" />
     <ClCompile Include="CProjectile.cpp" />
     <ClCompile Include="CBulletHitParticle.cpp" />
     <ClCompile Include="CCollider.cpp" />

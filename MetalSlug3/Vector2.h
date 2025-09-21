@@ -70,6 +70,15 @@ public:
 		y += _vVec.y;
 		return *this;
 	}
+
+	bool operator==(const Vector2& _vVec)
+	{
+		return x == _vVec.x && y == _vVec.y;
+	}
+	bool operator!=(const Vector2& _vVec)
+	{
+		return x != _vVec.x || y != _vVec.y;
+	}
 	
 	const float GetSquared() const						// this Vec2 x제곱, y제곱 | 반환 
 	{

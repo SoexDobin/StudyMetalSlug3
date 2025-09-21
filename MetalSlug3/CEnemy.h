@@ -12,6 +12,6 @@ public:
     virtual void        LateUpdate()                                         PURE;
     virtual void        Render(HDC _hDC)                                     PURE;
     virtual void        Release()                                            PURE;
-    virtual void        OnCollision(CGameObject* _pCol, Vector2 _vColSize)   PURE;
+    virtual void        OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)   PURE;
 };
 

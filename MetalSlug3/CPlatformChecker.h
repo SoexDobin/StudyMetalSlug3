@@ -1,16 +1,16 @@
 #pragma once
 #include "CGameObject.h"
 
-class CCQCArea : public CGameObject
+class CPlatformChecker : public CGameObject
 {
 public:
-	CCQCArea();
-	virtual ~CCQCArea() override;
+	CPlatformChecker();
+	~CPlatformChecker() override;
 
 public:
-	bool	CatchEnemyCQCZone() { return m_bCatchEnemy; }
-
-private:
+	bool			GetHasColWithPlatform()		{ return m_iFindPlatform; }
+	float			GetColTopPosition()			{ return m_fTop; }
+public:
 	void			Initialize()																	override;
 	int				Update()																		override;
 	void			LateUpdate()																	override;
@@ -19,6 +19,6 @@ private:
 	void			OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)	override;
 
 private:
-	bool			m_bCatchEnemy;
+	bool			m_iFindPlatform;
+	float			m_fTop;
 };
-
