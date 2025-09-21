@@ -59,9 +59,6 @@ void CMission4::Release()
 
 void CMission4::RenderLandscape(HDC _hDC)
 {
-    int iX = static_cast<int>(CScrollManager::GetInstance().GetScrollX());
-    int iY = static_cast<int>(CScrollManager::GetInstance().GetScrollY());
-
     HDC	hBackDC = nullptr;
     HDC	hFieldDC = nullptr;
     int idx = 0;
@@ -69,21 +66,20 @@ void CMission4::RenderLandscape(HDC _hDC)
     {
         hBackDC = CBmpManager::GetInstance().FindBmpImg(L"4-1_Dessert_Background");
         BitBlt(_hDC,
-            1536 * i + iX / 4,
-            0 + iY / 4,
-            1536,
-            384,
-            hBackDC,
-            0,
-            0,
-            SRCCOPY);
+            1536 * i + SCROLLX / 4, 0
+            , 1536
+            , 384
+            , hBackDC
+            , 0
+            , 0
+            , SRCCOPY);
     }
     for (auto it = m_DessertBackgroundKeyList.begin();
         it != m_DessertBackgroundKeyList.end(); ++it)
     {
         hBackDC = CBmpManager::GetInstance().FindBmpImg(*it);
         GdiTransparentBlt(_hDC
-            , 768 * idx + iX / 2, WINCY - 574 + iY
+            , 768 * idx + SCROLLX / 2, WINCY - 574
             , 768, 384
             , hBackDC
             , 0, 0
@@ -91,33 +87,29 @@ void CMission4::RenderLandscape(HDC _hDC)
             , RGB(255, 255, 255));
         idx++;
     }
-    for (int i = 0; i < 1; ++i)
-    {
-        hBackDC = CBmpManager::GetInstance().FindBmpImg(L"4-1_Dessert_Background5");
-        GdiTransparentBlt(_hDC
-            , 1536 * i + iX / 3, WINCY - 384 + iY / 3
-            , 1536, 384
-            , hBackDC
-            , 0, 0
-            , 1536, 384
-            , RGB(255, 255, 255));
-    }
     for (int i = 0; i < 4; ++i)
     {
-        if (i % 2 == 0)
-            hFieldDC = CBmpManager::GetInstance().FindBmpImg(L"4-1_Dessert_Field1");
-        else
-            hFieldDC = CBmpManager::GetInstance().FindBmpImg(L"4-1_Dessert_Field2");
-    
+        if (i == 3)
+        {
+            hBackDC = CBmpManager::GetInstance().FindBmpImg(L"4-1_Dessert_FlagPoint_Field");
+            GdiTransparentBlt(_hDC
+                , 1536 * i + SCROLLX, 0
+                , 1920, 720
+                , hBackDC
+                , 0, 0
+                , 1920, 720
+                , RGB(255, 255, 255));
+            continue;
+        }
+        hBackDC = CBmpManager::GetInstance().FindBmpImg(L"4-1_Dessert_Background5");
         GdiTransparentBlt(_hDC
-            , 768 * i + iX, WINCY - 256 + iY
-            , 768, 192
-            , hFieldDC
+            , 1536 * i + SCROLLX, 0
+            , 1536, 720
+            , hBackDC
             , 0, 0
-            , 768, 192
+            , 1536, 720
             , RGB(255, 255, 255));
-    }
-    
+    }   
     
     if (m_fDelta >= 300.f)
     {
@@ -133,13 +125,13 @@ void CMission4::RenderFrontLandscape(HDC _hDC)
     int iY = static_cast<int>(CScrollManager::GetInstance().GetScrollY());
 
     HDC	hFrontDC = nullptr;
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < m_vecDessertFrontgroundKey.size(); ++i)
     {
         hFrontDC = CBmpManager::GetInstance().FindBmpImg(m_vecDessertFrontgroundKey[i]);
 
-        int iScroll = static_cast<float>(iX * 1.2f);
+        int iScroll = static_cast<float>(SCROLLX * 4.f);
         GdiTransparentBlt(_hDC
-            , 768 * i + iScroll, WINCY - 192 + iY
+            , 768 * i + iScroll, WINCY - 192
             , 768, 192
             , hFrontDC
             , 0, 0
@@ -150,11 +142,11 @@ void CMission4::RenderFrontLandscape(HDC _hDC)
 
 void CMission4::CreatePlatform()
 {
-    for (int i = 0; i < 5; ++i)
+    for (int i = 0; i < 9; ++i)
     {
         CObjectManager::GetInstance()
             .AddGameObject(CGameObjectFactory<CPlatform>
-                ::Create(Vector2(384.f + 768.f * i, (float)WINCY - 96.f)
+                ::Create(Vector2(384.f + 768.f * i, (float)WINCY - 144.f)
                     , Vector2(768.f, 64.f)), PLATFORM);
     }
 }
@@ -192,8 +184,8 @@ void CMission4::LoadBmpLandscape()
 
     CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Landscape/BackGround/4-1_Dessert_Background5.bmp"
         , L"4-1_Dessert_Background5");
-
-
+    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Landscape/BackGround/4-1_Dessert_FlagPoint_Field.bmp"
+        , L"4-1_Dessert_FlagPoint_Field");
 
     m_DessertBackgroundKeyList.push_back(L"4-1_Dessert_Background1");
     m_DessertBackgroundKeyList.push_back(L"4-1_Dessert_Background2");
@@ -204,6 +196,7 @@ void CMission4::LoadBmpLandscape()
     m_vecDessertFrontgroundKey.push_back(L"4-1_Dessert_Frontground2");
     m_vecDessertFrontgroundKey.push_back(L"4-1_Dessert_Frontground3");
     m_vecDessertFrontgroundKey.push_back(L"4-1_Dessert_Frontground4");
+    m_vecDessertFrontgroundKey.push_back(L"4-1_Dessert_Frontground5");
 }
 
 void CMission4::LoadBmpEnemy()
