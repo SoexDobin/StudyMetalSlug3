@@ -34,7 +34,7 @@ const TCHAR* CAnimation::GetCurrentFrameKey()	{ return m_szCurFrameKey; }
 COLORREF CAnimation::GetEaseColor()				{ return m_dwEaseColor; }
 void CAnimation::SetParent(CGameObject* _pObj)	{ m_pParentObject = _pObj; }
 void CAnimation::SetLastFacingX(int _idx)		{ m_iLastFacingX = _idx; }
-void CAnimation::SetRepeat(bool _bIsRepeat)		{ m_bRepeat = _bIsRepeat; }
+void CAnimation::SetLoop(bool _bIsRepeat)		{ m_bRepeat = _bIsRepeat; }
 void CAnimation::SetStartFrameIndex(int _idx)	{ m_iStartFrame = _idx; }
 void CAnimation::SetEndFrameIndex(int _idx)		{ m_iEndFrame = _idx; }
 void CAnimation::SetCurrentFrameIndex(int _idx)	{ m_iCurFrame = _idx; }

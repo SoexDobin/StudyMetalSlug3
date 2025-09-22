@@ -1,6 +1,8 @@
 #pragma once
 #include "CScene.h"
 
+class CGameObject;
+
 class CMission4 final : public CScene
 {
 public:
@@ -15,16 +17,31 @@ public:
 	void					Release()			override;
 
 private:
-	void					RenderLandscape(HDC _hDC);
+	void					RenderDessertLandscape(HDC _hDC);
 	void					RenderFrontLandscape(HDC _hDC);
 
 	void					CreatePlatform();
-	void					LoadBmpLandscape();
+	void					LoadBmpDessertLandscape();
 	void					LoadBmpEnemy();
 
 private:
 	float					m_fDelta;
-	list<const TCHAR*>		m_DessertBackgroundKeyList;
+
+	int						m_iRuinBGIdx;
+	list<const TCHAR*>		m_DessertBGKeyList;
+	vector<const TCHAR*>	m_vecDessertRuinBGKey;
 	vector<const TCHAR*>	m_vecDessertFrontgroundKey;
+
+	CGameObject*			m_pTriNextScene;
+
+private:
+	Vector2		n_iDesertLockPoints[3] =
+	{
+		Vector2(),
+		Vector2(),
+		Vector2(),
+	};
+
+	//Vector2		n_DesertScrollOffset = Vector2( , 0.f);
 };
 

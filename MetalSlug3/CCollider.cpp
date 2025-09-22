@@ -22,7 +22,7 @@ CCollider::~CCollider()
 	Release();
 }
 
-void CCollider::UpdateCollision()
+bool CCollider::UpdateCollision()
 {
 	m_vPivot = m_pParent->GetPivot() + m_vOffset;
 
@@ -30,6 +30,8 @@ void CCollider::UpdateCollision()
 	m_tRect.top		= LONG(m_vPivot.y - (m_vSize.y / 2.f));
 	m_tRect.right	= LONG(m_vPivot.x + (m_vSize.x / 2.f));
 	m_tRect.bottom	= LONG(m_vPivot.y + (m_vSize.y / 2.f));
+
+	return true;
 }
 
 void CCollider::RenderCollider(HDC _hDC)

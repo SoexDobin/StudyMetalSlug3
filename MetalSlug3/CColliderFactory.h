@@ -1,35 +1,54 @@
 #pragma once
 
 #include "CGameObject.h"
+#include <functional>
 class CCollider;
 
+#include "CHitBox.h"
+#include "CTrigger.h"
 
-template <typename T>
 class CColliderFactory
 {
 public:
-	static CCollider* CreateHitBox(CGameObject* _pParent)
+	static CCollider* Create(CGameObject* _pParent, COLLIDER_TYPE _eType, function<bool()>* _pPred, function<void()>* _pCallBack)
 	{
-		CCollider* pCol = new T();
+		CCollider* pCol = ColFactory(_eType, _pPred, _pCallBack);
 		pCol->SetParent(_pParent);
 		pCol->SetPivot(_pParent->GetPivot());
 		pCol->SetSize(_pParent->GetSize());
-		pCol->SetColType(HITBOX);
-		pCol->SetPenColor(RGB(0, 255, 0));
 
 		return pCol;
 	}
 
-	/*static CCollider* CreateTrigger(CGameObject* _pParent)
+private:
+	static CCollider* ColFactory(COLLIDER_TYPE _eType, function<bool()>* _pPred, function<void()>* _pCallBack)
 	{
-		CCollider* pCol = new T();
-		pCol->SetParent(pCol);
-		pCol->SetPivot(_pParent->GetPivot());
-		pCol->SetRenderType(HITBOX);
-		pCol->SetPenColor(RGB(0, 0, 255));
+		switch (_eType)
+		{
+		case HITBOX:
+		{
+			CHitBox* pHit = new CHitBox();
+			pHit = new CHitBox();
+			pHit->SetPenColor(RGB(0, 255, 0));
+			pHit->SetColType(_eType);
+			return pHit;
+		}
+		case TRIGGER:
+		{
+			CTrigger* pTri = new CTrigger();
+			pTri->SetPenColor(RGB(0, 0, 255));
+			pTri->SetPredicate(_pPred);
+			pTri->SetCallBack(_pCallBack);
+			pTri->SetColType(_eType);
+			return pTri;
+		}
+		case COL_TYPE_END:
+			break;
+		default:
+			break;
+		}
 
-
-		return pCol;
-	}*/
+		return nullptr;
+	}
 };
 

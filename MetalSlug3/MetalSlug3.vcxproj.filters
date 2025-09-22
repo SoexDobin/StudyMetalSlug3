@@ -73,9 +73,6 @@
     <Filter Include="92. Factory">
       <UniqueIdentifier>{ade14161-3b75-48e9-a44a-14cda03f79b5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. GameObject\02. Field">
-      <UniqueIdentifier>{0c26eb7f-fa61-41c1-893a-e8351d9c3edf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. GameObject\01. CQCArea">
       <UniqueIdentifier>{207959b0-894e-47ff-8d9a-663d14f8192d}</UniqueIdentifier>
     </Filter>
@@ -112,11 +109,23 @@
     <Filter Include="92. Factory\00. GameObjectFactory">
       <UniqueIdentifier>{e581131e-d9b4-4265-b079-770c66504988}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. GameObject\06. CheckPlatform">
-      <UniqueIdentifier>{de79b4b9-9b4c-45ee-ba7a-be2f52330bcf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. GameObject\07. MouseVector2">
       <UniqueIdentifier>{cbf947fb-32e4-4e13-aa1f-457cf1cb5c9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\06. PlatformChecker">
+      <UniqueIdentifier>{de79b4b9-9b4c-45ee-ba7a-be2f52330bcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\02. Platform">
+      <UniqueIdentifier>{0c26eb7f-fa61-41c1-893a-e8351d9c3edf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\04. Enemy\00. ManEater">
+      <UniqueIdentifier>{2862b013-cba6-4cc0-be09-cc4d79ba0ee9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\FMOD">
+      <UniqueIdentifier>{41aca98d-cddb-477b-a2e7-8cec0c41a91d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="89. SoundManager">
+      <UniqueIdentifier>{392d41cb-35bd-4651-989f-e2a2c6a69ddf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -190,7 +199,7 @@
       <Filter>96. CollisionManager</Filter>
     </ClInclude>
     <ClInclude Include="CPlatform.h">
-      <Filter>01. GameObject\02. Field</Filter>
+      <Filter>01. GameObject\02. Platform</Filter>
     </ClInclude>
     <ClInclude Include="CLineManager.h">
       <Filter>91. LineManager</Filter>
@@ -231,20 +240,53 @@
     <ClInclude Include="CProjectileFactory.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CManEater.h">
-      <Filter>01. GameObject\04. Enemy</Filter>
-    </ClInclude>
     <ClInclude Include="CBulletHitParticle.h">
       <Filter>01. GameObject\05. Particle\00. BulletHit</Filter>
     </ClInclude>
     <ClInclude Include="CPlatformChecker.h">
-      <Filter>01. GameObject\06. CheckPlatform</Filter>
+      <Filter>01. GameObject\06. PlatformChecker</Filter>
     </ClInclude>
     <ClInclude Include="MetalSlug3.h">
       <Filter>헤더 파일\VSHeader</Filter>
     </ClInclude>
     <ClInclude Include="CMouse.h">
       <Filter>01. GameObject\07. MouseVector2</Filter>
+    </ClInclude>
+    <ClInclude Include="CManEater.h">
+      <Filter>01. GameObject\04. Enemy\00. ManEater</Filter>
+    </ClInclude>
+    <ClInclude Include="CMission4Pyramid.h">
+      <Filter>03. Scene\01. Mission4</Filter>
+    </ClInclude>
+    <ClInclude Include="fmod.h">
+      <Filter>헤더 파일\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="fmod.hpp">
+      <Filter>헤더 파일\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="fmod_codec.h">
+      <Filter>헤더 파일\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="fmod_common.h">
+      <Filter>헤더 파일\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="fmod_dsp.h">
+      <Filter>헤더 파일\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="fmod_dsp_effects.h">
+      <Filter>헤더 파일\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="fmod_errors.h">
+      <Filter>헤더 파일\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="fmod_output.h">
+      <Filter>헤더 파일\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="CSoundManager.h">
+      <Filter>89. SoundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CTrigger.h">
+      <Filter>02. Collider\01. CTrigger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -306,7 +348,7 @@
       <Filter>96. CollisionManager</Filter>
     </ClCompile>
     <ClCompile Include="CPlatform.cpp">
-      <Filter>01. GameObject\02. Field</Filter>
+      <Filter>01. GameObject\02. Platform</Filter>
     </ClCompile>
     <ClCompile Include="CLineManager.cpp">
       <Filter>91. LineManager</Filter>
@@ -335,17 +377,26 @@
     <ClCompile Include="CParticle.cpp">
       <Filter>01. GameObject\05. Particle</Filter>
     </ClCompile>
-    <ClCompile Include="CManEater.cpp">
-      <Filter>01. GameObject\04. Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="CBulletHitParticle.cpp">
       <Filter>01. GameObject\05. Particle\00. BulletHit</Filter>
     </ClCompile>
     <ClCompile Include="CPlatformChecker.cpp">
-      <Filter>01. GameObject\06. CheckPlatform</Filter>
+      <Filter>01. GameObject\06. PlatformChecker</Filter>
     </ClCompile>
     <ClCompile Include="CMouse.cpp">
       <Filter>01. GameObject\07. MouseVector2</Filter>
+    </ClCompile>
+    <ClCompile Include="CManEater.cpp">
+      <Filter>01. GameObject\04. Enemy\00. ManEater</Filter>
+    </ClCompile>
+    <ClCompile Include="CMission4Pyramid.cpp">
+      <Filter>03. Scene\01. Mission4</Filter>
+    </ClCompile>
+    <ClCompile Include="CSoundManager.cpp">
+      <Filter>89. SoundManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CTrigger.cpp">
+      <Filter>02. Collider\01. CTrigger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -360,5 +411,15 @@
     <Image Include="MetalSlug3.ico">
       <Filter>리소스 파일</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="fmod_vc.lib">
+      <Filter>헤더 파일\FMOD</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fmod.dll">
+      <Filter>헤더 파일\FMOD</Filter>
+    </None>
   </ItemGroup>
 </Project>

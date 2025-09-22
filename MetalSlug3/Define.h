@@ -88,6 +88,8 @@ enum COLLIDER_TYPE
 	COL_TYPE_END
 };
 
+enum CHANNELID { SOUND_BGM, SOUND_EFFECT, MAXCHANNEL };
+
 // World Function
 template<typename T>
 void	SafeDelete(T& _p)

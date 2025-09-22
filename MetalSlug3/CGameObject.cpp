@@ -3,7 +3,7 @@
 #include "CCollider.h"
 
 CGameObject::CGameObject()
-	: m_pParent(nullptr), m_pColBox(nullptr), m_iHp(1), m_bDestroy(false), m_eType(OBJECT_END)
+	: m_pParent(nullptr), m_pColBox(nullptr), m_bDestroy(false), m_eType(OBJECT_END)
 {
 	ZeroMemory(&m_tRect, sizeof(RECT));
 	ZeroMemory(&m_vPivot, sizeof(Vector2));

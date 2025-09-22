@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CEnemy.h"
 
-CEnemy::CEnemy()
+CEnemy::CEnemy() : m_iHp(1)
 {
 	m_eType = ENEMY;
 }

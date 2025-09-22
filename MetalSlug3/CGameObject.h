@@ -14,7 +14,6 @@ public:
 	CCollider*		GetCollider() const		{ return m_pColBox; }
 	OBJECT_TYPE		GetObjectType() const	{ return m_eType; }
 	bool			IsDestroy() const		{ return m_bDestroy; }
-	int				GetHp() const			{ return m_iHp; }
 	Vector2			GetPivot() const		{ return m_vPivot; }
 	Vector2			GetSize() const			{ return m_vSize; }
 	Vector2			GetFace() const			{ return m_vFace; }
@@ -23,7 +22,6 @@ public:
 	void			SetParent(CGameObject* _pParent)			{ m_pParent = _pParent; }
 	void			SetObjectType(OBJECT_TYPE _eType)			{ m_eType = _eType; }
 	void			SetDestroy()								{ m_bDestroy = true; }
-	void			SetHp(const int& _iHp)						{ m_iHp = _iHp; }
 	void			SetPivot(const Vector2& _vPivot)			{ m_vPivot = _vPivot; }
 	void			SetSize(const Vector2& _vSize)				{ m_vSize = _vSize; }
 	void			SetFace(const Vector2& _vFace)				{ m_vFace = _vFace; }
@@ -46,7 +44,6 @@ protected:
 	CCollider*		m_pColBox;
 	OBJECT_TYPE		m_eType;
 	bool			m_bDestroy;
-	int				m_iHp;
 	Vector2			m_vPivot;
 	Vector2			m_vSize;
 	Vector2			m_vFace;

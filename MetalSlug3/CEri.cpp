@@ -15,9 +15,10 @@
 #include "CGameObjectFactory.h"
 #include "CObjectManager.h"
 #include "CProjectileFactory.h"
+#include "CLineManager.h"
 
 CEri::CEri()
-	: m_pBodyAnim(nullptr), m_pLegAnim(nullptr), m_pCQCCol(nullptr)
+	: m_pBodyAnim(nullptr), m_pLegAnim(nullptr), m_pCQCCol(nullptr), m_pPlatformCol(nullptr)
 	, m_eCurBodyState(PLAYER_STATE_END), m_ePrevBodyState(PLAYER_STATE_END)
 	, m_eCurLegState(PLAYER_STATE_END), m_ePrevLegState(PLAYER_STATE_END)
 	, m_fMoveSpeed(0.f), m_fCrawlSpeed(0.f)
@@ -38,12 +39,12 @@ void CEri::Initialize()
 	m_vSize = Vector2(PLAYER_BMPX, PLAYER_BMPY);
 	m_vFace = Vector2::UnitX;
 	m_vDirection = Vector2(0.f, 0.f);
-	m_fMoveSpeed = 300.f;
+	m_fMoveSpeed = 500.f;
 	m_fCrawlSpeed = 100.f;
 	m_fShootDelta = n_fShootDelta;
 	m_eType = PLAYER;
 
-	m_pColBox = CColliderFactory<CHitBox>::CreateHitBox(this);
+	m_pColBox = CColliderFactory::Create(this, HITBOX, nullptr, nullptr);;
 
 	m_pCQCCol = CGameObjectFactory<CCQCArea>::Create(Vector2::Zero, Vector2::Zero, this);
 	CObjectManager::GetInstance().AddGameObject(m_pCQCCol, PLAYER);
@@ -62,7 +63,7 @@ void CEri::Initialize()
 	m_pLegAnim->ChangeAnimation(L"Eri_Standing_Idle_Leg");
 	m_pLegAnim->SetFrameSpeed(0.07f);
 
-	srand(DELTA);
+	srand(static_cast<int>(DELTA));
 	m_fJumpSpeed = n_fSeedJumpSpeed;
 }
 
@@ -77,6 +78,7 @@ int CEri::Update()
 	m_fShootDelta -= 1000.f * DELTA;
 
 	CheckPlatform();
+	CheckOutOfBound();
 	BehaviourKeyInput();
 	AttackKeyInput();
 
@@ -134,7 +136,7 @@ void CEri::BehaviourKeyInput()
 
 		m_eCurBodyState = SIT;
 		m_pBodyAnim->ChangeAnimation(L"Eri_Blank_Body");
-		m_pLegAnim->SetRepeat(true);
+		m_pLegAnim->SetLoop(true);
 		return;
 	}
 	else if (CKeyManager::GetInstance().KeyUp(VK_DOWN)
@@ -212,8 +214,7 @@ void CEri::AttackKeyInput()
 
 	if (m_eCurBodyState == SIT)
 	{
-		// TODO 근접 공격 여부 조건 추가
-		m_pBodyAnim->SetRepeat(true);
+		m_pBodyAnim->SetLoop(true);
 		if (CKeyManager::GetInstance().KeyPressing(n_cAttackKey))
 		{
 			if (CKeyManager::GetInstance().KeyPressing(VK_RIGHT))
@@ -311,14 +312,14 @@ void CEri::Move()
 	if (m_eCurBodyState == SIT)
 	{
 		fSpeed = m_fCrawlSpeed * DELTA * m_vDirection.x;;
-		WinOffset(fSpeed);
+		WinOffsetX(fSpeed);
 		
 		m_vPivot.x += static_cast<int>(fSpeed);
 	}	
 	else if (m_eCurLegState == MOVE || m_eCurLegState == MOVEJUMP || m_eCurLegState == DROP)
 	{
 		fSpeed = m_fMoveSpeed * DELTA * m_vDirection.x;
-		WinOffset(fSpeed);
+		WinOffsetX(fSpeed);
 		m_vPivot.x += static_cast<int>(fSpeed);
 	}
 }
@@ -329,14 +330,15 @@ void CEri::Jump()
 	{
 		m_fJumpSpeed += DELTA * n_fFallSpeed;
 		m_vPivot.y += m_fJumpSpeed * DELTA;
-
+		
 		// TODO : Y스크롤 액션을 처리해야 한다.
-		//WinOffset(fSpeed);
 		if (m_fJumpSpeed > 0.f)
 		{
 			m_bIsDrop = true;
 			m_bIsJump = false;
 		}
+		else
+			WinOffsetY(m_fJumpSpeed * DELTA);
 	}
 }
 
@@ -400,6 +402,17 @@ void CEri::Shoot()
 	m_fShootDelta = n_fShootDelta;
 }
 
+void CEri::CheckOutOfBound()
+{
+	float fMinX = CScrollManager::GetInstance().GetMinScrollLock().x;
+	float fMaxX = CScrollManager::GetInstance().GetMaxScrollLock().x;
+	if (m_vPivot.x < fMinX) m_vPivot.x += fMinX - (m_vPivot.x);
+	if (m_vPivot.x > fMaxX) m_vPivot.x += fMaxX - (m_vPivot.x);
+
+	if (m_vPivot.y > WINCY)
+		; // TODO : 낙사 판정
+}
+
 void CEri::CheckPlatform()
 {
 	bool bColPlatform = dynamic_cast<CPlatformChecker*>(m_pPlatformCol)->GetHasColWithPlatform();
@@ -409,7 +422,22 @@ void CEri::CheckPlatform()
 	//	m_vPivot.y = fPosY - (m_pColBox->GetSize().y / 2.f) - m_pColBox->GetOffset().y;
 	//	//m_vPivot.y -= fabsf(fPosY - (m_pColBox->GetPivot().y + m_pColBox->GetSize().y / 2.f));
 	//}	
+	float fLineChecker = 0.f;
+	if (CLineManager::GetInstance().CollisionLine(m_pPlatformCol->GetRect().right, &fLineChecker))
+	{
+		if (m_bIsJump) return;
 
+		if (m_bIsDrop && m_vPivot.y + (m_vSize.y / 2.f) >= fLineChecker)
+		{
+			m_bIsDrop = false;
+			m_fJumpSpeed = n_fSeedJumpSpeed;
+			m_vPivot.y = fLineChecker - (m_pColBox->GetSize().y / 2.f) - m_pColBox->GetOffset().y;
+		}
+		else if (!m_bIsDrop && m_eCurLegState == MOVE)
+			m_vPivot.y = fLineChecker - (m_pColBox->GetSize().y / 2.f) - m_pColBox->GetOffset().y;
+
+		return;
+	}
 	if (!bColPlatform && !m_bIsJump && !m_bIsDrop)
 	{
 		m_bIsDrop = true;
@@ -429,8 +457,8 @@ void CEri::CheckPlatform()
 	else if (bColPlatform == false)
 	{	
 		m_bIsDrop = true;
-		m_eCurBodyState == DROP;
-		m_eCurLegState == DROP;
+		m_eCurBodyState = DROP;
+		m_eCurLegState = DROP;
 	}
 }
 
@@ -469,7 +497,7 @@ inline void CEri::SetSitCollider()
 inline void CEri::SetLegAnim(const TCHAR* _szKey, bool _bIsRepeat, PLAYER_STATE _eLegState, int _iLastFacingX)
 {
 	m_pLegAnim->ChangeAnimation(_szKey);
-	m_pLegAnim->SetRepeat(_bIsRepeat);
+	m_pLegAnim->SetLoop(_bIsRepeat);
 	m_eCurLegState = _eLegState;
 
 	if (_iLastFacingX == 0) return;
@@ -479,7 +507,7 @@ inline void CEri::SetLegAnim(const TCHAR* _szKey, bool _bIsRepeat, PLAYER_STATE 
 inline void CEri::SetBodyAnim(const TCHAR* _szKey, bool _bIsRepeat, PLAYER_STATE _eBodyState, int _iLastFacingX)
 {
 	m_pBodyAnim->ChangeAnimation(_szKey);
-	m_pBodyAnim->SetRepeat(_bIsRepeat);
+	m_pBodyAnim->SetLoop(_bIsRepeat);
 	m_eCurBodyState = _eBodyState;
 
 	if (_iLastFacingX == 0) return;
@@ -592,26 +620,29 @@ void CEri::LoadProjectileBmp()
 		, L"HeavyMachineGunProjectile_Down");
 }
 
-void CEri::WinOffset(const float& _fCurSpeed)
+void CEri::WinOffsetX(const float& _fCurSpeed)
 {
-	int iOffsetminX = 100;
+	int iOffsetminX = 0;
 	int iOffsetmaxX = static_cast<int>(WINCX * 0.5f);
 
-	int iOffsetminY = 100;
-	int iOffsetmaxY = 500;
-
-
-	int iScrollX = (int)CScrollManager::GetInstance().GetScrollX();
-	int iScrollY = (int)CScrollManager::GetInstance().GetScrollY();
+	int iScrollX = SCROLLX;
 
 	if (iOffsetminX > m_vPivot.x + iScrollX)
 		CScrollManager::GetInstance().SetScrollX(_fCurSpeed);
 	if (iOffsetmaxX < m_vPivot.x + iScrollX)
 		CScrollManager::GetInstance().SetScrollX(-_fCurSpeed);
+}
 
-	if (iOffsetminX > m_vPivot.y + iScrollY)
+void CEri::WinOffsetY(const float& _fCurSpeed)
+{
+	int iOffsetminY = static_cast<int>(WINCY * 0.5f);
+	int iOffsetmaxY = static_cast<int>(WINCY * 0.5f);
+
+	int iScrollX = SCROLLX;
+	int iScrollY = SCROLLY;
+
+	if (iOffsetminY < m_vPivot.y + iScrollY)
 		CScrollManager::GetInstance().SetScrollY(_fCurSpeed);
-
-	if (iOffsetminX > m_vPivot.y + iScrollY)
+	if (iOffsetmaxY > m_vPivot.y + iScrollY)
 		CScrollManager::GetInstance().SetScrollY(-_fCurSpeed);
 }

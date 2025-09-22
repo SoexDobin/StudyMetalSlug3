@@ -4,6 +4,8 @@
 
 CScrollManager::CScrollManager() : m_fScrollX(0.f), m_fScrollY(0.f)
 {
+	ZeroMemory(&m_vMinScrollLock, sizeof(Vector2));
+	ZeroMemory(&m_vMaxScrollLock, sizeof(Vector2));
 }
 
 CScrollManager::~CScrollManager()
@@ -12,18 +14,17 @@ CScrollManager::~CScrollManager()
 
 void CScrollManager::ScrollLock()
 {
-	// TODO : 스크롤 락 상태에 따라 구성
-
 	if (0.f < m_fScrollX)
-		m_fScrollX = 0.f;
+		m_fScrollX = m_vMinScrollLock.x;
 
 	if (0.f < m_fScrollY)
-		m_fScrollY = 0.f;
+		m_fScrollY = m_vMinScrollLock.y;
 
-	if (WINCX - 1920 > m_fScrollX)
-		m_fScrollX = WINCX - 1920;
+	//6526
+	if (WINCX - m_vMaxScrollLock.x > m_fScrollX)
+		m_fScrollX = WINCX - m_vMaxScrollLock.x;
 
-	if (WINCY - 1280 > m_fScrollY)
-		m_fScrollY = WINCY - 1280;
+	if (WINCY - m_vMaxScrollLock.y > m_fScrollY)
+		m_fScrollY = WINCY - m_vMaxScrollLock.y;
 
 }

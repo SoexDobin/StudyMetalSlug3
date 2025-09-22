@@ -5,7 +5,7 @@
 #include "CColliderFactory.h"
 
 CPlatformChecker::CPlatformChecker()
-	: m_iFindPlatform(false), m_fTop(0.f)
+	: m_bFindPlatform(false), m_fTop(0.f)
 {
 }
 
@@ -20,7 +20,7 @@ void CPlatformChecker::Initialize()
 	m_vPivot = m_pParent->GetPivot();
 	m_vSize = Vector2(16.f, 16.f);
 
-	m_pColBox = CColliderFactory<CHitBox>::CreateHitBox(this);
+	m_pColBox = CColliderFactory::Create(this, HITBOX, nullptr, nullptr);
 	CCollider* pParentCol = m_pParent->GetCollider();
 }
 
@@ -42,7 +42,7 @@ void CPlatformChecker::LateUpdate()
 
 void CPlatformChecker::Render(HDC _hDC)
 {
-	m_iFindPlatform = false;
+	m_bFindPlatform = false;
 }
 
 void CPlatformChecker::Release()
@@ -52,13 +52,13 @@ void CPlatformChecker::Release()
 
 void CPlatformChecker::OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)
 {
-	if (m_iFindPlatform) return;
+	if (m_bFindPlatform) return;
 
 	if (_pCol->GetObjectType() == PLATFORM)
 	{
-		m_iFindPlatform = true;
+		m_bFindPlatform = true;
 		m_fTop = static_cast<float>(_pCol->GetRect().top);
 	}
 	else
-		m_iFindPlatform = false;
+		m_bFindPlatform = false;
 }

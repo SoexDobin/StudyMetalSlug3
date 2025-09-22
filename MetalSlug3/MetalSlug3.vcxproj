@@ -135,6 +135,7 @@
     <ClInclude Include="CArmoryScene.h" />
     <ClInclude Include="CBmpManager.h" />
     <ClInclude Include="CBmpObject.h" />
+    <ClInclude Include="CMission4Pyramid.h" />
     <ClInclude Include="CMouse.h" />
     <ClInclude Include="CPlatformChecker.h" />
     <ClInclude Include="CProjectile.h" />
@@ -161,8 +162,18 @@
     <ClInclude Include="CScene.h" />
     <ClInclude Include="CSceneManager.h" />
     <ClInclude Include="CSingleTon.h" />
+    <ClInclude Include="CSoundManager.h" />
     <ClInclude Include="CTimeManager.h" />
+    <ClInclude Include="CTrigger.h" />
     <ClInclude Include="Define.h" />
+    <ClInclude Include="fmod.h" />
+    <ClInclude Include="fmod.hpp" />
+    <ClInclude Include="fmod_codec.h" />
+    <ClInclude Include="fmod_common.h" />
+    <ClInclude Include="fmod_dsp.h" />
+    <ClInclude Include="fmod_dsp_effects.h" />
+    <ClInclude Include="fmod_errors.h" />
+    <ClInclude Include="fmod_output.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="CKeyManager.h" />
     <ClInclude Include="CLineManager.h" />
@@ -179,6 +190,7 @@
     <ClCompile Include="CArmoryScene.cpp" />
     <ClCompile Include="CBmpManager.cpp" />
     <ClCompile Include="CBmpObject.cpp" />
+    <ClCompile Include="CMission4Pyramid.cpp" />
     <ClCompile Include="CMouse.cpp" />
     <ClCompile Include="CPlatformChecker.cpp" />
     <ClCompile Include="CProjectile.cpp" />
@@ -202,8 +214,10 @@
     <ClCompile Include="CParticleManager.cpp" />
     <ClCompile Include="CScene.cpp" />
     <ClCompile Include="CSceneManager.cpp" />
+    <ClCompile Include="CSoundManager.cpp" />
     <ClCompile Include="CTimeManager.cpp" />
     <ClCompile Include="CLineManager.cpp" />
+    <ClCompile Include="CTrigger.cpp" />
     <ClCompile Include="MetalSlug3.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -220,6 +234,18 @@
   <ItemGroup>
     <Image Include="MetalSlug3.ico" />
     <Image Include="small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fmod.dll">
+      <DeploymentContent>false</DeploymentContent>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="fmod_vc.lib">
+      <DeploymentContent>false</DeploymentContent>
+    </Library>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

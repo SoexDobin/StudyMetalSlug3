@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "CHMProjectile.h"
-#include "CHitBox.h"
 #include "CBulletHitParticle.h"
 
 #include "CColliderFactory.h"
@@ -22,8 +21,9 @@ CHMProjectile::~CHMProjectile()
 void CHMProjectile::Initialize()
 {
     m_vSize = Vector2( 96.f, 96.f);
-    m_pColBox = CColliderFactory<CHitBox>::CreateHitBox(this);
+    m_pColBox = CColliderFactory::Create(this, HITBOX, nullptr, nullptr);;
     m_pColBox->SetSize( m_vSize/ 3.f );
+    m_iDamage = 1;
     
     __super::UpdateGameObject();
 }
@@ -93,6 +93,7 @@ void CHMProjectile::OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION
 
         CParticleManager::GetInstance().CreateParticle<CBulletHitParticle>(m_vPivot + vParticleOffset);
         m_bDestroy = OBJ_DESTROY;
-        m_eType = OBJECT_END;
+        SafeDelete<CCollider*>(m_pColBox);
+        //m_eType = OBJECT_END;
     }
 }

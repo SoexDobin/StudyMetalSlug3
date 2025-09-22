@@ -28,6 +28,8 @@ private:
 	void			Drop();
 	void			Shoot();
 
+	void			CheckOutOfBound();
+
 	void			CheckPlatform();
 	void			IdentifyPlatform(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag);
 
@@ -39,7 +41,8 @@ private:
 
 	void			LoadEriBmp();
 	void			LoadProjectileBmp();
-	void			WinOffset(const float& _fCurSpeed);
+	void			WinOffsetX(const float& _fCurSpeed);
+	void			WinOffsetY(const float& _fCurSpeed);
 
 private:
 	CAnimation*		m_pBodyAnim;

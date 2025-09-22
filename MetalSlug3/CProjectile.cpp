@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CProjectile.h"
 
-CProjectile::CProjectile() : m_szImgKey(L""), m_iLayer(0)
+CProjectile::CProjectile() : m_szImgKey(L""), m_iLayer(0), m_iDamage(0)
 {
 	m_eType = PROJECTILE;
 }

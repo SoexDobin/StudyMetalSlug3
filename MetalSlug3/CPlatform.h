@@ -9,8 +9,6 @@ public:
 	CPlatform();
 	virtual ~CPlatform() override;
 
-
-
 public:
 	void	Initialize()										override;
 	int		Update()											override;

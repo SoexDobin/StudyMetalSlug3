@@ -87,17 +87,6 @@ int CLineManager::Update()
 
 void CLineManager::LateUpdate()
 {
-	//if (KeyMgr::Get_Instance()->Key_Pressing(VK_LEFT))
-	//	ScrollMgr::Get_Instance()->Set_ScrollX(5.f);
-	//
-	//if (KeyMgr::Get_Instance()->Key_Pressing(VK_RIGHT))
-	//	ScrollMgr::Get_Instance()->Set_ScrollX(-5.f);
-
-	if (CKeyManager::GetInstance().KeyDown('S'))
-	{
-		SaveData();
-		return;
-	}
 
 }
 

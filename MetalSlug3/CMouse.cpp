@@ -50,22 +50,22 @@ void CMouse::Render(HDC _hDC)
 	
 	swprintf_s(m_szCurPosBuffer, L"CurPos( x : %d, y : %d )"
 		, (int)m_vCurPos.x - SCROLLX, (int)m_vCurPos.y - SCROLLY);
-    TextOut(_hDC, m_vCurPos.x - 150.f, m_vCurPos.y - 40.f
+    TextOut(_hDC, (int)(m_vCurPos.x - 150.f), (int)(m_vCurPos.y - 40.f)
 		, m_szCurPosBuffer, lstrlen(m_szCurPosBuffer));
 
 	swprintf_s(m_szFromPosBuffer, L"FromPos( x : %d, y : %d )"
 		, (int)m_vFromPos.x, (int)m_vFromPos.y);
-	TextOut(_hDC, m_vCurPos.x - 150.f, m_vCurPos.y - 60.f
+	TextOut(_hDC, (int)(m_vCurPos.x - 150.f), (int)(m_vCurPos.y - 60.f)
 		, m_szFromPosBuffer, lstrlen(m_szFromPosBuffer));
 
 	swprintf_s(m_szToPosBuffer, L"ToPos( x : %d, y : %d )"
 		, (int)m_vToPos.x, (int)m_vToPos.y);
-	TextOut(_hDC, m_vCurPos.x - 150.f, m_vCurPos.y - 80.f
+	TextOut(_hDC, (int)(m_vCurPos.x - 150.f), (int)(m_vCurPos.y - 80.f)
 		, m_szToPosBuffer, lstrlen(m_szToPosBuffer));
 
 	swprintf_s(m_szDistanceBuffer, L"Distance( x : %d, y : %d )"
 		, (int)m_vDistance.x, (int)m_vDistance.y);
-	TextOut(_hDC, m_vCurPos.x - 150.f, m_vCurPos.y - 100.f
+	TextOut(_hDC, (int)(m_vCurPos.x - 150.f), (int)(m_vCurPos.y - 100.f)
 		, m_szDistanceBuffer, lstrlen(m_szDistanceBuffer));
 }
 

@@ -19,13 +19,16 @@ protected:
     void                CheckOutOfWindow();
 
 public:
+    int                 GetDamage()                       { return m_iDamage; }
     const TCHAR*        GetImgKey()                       { return m_szImgKey; }
     int                 GetImgLayer()                     { return m_iLayer; }
+    void                SetDamage(const int _iDamage)     { m_iDamage = _iDamage; }
     void                SetImgKey(const TCHAR* _szImgKey) { m_szImgKey = _szImgKey; }
     void                SetImgLayer(int _iLayer)          { m_iLayer = _iLayer; }
 
 protected:
     const TCHAR*    m_szImgKey;
     int             m_iLayer;
+    int             m_iDamage;
 };
 

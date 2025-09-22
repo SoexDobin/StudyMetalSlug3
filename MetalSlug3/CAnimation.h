@@ -22,7 +22,7 @@ public:
 
 	void			SetParent(CGameObject* _pObj);
 	void			SetLastFacingX(int _idx);
-	void			SetRepeat(bool _bIsRepeat);
+	void			SetLoop(bool _bIsRepeat);
 	void			SetStartFrameIndex(int _idx);
 	void			SetEndFrameIndex(int _idx);
 	void			SetCurrentFrameIndex(int _idx);

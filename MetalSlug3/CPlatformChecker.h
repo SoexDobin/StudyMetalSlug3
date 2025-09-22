@@ -8,7 +8,7 @@ public:
 	~CPlatformChecker() override;
 
 public:
-	bool			GetHasColWithPlatform()		{ return m_iFindPlatform; }
+	bool			GetHasColWithPlatform()		{ return m_bFindPlatform; }
 	float			GetColTopPosition()			{ return m_fTop; }
 public:
 	void			Initialize()																	override;
@@ -19,6 +19,6 @@ public:
 	void			OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)	override;
 
 private:
-	bool			m_iFindPlatform;
+	bool			m_bFindPlatform;
 	float			m_fTop;
 };

@@ -11,6 +11,13 @@
 #include <vector>
 #include <algorithm>
 
+
+#include "fmod.hpp"
+#include "fmod_errors.h"
+#include "fmod_common.h"
+
+#pragma comment(lib, "fmod_vc.lib")
+
 #ifdef _DEBUG
 
 #include <io.h>

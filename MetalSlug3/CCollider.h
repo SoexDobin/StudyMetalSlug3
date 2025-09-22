@@ -29,7 +29,7 @@ public:
 	void				SetRenderType(COL_RENDER_TYPE _eType)	{ m_eRenderType = _eType; }
 	COL_RENDER_TYPE		GetRenderType() const					{ return m_eRenderType; }
 public:
-	virtual void	UpdateCollision();
+	virtual bool	UpdateCollision();
 	virtual void	RenderCollider(HDC _hDC);
 	virtual void	Release();
 
