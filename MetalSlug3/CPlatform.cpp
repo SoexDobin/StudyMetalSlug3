@@ -22,7 +22,7 @@ CPlatform::~CPlatform()
 void CPlatform::Initialize()
 {
     m_eType = PLATFORM;
-    m_pColBox = CColliderFactory::Create(this, HITBOX, nullptr, nullptr);;
+    m_pColBox = CColliderFactory::Create(this, HITBOX);
 }
 
 int CPlatform::Update()

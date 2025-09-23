@@ -44,7 +44,7 @@ void CEri::Initialize()
 	m_fShootDelta = n_fShootDelta;
 	m_eType = PLAYER;
 
-	m_pColBox = CColliderFactory::Create(this, HITBOX, nullptr, nullptr);;
+	m_pColBox = CColliderFactory::Create(this, HITBOX);;
 
 	m_pCQCCol = CGameObjectFactory<CCQCArea>::Create(Vector2::Zero, Vector2::Zero, this);
 	CObjectManager::GetInstance().AddGameObject(m_pCQCCol, PLAYER);

@@ -21,7 +21,7 @@ CHMProjectile::~CHMProjectile()
 void CHMProjectile::Initialize()
 {
     m_vSize = Vector2( 96.f, 96.f);
-    m_pColBox = CColliderFactory::Create(this, HITBOX, nullptr, nullptr);;
+    m_pColBox = CColliderFactory::Create(this, HITBOX);
     m_pColBox->SetSize( m_vSize/ 3.f );
     m_iDamage = 1;
     

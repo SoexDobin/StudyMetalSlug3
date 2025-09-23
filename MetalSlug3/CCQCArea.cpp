@@ -20,7 +20,7 @@ void CCQCArea::Initialize()
 {
 	m_vPivot = m_pParent->GetPivot();
 	m_vSize = Vector2(192.f, 192.f);
-	m_pColBox = CColliderFactory::Create(this, HITBOX, nullptr, nullptr);
+	m_pColBox = CColliderFactory::Create(this, HITBOX);
 	m_pColBox->SetOffset(Vector2( 0.f, 48.f ));
 }
 
