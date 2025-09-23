@@ -15,7 +15,7 @@
 #include "CCollisionManager.h"
 #include "CScrollManager.h"
 #include "CParticleManager.h"
-#include "CSoundManager.h"
+//#include "CSoundManager.h"
 
 CGame::CGame()
 	: m_hDC(nullptr)
@@ -39,7 +39,7 @@ void CGame::Initialize()
 	DeleteObject(prev);
 
 	
-	CSoundManager::GetInstance().Initialize();
+	//CSoundManager::GetInstance().Initialize();
 	CObjectManager::GetInstance().Initialize();
 	CSceneManager::GetInstance().Initialize();
 	CParticleManager::GetInstance().Initialize();
@@ -85,7 +85,7 @@ FreeConsole();
 	CCollisionManager::DeleteInstance();
 	CScrollManager::DeleteInstance();
 	CParticleManager::DeleteInstance();
-	CSoundManager::DeleteInstance();
+	//CSoundManager::DeleteInstance();
 
 	ReleaseDC(g_hWnd, m_hDC);
 }

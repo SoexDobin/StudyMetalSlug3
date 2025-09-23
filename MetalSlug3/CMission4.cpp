@@ -8,7 +8,7 @@
 #include "CScrollManager.h"
 #include "CTimeManager.h"
 #include "CGameObjectFactory.h"
-#include "CSoundManager.h"
+//#include "CSoundManager.h"
 #include "CLineManager.h"
 
 CMission4::CMission4() 
@@ -33,7 +33,7 @@ void CMission4::Initialize()
         CObjectManager::GetInstance().GetGameObjectList(ENEMY).back()->SetPivot(Vector2(i * 600.f, 100.f));
     }
     
-    CSoundManager::GetInstance().PlayBGM(L"BGM_OST_Desert.mp3", 0.2f);
+    //CSoundManager::GetInstance().PlayBGM(L"BGM_OST_Desert.mp3", 0.2f);
 
     CScrollManager::GetInstance().SetMinScrollLockX(0.f);
     CScrollManager::GetInstance().SetMaxScrollLockX(6526.f);
@@ -42,8 +42,6 @@ void CMission4::Initialize()
     CScrollManager::GetInstance().SetMaxScrollLockY(WINCY);
 
     CLineManager::GetInstance().AddLine(Vector2(5884.f, 570.f), Vector2(6200.f, 240.f));
-
-    m_pTriNextScene = C;
 }
 
 pair<bool, SCENETAG> CMission4::Update()
@@ -73,7 +71,7 @@ void CMission4::Render(HDC _hDC)
 
 void CMission4::Release()
 {
-    CSoundManager::GetInstance().StopSound(SOUND_BGM);
+    //CSoundManager::GetInstance().StopSound(SOUND_BGM);
 }
 
 void CMission4::RenderDessertLandscape(HDC _hDC)

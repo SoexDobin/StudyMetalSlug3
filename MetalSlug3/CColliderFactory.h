@@ -10,7 +10,7 @@ class CCollider;
 class CColliderFactory
 {
 public:
-	static CCollider* Create(CGameObject* _pParent, COLLIDER_TYPE _eType, function<bool()>* _pPred, function<void()>* _pCallBack)
+	static CCollider* CreateStatic(CGameObject* _pParent, COLLIDER_TYPE _eType)
 	{
 		CCollider* pCol = ColFactory(_eType, _pPred, _pCallBack);
 		pCol->SetParent(_pParent);

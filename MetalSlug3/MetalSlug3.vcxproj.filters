@@ -282,9 +282,6 @@
     <ClInclude Include="fmod_output.h">
       <Filter>헤더 파일\FMOD</Filter>
     </ClInclude>
-    <ClInclude Include="CSoundManager.h">
-      <Filter>89. SoundManager</Filter>
-    </ClInclude>
     <ClInclude Include="CTrigger.h">
       <Filter>02. Collider\01. CTrigger</Filter>
     </ClInclude>
@@ -391,9 +388,6 @@
     </ClCompile>
     <ClCompile Include="CMission4Pyramid.cpp">
       <Filter>03. Scene\01. Mission4</Filter>
-    </ClCompile>
-    <ClCompile Include="CSoundManager.cpp">
-      <Filter>89. SoundManager</Filter>
     </ClCompile>
     <ClCompile Include="CTrigger.cpp">
       <Filter>02. Collider\01. CTrigger</Filter>
