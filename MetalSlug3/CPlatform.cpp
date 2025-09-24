@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "CPlatform.h"
 #include "CHitBox.h"
-#include "CAnimation.h"
 
 // Managers
 #include "CColliderFactory.h"
@@ -10,6 +9,7 @@
 
 CPlatform::CPlatform()
     : m_szImgKey(nullptr)
+    , m_bProjPassThrough(false)
 {
 
 }
@@ -27,7 +27,8 @@ void CPlatform::Initialize()
 
 int CPlatform::Update()
 {
-    if (m_bDestroy) return OBJ_DESTROY;
+    if (m_bDestroy) 
+        return OBJ_DESTROY;
 
     __super::UpdateGameObject();
     m_pColBox->UpdateCollision();
@@ -41,13 +42,12 @@ void CPlatform::LateUpdate()
 
 void CPlatform::Render(HDC _hDC)
 {
-    m_pColBox->RenderCollider(_hDC);
-
     if (m_szImgKey == nullptr) return;
 }
 
 void CPlatform::Release()
 {
+    SafeDelete<CCollider*>(m_pColBox);
 }
 
 void CPlatform::OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)

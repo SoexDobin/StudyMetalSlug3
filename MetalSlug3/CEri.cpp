@@ -47,7 +47,7 @@ void CEri::Initialize()
 	m_pColBox = CColliderFactory::Create(this, HITBOX);;
 
 	m_pCQCCol = CGameObjectFactory<CCQCArea>::Create(Vector2::Zero, Vector2::Zero, this);
-	CObjectManager::GetInstance().AddGameObject(m_pCQCCol, PLAYER);
+	CObjectManager::GetInstance().AddGameObject(m_pCQCCol, NEUTRAL);
 
 	m_pPlatformCol = CGameObjectFactory<CPlatformChecker>::Create(Vector2::Zero, Vector2::Zero, this);
 	CObjectManager::GetInstance().AddGameObject(m_pPlatformCol, NEUTRAL);
@@ -112,6 +112,8 @@ void CEri::Release()
 {
 	SafeDelete<CAnimation*>(m_pBodyAnim);
 	SafeDelete<CAnimation*>(m_pLegAnim);
+	//SafeDelete(m_pCQCCol);
+	//SafeDelete(m_pPlatformCol); 
 }
 
 void CEri::OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)
@@ -406,7 +408,7 @@ void CEri::CheckOutOfBound()
 {
 	float fMinX = CScrollManager::GetInstance().GetMinScrollLock().x;
 	float fMaxX = CScrollManager::GetInstance().GetMaxScrollLock().x;
-	if (m_vPivot.x < fMinX) m_vPivot.x += fMinX - (m_vPivot.x);
+	if (m_vPivot.x < fMinX) m_vPivot.x += (fMinX - m_vPivot.x);
 	if (m_vPivot.x > fMaxX) m_vPivot.x += fMaxX - (m_vPivot.x);
 
 	if (m_vPivot.y > WINCY)
@@ -423,7 +425,8 @@ void CEri::CheckPlatform()
 	//	//m_vPivot.y -= fabsf(fPosY - (m_pColBox->GetPivot().y + m_pColBox->GetSize().y / 2.f));
 	//}	
 	float fLineChecker = 0.f;
-	if (CLineManager::GetInstance().CollisionLine(m_pPlatformCol->GetRect().right, &fLineChecker))
+	Vector2 vPos = Vector2(static_cast<int>(m_pPlatformCol->GetRect().right), static_cast<int>(m_pPlatformCol->GetRect().top));
+	if (CLineManager::GetInstance().CollisionLine(vPos, &fLineChecker))
 	{
 		if (m_bIsJump) return;
 
@@ -627,8 +630,12 @@ void CEri::WinOffsetX(const float& _fCurSpeed)
 
 	int iScrollX = SCROLLX;
 
-	if (iOffsetminX > m_vPivot.x + iScrollX)
-		CScrollManager::GetInstance().SetScrollX(_fCurSpeed);
+	if ((WINCX / 2.f) < m_vPivot.x)
+		CScrollManager::GetInstance().SetMinScrollLockX(-SCROLLX + _fCurSpeed);
+
+	
+	if (_fCurSpeed < 0.f) return;
+
 	if (iOffsetmaxX < m_vPivot.x + iScrollX)
 		CScrollManager::GetInstance().SetScrollX(-_fCurSpeed);
 }
@@ -636,13 +643,16 @@ void CEri::WinOffsetX(const float& _fCurSpeed)
 void CEri::WinOffsetY(const float& _fCurSpeed)
 {
 	int iOffsetminY = static_cast<int>(WINCY * 0.5f);
-	int iOffsetmaxY = static_cast<int>(WINCY * 0.5f);
+	int iOffsetmaxY = WINCY;
 
-	int iScrollX = SCROLLX;
-	int iScrollY = SCROLLY;
+	if ((WINCY / 2.f) < m_vPivot.y)
+		CScrollManager::GetInstance().SetMinScrollLockX(-SCROLLX + _fCurSpeed * 0.5f);
 
-	if (iOffsetminY < m_vPivot.y + iScrollY)
-		CScrollManager::GetInstance().SetScrollY(_fCurSpeed);
-	if (iOffsetmaxY > m_vPivot.y + iScrollY)
-		CScrollManager::GetInstance().SetScrollY(-_fCurSpeed);
+	if (_fCurSpeed > 0.f) return;
+
+	if (CScrollManager::GetInstance().GetMinScrollLock().y <= SCROLLY) return;
+	if (iOffsetminY > m_vPivot.y + SCROLLY)
+		CScrollManager::GetInstance().SetScrollY(-_fCurSpeed * 0.5f);
+	//if (iOffsetmaxY > m_vPivot.y + iScrollY)
+	//	CScrollManager::GetInstance().SetScrollY(-_fCurSpeed);
 }

@@ -4,6 +4,7 @@
 CTrigger::CTrigger()
 	: m_pCallBack(nullptr), m_pColPredicate(nullptr)
 {
+	m_dwRGB = RGB( 0, 0, 255 );
 }
 
 CTrigger::~CTrigger()

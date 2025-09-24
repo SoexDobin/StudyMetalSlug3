@@ -127,6 +127,9 @@
     <Filter Include="89. SoundManager">
       <UniqueIdentifier>{392d41cb-35bd-4651-989f-e2a2c6a69ddf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. GameObject\08. TriggerZone">
+      <UniqueIdentifier>{5066dc06-a65b-48ad-9918-a6183d20249b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -288,6 +291,15 @@
     <ClInclude Include="CTrigger.h">
       <Filter>02. Collider\01. CTrigger</Filter>
     </ClInclude>
+    <ClInclude Include="CSequenceTrigger.h">
+      <Filter>01. GameObject\08. TriggerZone</Filter>
+    </ClInclude>
+    <ClInclude Include="CChangeTrigger.h">
+      <Filter>01. GameObject\08. TriggerZone</Filter>
+    </ClInclude>
+    <ClInclude Include="CMission4Boss.h">
+      <Filter>03. Scene\01. Mission4</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MetalSlug3.cpp">
@@ -397,6 +409,15 @@
     </ClCompile>
     <ClCompile Include="CTrigger.cpp">
       <Filter>02. Collider\01. CTrigger</Filter>
+    </ClCompile>
+    <ClCompile Include="CSequenceTrigger.cpp">
+      <Filter>01. GameObject\08. TriggerZone</Filter>
+    </ClCompile>
+    <ClCompile Include="CChangeTrigger.cpp">
+      <Filter>01. GameObject\08. TriggerZone</Filter>
+    </ClCompile>
+    <ClCompile Include="CMission4Boss.cpp">
+      <Filter>03. Scene\01. Mission4</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

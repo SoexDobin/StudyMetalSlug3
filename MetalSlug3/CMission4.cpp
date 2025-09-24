@@ -2,6 +2,8 @@
 #include "CMission4.h"
 #include "CManEater.h"
 #include "CPlatform.h"
+#include "CChangeTrigger.h"
+#include "CSequenceTrigger.h"
 
 #include "CBmpManager.h"
 #include "CObjectManager.h"
@@ -12,7 +14,7 @@
 #include "CLineManager.h"
 
 CMission4::CMission4() 
-    : m_fDelta(0.f), m_iRuinBGIdx(0)
+    : m_iScrollLockIdx(0), m_fDelta(0.f), m_iRuinBGIdx(0)
 {
 }
 
@@ -26,6 +28,7 @@ void CMission4::Initialize()
     LoadBmpDessertLandscape();
     LoadBmpEnemy();
     
+    CreatetTriggerArea();
     CreatePlatform();
     for (int i = 1; i < 5; ++i)
     {
@@ -36,19 +39,15 @@ void CMission4::Initialize()
     CSoundManager::GetInstance().PlayBGM(L"BGM_OST_Desert.mp3", 0.2f);
 
     CScrollManager::GetInstance().SetMinScrollLockX(0.f);
-    CScrollManager::GetInstance().SetMaxScrollLockX(6526.f);
+    CScrollManager::GetInstance().SetMinScrollLockY(0.f);
 
-    CScrollManager::GetInstance().SetMinScrollLockY(0);
-    CScrollManager::GetInstance().SetMaxScrollLockY(WINCY);
-
-    CLineManager::GetInstance().AddLine(Vector2(5884.f, 570.f), Vector2(6200.f, 240.f));
-
-    m_pTriNextScene = C;
+    CScrollManager::GetInstance().SetMaxScrollLockX(n_vDesertMaxLockPoints[m_iScrollLockIdx].x);
+    CScrollManager::GetInstance().SetMaxScrollLockY(n_vDesertMaxLockPoints[m_iScrollLockIdx].y);   
 }
 
 pair<bool, SCENETAG> CMission4::Update()
 {
-    if (m_bDestroyScene) return pair<bool, SCENETAG>{SCENE_NOEVENT, SCENE_END};
+    if (m_bDestroyScene) return pair<bool, SCENETAG>{SCENE_DESTROY, MISSION_SCENE_2};
 
     CObjectManager::GetInstance().Update();
 
@@ -72,8 +71,18 @@ void CMission4::Render(HDC _hDC)
 }
 
 void CMission4::Release()
+{    
+    for (auto& pPlatform : m_vecPlatform)
+    {
+        pPlatform->SetDestroy();
+    }
+}
+
+void CMission4::Sequence()
 {
-    CSoundManager::GetInstance().StopSound(SOUND_BGM);
+    ++m_iScrollLockIdx;
+    CScrollManager::GetInstance().SetMaxScrollLockX(n_vDesertMaxLockPoints[m_iScrollLockIdx].x);
+    CScrollManager::GetInstance().SetMaxScrollLockY(n_vDesertMaxLockPoints[m_iScrollLockIdx].y);
 }
 
 void CMission4::RenderDessertLandscape(HDC _hDC)
@@ -170,20 +179,45 @@ void CMission4::RenderFrontLandscape(HDC _hDC)
     }
 }
 
+void CMission4::CreatetTriggerArea()
+{
+    CGameObject* pTri = nullptr;
+
+    pTri = new CChangeTrigger();
+    pTri->SetSize({ 100.f, 100.f });
+    pTri->SetPivot({ 6500.f, 200.f });
+    pTri->Initialize();
+    CObjectManager::GetInstance()
+        .AddGameObject(pTri, NEUTRAL);
+
+    pTri = new CSequenceTrigger();
+    pTri->SetSize({ 400.f, 400.f });
+    pTri->SetPivot({ 2000.f, 500.f });
+    pTri->Initialize();
+    CObjectManager::GetInstance()
+        .AddGameObject(pTri, NEUTRAL);
+}
+
 void CMission4::CreatePlatform()
 {
     for (int i = 0; i < 9; ++i)
     {
+        CGameObject* pPlatform = CGameObjectFactory<CPlatform>
+            ::Create(Vector2(384.f + 768.f * i, (float)WINCY - 128.f)
+                , Vector2(768.f, 64.f));
+
+        m_vecPlatform.push_back(pPlatform);
         CObjectManager::GetInstance()
-            .AddGameObject(CGameObjectFactory<CPlatform>
-                ::Create(Vector2(384.f + 768.f * i, (float)WINCY - 128.f)
-                    , Vector2(768.f, 64.f)), PLATFORM);
+            .AddGameObject(pPlatform, PLATFORM);
     }
+    CGameObject* pPlatform = CGameObjectFactory<CPlatform>
+        ::Create(Vector2(6584.f, (float)WINCY - 512.f + 64.f)
+            , Vector2(768.f, 64.f));
 
     CObjectManager::GetInstance()
-        .AddGameObject(CGameObjectFactory<CPlatform>
-            ::Create(Vector2(6584.f, (float)WINCY - 512.f + 64.f)
-                , Vector2(768.f, 64.f)), PLATFORM);
+        .AddGameObject(pPlatform, PLATFORM);
+
+    CLineManager::GetInstance().AddLine(Vector2(5884.f, 570.f), Vector2(6200.f, 240.f));
 }
 
 void CMission4::LoadBmpDessertLandscape()
@@ -254,3 +288,5 @@ void CMission4::LoadBmpEnemy()
     CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/ManEater/ManEater_Dead.bmp"
         , L"ManEater_Dead");
 }
+
+

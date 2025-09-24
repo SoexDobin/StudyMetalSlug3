@@ -5,6 +5,7 @@
 #include "CArmoryScene.h"
 #include "CMission4.h"
 #include "CMission4Pyramid.h"
+#include "CMission4BossStage.h"
 #include "CMouse.h"
 
 // Managers
@@ -12,11 +13,13 @@
 #include "CCollisionManager.h"
 #include "CGameObjectFactory.h"
 #include "CScrollManager.h"
+#include "CSoundManager.h"
 
 CSceneManager::CSceneManager() 
-	: m_pScene(nullptr), m_eCurScene(SCENE_END), m_ePrevScene(SCENE_END)
+	: m_pScene(nullptr), m_pPrevScene(nullptr), m_eCurScene(SCENE_END)
 	, ref_pPlayer(nullptr)
 {
+
 }
 
 CSceneManager::~CSceneManager()
@@ -27,33 +30,33 @@ CSceneManager::~CSceneManager()
 void CSceneManager::Initialize()
 {
 	// TODO : 게임 흐름 구축 시 변경 해야 합니다.
-	m_eCurScene = MISSION_SCENE;
-	ChangeScene(m_eCurScene);
+	m_eCurScene = MISSION_SCENE_2;
+	
 	CObjectManager::GetInstance().GetGameObjectList(PLAYER).push_back(new CEri());
 	CObjectManager::GetInstance().GetGameObjectList(PLAYER).front()->Initialize();
 	ref_pPlayer = CObjectManager::GetInstance().GetGameObjectList(PLAYER).front();
-	
+	ChangeScene(m_eCurScene);
+
 	CObjectManager::GetInstance().AddGameObject(
 		CGameObjectFactory<CMouse>::Create(), PLAYER);
 	CObjectManager::GetInstance().GetGameObjectList(PLAYER).back()->Initialize();
 }
 
 void CSceneManager::Update()
-{
-	// TODO : 씬 인스터스 및 씬 체인지
-	// SelectPlayer
-	// Armory 테스트맵
-	// Edit 맵
-	// Mission 
-	// Boss
-	
+{	
 	pair<bool, SCENETAG> bSceneState = m_pScene->Update();
 
-	if (bSceneState.first) ChangeScene(bSceneState.second);
+	if (bSceneState.first && m_pPrevScene == nullptr)
+	{
+		m_pPrevScene = ChangeScene(bSceneState.second);
+		SafeDelete<CScene*>(m_pPrevScene);
+	}
+		
 }
 
 void CSceneManager::LateUpdate()
 {
+	
 	m_pScene->LateUpdate();
 
 	CScrollManager::GetInstance().ScrollLock();
@@ -72,7 +75,14 @@ void CSceneManager::Render(HDC _hDC)
 		CObjectManager::GetInstance().GetGameObjectList(PLAYER)
 		, CObjectManager::GetInstance().GetGameObjectList(PLATFORM)
 		, RECT_TO_RECT);
-
+	CCollisionManager::GetInstance().CheckCollision(
+		CObjectManager::GetInstance().GetGameObjectList(NEUTRAL)
+		, CObjectManager::GetInstance().GetGameObjectList(ENEMY)
+		, RECT_TO_RECT);
+	CCollisionManager::GetInstance().CheckCollision(
+		CObjectManager::GetInstance().GetGameObjectList(NEUTRAL)
+		, CObjectManager::GetInstance().GetGameObjectList(PLAYER)
+		, RECT_TO_RECT);
 
 	CCollisionManager::GetInstance().CheckCollision(
 		CObjectManager::GetInstance().GetGameObjectList(PROJECTILE)
@@ -109,22 +119,20 @@ void CSceneManager::Release()
 	SafeDelete<CScene*>(m_pScene);
 }
 
-SCENETAG CSceneManager::ChangeScene(SCENETAG _eTag)
+CScene* CSceneManager::ChangeScene(SCENETAG _eTag)
 {
-	m_ePrevScene	= m_eCurScene;
+	CSoundManager::GetInstance().StopSound(SOUND_BGM);
+	CScene* _pPrev = m_pScene;
 	m_eCurScene		= _eTag;
-	SafeDelete<CScene*>(m_pScene);
-
-	if (_eTag == PREV_SCENE)
-		return ChangeScene(m_ePrevScene);
 
 	switch (_eTag)
 	{
 	case MAIN_SCENE:		break;
 	case SELECT_SCENE:		break;
-	case ARMORY_SCENE:		m_pScene = new CArmoryScene();		break;
-	//case MISSION_SCENE:		m_pScene = new CMission4Pyramid();			 break;
-	case MISSION_SCENE:		m_pScene = new CMission4();			 break;
+	case ARMORY_SCENE:		m_pScene = new CArmoryScene();			break;
+	case MISSION_SCENE_3:	m_pScene = new CMission4BossStage();	break;
+	case MISSION_SCENE_2:	m_pScene = new CMission4Pyramid();		break;
+	case MISSION_SCENE_1:	m_pScene = new CMission4();				break;
 	case EDIT:				break;
 
 	case SCENE_END:
@@ -133,7 +141,37 @@ SCENETAG CSceneManager::ChangeScene(SCENETAG _eTag)
 		break;
 	}
 
+	for (auto& pObj : CObjectManager::GetInstance().GetGameObjectList(PLATFORM))
+	{
+		pObj->SetDestroy();
+	}
+	for (auto& pObj : CObjectManager::GetInstance().GetGameObjectList(ENEMY))
+	{
+		pObj->SetDestroy();
+	}
+	for (auto& pObj : CObjectManager::GetInstance().GetGameObjectList(NEUTRAL))
+	{
+		pObj->SetDestroy();
+	}
+	for (auto& pObj : CObjectManager::GetInstance().GetGameObjectList(PROJECTILE))
+	{
+		pObj->SetDestroy();
+	}
+	for (auto& pObj : CObjectManager::GetInstance().GetGameObjectList(PARTICLE))
+	{
+		pObj->SetDestroy();
+	} 
+	for (auto& pObj : CObjectManager::GetInstance().GetGameObjectList(EXPLODE))
+	{
+		pObj->SetDestroy();
+	}
+
 	m_pScene->Initialize();
 
-	return m_ePrevScene;
+	return _pPrev;
+}
+
+void CSceneManager::NextSceneSequence()
+{
+	m_pScene->Sequence();
 }

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CHMProjectile.h"
 #include "CBulletHitParticle.h"
+#include "CPlatform.h"
 
 #include "CColliderFactory.h"
 #include "CTimeManager.h"
@@ -71,7 +72,11 @@ void CHMProjectile::OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION
 {
     if (m_bDestroy) return;
 
-    if (_pCol->GetObjectType() == ENEMY || _pCol->GetObjectType() == PLATFORM)
+    bool pPassThroughPlat = false;
+    if (_pCol->GetObjectType() == PLATFORM)
+        pPassThroughPlat = dynamic_cast<CPlatform*>(_pCol)->GetProjectilePass();
+
+    if (_pCol->GetObjectType() == ENEMY || !pPassThroughPlat)
     {
         Vector2 vParticleOffset{ 0.f, 0.f };
 
@@ -85,8 +90,6 @@ void CHMProjectile::OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION
             break;
         case DOWN_COL:  vParticleOffset = Vector2(0.f, m_vSize.y / 2.f);
             break;
-        case COL_END:
-            break;
         default:
             break;
         }
@@ -94,6 +97,5 @@ void CHMProjectile::OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION
         CParticleManager::GetInstance().CreateParticle<CBulletHitParticle>(m_vPivot + vParticleOffset);
         m_bDestroy = OBJ_DESTROY;
         SafeDelete<CCollider*>(m_pColBox);
-        //m_eType = OBJECT_END;
     }
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "CGameObject.h"
 
-class CProjectile abstract : public CGameObject
+class CProjectile : public CGameObject
 {
 public:
 	CProjectile();

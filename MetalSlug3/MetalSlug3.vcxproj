@@ -108,6 +108,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -124,6 +125,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -135,6 +137,8 @@
     <ClInclude Include="CArmoryScene.h" />
     <ClInclude Include="CBmpManager.h" />
     <ClInclude Include="CBmpObject.h" />
+    <ClInclude Include="CChangeTrigger.h" />
+    <ClInclude Include="CMission4Boss.h" />
     <ClInclude Include="CMission4Pyramid.h" />
     <ClInclude Include="CMouse.h" />
     <ClInclude Include="CPlatformChecker.h" />
@@ -165,6 +169,7 @@
     <ClInclude Include="CSoundManager.h" />
     <ClInclude Include="CTimeManager.h" />
     <ClInclude Include="CTrigger.h" />
+    <ClInclude Include="CSequenceTrigger.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="fmod.h" />
     <ClInclude Include="fmod.hpp" />
@@ -190,6 +195,8 @@
     <ClCompile Include="CArmoryScene.cpp" />
     <ClCompile Include="CBmpManager.cpp" />
     <ClCompile Include="CBmpObject.cpp" />
+    <ClCompile Include="CChangeTrigger.cpp" />
+    <ClCompile Include="CMission4Boss.cpp" />
     <ClCompile Include="CMission4Pyramid.cpp" />
     <ClCompile Include="CMouse.cpp" />
     <ClCompile Include="CPlatformChecker.cpp" />
@@ -218,6 +225,7 @@
     <ClCompile Include="CTimeManager.cpp" />
     <ClCompile Include="CLineManager.cpp" />
     <ClCompile Include="CTrigger.cpp" />
+    <ClCompile Include="CSequenceTrigger.cpp" />
     <ClCompile Include="MetalSlug3.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -36,8 +36,8 @@ bool CCollider::UpdateCollision()
 
 void CCollider::RenderCollider(HDC _hDC)
 {
-	HPEN hGreenPen = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
-	HPEN hPrevPen = (HPEN)SelectObject(_hDC, hGreenPen);
+	HPEN hPen = CreatePen(PS_SOLID, 1, m_dwRGB);
+	HPEN hPrevPen = (HPEN)SelectObject(_hDC, hPen);
 	HBRUSH hNullBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
 	HBRUSH hPrevBrush = (HBRUSH)SelectObject(_hDC, hNullBrush);
 
@@ -51,7 +51,7 @@ void CCollider::RenderCollider(HDC _hDC)
 
 	SelectObject(_hDC, hPrevPen);
 	SelectObject(_hDC, hPrevBrush);
-	DeleteObject((HPEN)hGreenPen);
+	DeleteObject((HPEN)hPen);
 	DeleteObject((HBRUSH)hNullBrush);
 }
 

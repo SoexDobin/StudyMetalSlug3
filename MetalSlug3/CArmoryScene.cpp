@@ -119,3 +119,7 @@ void CArmoryScene::CheatKeyInput()
 {
 
 }
+
+void CArmoryScene::Sequence()
+{
+}

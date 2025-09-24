@@ -38,7 +38,6 @@ void CGame::Initialize()
 	HBITMAP prev = (HBITMAP)::SelectObject(m_hDCBack, m_bmpBack);
 	DeleteObject(prev);
 
-	
 	CSoundManager::GetInstance().Initialize();
 	CObjectManager::GetInstance().Initialize();
 	CSceneManager::GetInstance().Initialize();
@@ -75,7 +74,7 @@ void CGame::Release()
 #ifdef _DEBUG
 FreeConsole();
 #endif
-
+	CSoundManager::DeleteInstance();
 	CSceneManager::DeleteInstance();
 	CKeyManager::DeleteInstance();
 	CBmpManager::DeleteInstance();
@@ -85,7 +84,6 @@ FreeConsole();
 	CCollisionManager::DeleteInstance();
 	CScrollManager::DeleteInstance();
 	CParticleManager::DeleteInstance();
-	CSoundManager::DeleteInstance();
 
 	ReleaseDC(g_hWnd, m_hDC);
 }

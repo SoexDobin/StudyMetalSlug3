@@ -1,8 +1,6 @@
 #pragma once
 #include "CGameObject.h"
 
-class CAnimation;
-
 class CPlatform : public CGameObject
 {
 public:
@@ -10,11 +8,16 @@ public:
 	virtual ~CPlatform() override;
 
 public:
-	void	Initialize()										override;
-	int		Update()											override;
-	void	LateUpdate()										override;
-	void	Render(HDC _hDC)									override;
-	void	Release()											override;
+	bool 	GetProjectilePass() { return m_bProjPassThrough; }
+	void	SetProjectilePass(bool _bIsPass)		{ m_bProjPassThrough = _bIsPass; }
+	
+
+public:
+	void	Initialize()																	override;
+	int		Update()																		override;
+	void	LateUpdate()																	override;
+	void	Render(HDC _hDC)																override;
+	void	Release()																		override;
 	void	OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)	override;
 
 private:
@@ -22,7 +25,7 @@ private:
 	void	EnemyPlatformCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag);
 
 private:
-
+	bool				m_bProjPassThrough;
 	const TCHAR*		m_szImgKey;
 };
 

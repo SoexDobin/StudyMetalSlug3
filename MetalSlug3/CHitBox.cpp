@@ -7,4 +7,5 @@ CHitBox::CHitBox()
 
 CHitBox::~CHitBox()
 {
+
 }

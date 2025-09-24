@@ -26,7 +26,7 @@ void CManEater::Initialize()
 {
     LoadAnimation();
 
-    m_iHp = 30;
+    m_iHp = 10;
     m_vPivot = Vector2(800.f, 500.f);
     m_vSize = Vector2(192.f, 192.f);
     m_pColBox = CColliderFactory::Create(this, HITBOX);
@@ -66,7 +66,7 @@ void CManEater::Release()
 {
     m_pRefPlayer = nullptr;
     SafeDelete<CAnimation*>(m_pAnim);
-    //SafeDelete<CGameObject*>(m_pPlatformCol);
+    SafeDelete<CCollider*>(m_pColBox);
     m_pPlatformCol->SetDestroy();
 }
 

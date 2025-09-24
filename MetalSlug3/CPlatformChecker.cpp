@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "CPlatformChecker.h"
-#include "CHitBox.h"
 
 #include "CColliderFactory.h"
 
@@ -26,11 +25,9 @@ void CPlatformChecker::Initialize()
 
 int CPlatformChecker::Update()
 {
-	if (m_pParent == nullptr) return OBJ_NOEVENT;
+	if (m_pParent == nullptr) return OBJ_DESTROY;
 
 	__super::UpdateGameObject();
-
-	
 
 	return OBJ_NOEVENT;
 }
@@ -47,7 +44,8 @@ void CPlatformChecker::Render(HDC _hDC)
 
 void CPlatformChecker::Release()
 {
-	m_pParent = nullptr;
+	//m_pParent = nullptr;
+	SafeDelete<CCollider*>(m_pColBox);
 }
 
 void CPlatformChecker::OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)

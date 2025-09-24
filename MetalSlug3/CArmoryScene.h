@@ -15,7 +15,7 @@ public:
 	virtual void						LateUpdate()		override;
 	virtual void						Render(HDC _hDC)	override;
 	virtual void						Release()			override;
-
+	virtual void						Sequence()			override;
 private:
 	void				CheatKeyInput();
 };

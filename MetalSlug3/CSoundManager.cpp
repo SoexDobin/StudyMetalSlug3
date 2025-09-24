@@ -2,6 +2,7 @@
 #include "CSoundManager.h"
 
 CSoundManager::CSoundManager()
+	: m_pSystem(nullptr)
 {
 }
 
@@ -10,26 +11,22 @@ CSoundManager::~CSoundManager()
 	Release();
 }
 
-
 void CSoundManager::Initialize()
 {
-	// 사운드를 담당하는 대표객체를 생성하는 함수
 	FMOD_System_Create(&m_pSystem, FMOD_VERSION);
-
-	// 1. 시스템 포인터, 2. 사용할 가상채널 수 , 초기화 방식) 
 	FMOD_System_Init(m_pSystem, 32, FMOD_INIT_NORMAL, NULL);
-
 	LoadSoundFile();
 }
 void CSoundManager::Release()
 {
-	for (auto& Mypair : m_mapSound)
+	for (auto& Mypair : m_umapSound)
 	{
 		delete[] Mypair.first;
 		FMOD_Sound_Release(Mypair.second);
 	}
-	m_mapSound.clear();
+	m_umapSound.clear();
 
+	
 	FMOD_System_Release(m_pSystem);
 	FMOD_System_Close(m_pSystem);
 }
@@ -39,14 +36,13 @@ void CSoundManager::PlaySound(const TCHAR* pSoundKey, CHANNELID eID, float fVolu
 {
 	unordered_map<TCHAR*, FMOD_SOUND*>::iterator iter;
 
-	// iter = find_if(m_mapSound.begin(), m_mapSound.end(), CTag_Finder(pSoundKey));
-	iter = find_if(m_mapSound.begin(), m_mapSound.end(),
+	iter = find_if(m_umapSound.begin(), m_umapSound.end(),
 		[&](auto& iter)->bool
 		{
 			return !lstrcmp(pSoundKey, iter.first);
 		});
 
-	if (iter == m_mapSound.end())
+	if (iter == m_umapSound.end())
 		return;
 
 	FMOD_BOOL bPlay = FALSE;
@@ -66,12 +62,12 @@ void CSoundManager::PlayBGM(const TCHAR* pSoundKey, float fVolume)
 	unordered_map<TCHAR*, FMOD_SOUND*>::iterator iter;
 
 	// iter = find_if(m_mapSound.begin(), m_mapSound.end(), CTag_Finder(pSoundKey));
-	iter = find_if(m_mapSound.begin(), m_mapSound.end(), [&](auto& iter)->bool
+	iter = find_if(m_umapSound.begin(), m_umapSound.end(), [&](auto& iter)->bool
 		{
 			return !lstrcmp(pSoundKey, iter.first);
 		});
 
-	if (iter == m_mapSound.end())
+	if (iter == m_umapSound.end())
 		return;
 
 	FMOD_System_PlaySound(m_pSystem, iter->second, nullptr, FALSE, &m_pChannelArr[SOUND_BGM]);
@@ -113,7 +109,6 @@ void CSoundManager::LoadSoundFile()
 	{
 		strcpy_s(szFullPath, szCurPath);
 
-		// "../ Sound/Success.wav"
 		strcat_s(szFullPath, fd.name);
 
 		FMOD_SOUND* pSound = nullptr;
@@ -122,7 +117,7 @@ void CSoundManager::LoadSoundFile()
 
 		if (eRes == FMOD_OK)
 		{
-			int iLength = strlen(fd.name) + 1;
+			int iLength = static_cast<int>(strlen(fd.name) + 1);
 
 			TCHAR* pSoundKey = new TCHAR[iLength];
 			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
@@ -130,10 +125,9 @@ void CSoundManager::LoadSoundFile()
 			// 아스키 코드 문자열을 유니코드 문자열로 변환시켜주는 함수
 			MultiByteToWideChar(CP_ACP, 0, fd.name, iLength, pSoundKey, iLength);
 
-			m_mapSound.emplace(pSoundKey, pSound);
+			m_umapSound.emplace(pSoundKey, pSound);
 		}
-		//_findnext : <io.h>에서 제공하며 다음 위치의 파일을 찾는 함수, 더이상 없다면 -1을 리턴
-		// ZeroMemory(&fd, sizeof(_finddatai64_t));
+	
 		iResult = _findnext(lHandle, &fd);
 	}
 

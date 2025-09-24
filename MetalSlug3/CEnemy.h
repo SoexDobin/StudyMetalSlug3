@@ -1,11 +1,11 @@
 #pragma once
 #include "CGameObject.h"
 
-class CEnemy abstract : public CGameObject
+class CEnemy : public CGameObject
 {
 public:
     CEnemy();
-    virtual ~CEnemy() override;
+    virtual ~CEnemy();
 
 public:
     int        GetHp()                      { return m_iHp; }

@@ -18,14 +18,18 @@ public:
 	void			LateUpdate();
 	void			Render(HDC _hDC);
 	void			Release();
+	
+	void			NextSceneSequence();
+	CScene*			ChangeScene(SCENETAG _eTag);
 
-private:
-	SCENETAG		ChangeScene(SCENETAG _eTag);
-
+public:
+	CScene*			GetCurScene() 			{ return m_pScene; };
+	
 private:
 	CScene*			m_pScene;
+	CScene*			m_pPrevScene;
 	SCENETAG		m_eCurScene;
-	SCENETAG		m_ePrevScene;
+	
 
 // [!]NOTICE	Don't Destroy On SCENE
 private:

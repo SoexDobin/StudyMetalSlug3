@@ -14,10 +14,8 @@ CGameObject::CGameObject()
 
 CGameObject::~CGameObject()
 {
-	m_pParent = nullptr;
-	SafeDelete<CCollider*>(m_pColBox);
+	SafeDelete(m_pColBox);
 }
-
 
 void CGameObject::UpdateGameObject()
 {

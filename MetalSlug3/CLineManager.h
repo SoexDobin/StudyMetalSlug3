@@ -9,7 +9,7 @@ public:
 	CLineManager();
 	~CLineManager() override;
 public:
-	bool	CollisionLine(float fX, float* pY);
+	bool	CollisionLine(const Vector2& _vPos, float* _pY);
 	void	AddLine(Vector2 _vFrom, Vector2 _vTo);
 public:
 	void		Initialize();

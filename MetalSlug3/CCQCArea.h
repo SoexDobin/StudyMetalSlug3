@@ -10,7 +10,7 @@ public:
 public:
 	bool	CatchEnemyCQCZone() { return m_bCatchEnemy; }
 
-private:
+public:
 	void			Initialize()																	override;
 	int				Update()																		override;
 	void			LateUpdate()																	override;

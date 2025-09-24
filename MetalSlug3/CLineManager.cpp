@@ -13,7 +13,7 @@ CLineManager::~CLineManager()
 	Release();
 }
 
-bool CLineManager::CollisionLine(float fX, float* pY)
+bool CLineManager::CollisionLine(const Vector2& _vPos, float* _pY)
 {
 	if (m_LineList.empty())
 		return false;
@@ -22,8 +22,8 @@ bool CLineManager::CollisionLine(float fX, float* pY)
 
 	for (auto& pLine : m_LineList)
 	{
-		if (fX >= pLine->GetLeftPoint().x &&
-			fX <= pLine->GetRightPoint().x)
+		if (_vPos.x >= pLine->GetLeftPoint().x 
+			&& _vPos.x <= pLine->GetRightPoint().x)
 		{
 			pTargetLine = pLine;
 		}
@@ -39,7 +39,7 @@ bool CLineManager::CollisionLine(float fX, float* pY)
 	float x2 = pTargetLine->GetRightPoint().x;
 	float y2 = pTargetLine->GetRightPoint().y;
 
-	*pY = ((y2 - y1) / (x2 - x1)) * (fX - x1) + y1;
+	*_pY = ((y2 - y1) / (x2 - x1)) * (_vPos.x - x1) + y1;
 
 	return true;
 }
@@ -134,7 +134,7 @@ void CLineManager::SaveData()
 
 	CloseHandle(hFile);
 
-	MessageBox(g_hWnd, L"Save Success", _T("รเวฯ"), MB_OK);
+	MessageBox(g_hWnd, L"Save Success", _T("sus"), MB_OK);
 }
 
 void CLineManager::LoadData()

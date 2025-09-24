@@ -26,7 +26,7 @@ void CCQCArea::Initialize()
 
 int CCQCArea::Update()
 {
-	if (m_pParent == nullptr) return OBJ_NOEVENT;
+	if (m_pParent == nullptr) return OBJ_DESTROY;
 
 	__super::UpdateGameObject();
 
