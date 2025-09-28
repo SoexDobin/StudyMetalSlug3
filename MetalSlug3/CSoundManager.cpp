@@ -32,7 +32,7 @@ void CSoundManager::Release()
 }
 
 
-void CSoundManager::PlaySound(const TCHAR* pSoundKey, CHANNELID eID, float fVolume)
+void CSoundManager::PlaySoundOnce(const TCHAR* pSoundKey, CHANNELID eID, float fVolume)
 {
 	unordered_map<TCHAR*, FMOD_SOUND*>::iterator iter;
 
@@ -51,6 +51,28 @@ void CSoundManager::PlaySound(const TCHAR* pSoundKey, CHANNELID eID, float fVolu
 	{
 		FMOD_System_PlaySound(m_pSystem, iter->second, nullptr, FALSE, &m_pChannelArr[eID]);
 	}
+
+	FMOD_Channel_SetVolume(m_pChannelArr[eID], fVolume);
+
+	FMOD_System_Update(m_pSystem);
+}
+
+void CSoundManager::PlaySound(const TCHAR* pSoundKey, CHANNELID eID, float fVolume)
+{
+	unordered_map<TCHAR*, FMOD_SOUND*>::iterator iter;
+
+	iter = find_if(m_umapSound.begin(), m_umapSound.end(),
+		[&](auto& iter)->bool
+		{
+			return !lstrcmp(pSoundKey, iter.first);
+		});
+
+	if (iter == m_umapSound.end())
+		return;
+
+	FMOD_BOOL bPlay = FALSE;
+
+	FMOD_System_PlaySound(m_pSystem, iter->second, nullptr, FALSE, &m_pChannelArr[eID]);
 
 	FMOD_Channel_SetVolume(m_pChannelArr[eID], fVolume);
 

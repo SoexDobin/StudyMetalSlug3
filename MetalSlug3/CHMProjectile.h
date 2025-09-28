@@ -16,6 +16,6 @@ public:
 	void        OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)   override;
 
 private:
-	Vector2			m_vSpeed;
+	void		Hit(COLLISION_COL_FLAG _eFlag);
 };
 

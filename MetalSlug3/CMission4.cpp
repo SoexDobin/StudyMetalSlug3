@@ -1,9 +1,13 @@
 #include "pch.h"
+#include <random>
 #include "CMission4.h"
 #include "CManEater.h"
 #include "CPlatform.h"
 #include "CChangeTrigger.h"
 #include "CSequenceTrigger.h"
+#include "CMissionStart4.h"
+#include "CRebel.h"
+#include "CRebelBazooca.h"
 
 #include "CBmpManager.h"
 #include "CObjectManager.h"
@@ -12,9 +16,11 @@
 #include "CGameObjectFactory.h"
 #include "CSoundManager.h"
 #include "CLineManager.h"
+#include "CParticleManager.h"
+#include "CSceneManager.h"
 
 CMission4::CMission4() 
-    : m_iScrollLockIdx(0), m_fDelta(0.f), m_iRuinBGIdx(0)
+    : m_iScrollLockIdx(0), m_fDelta(0.f), m_iRuinBGIdx(0), m_fBackAttackDelta(-1.f)
 {
 }
 
@@ -25,16 +31,12 @@ CMission4::~CMission4()
 
 void CMission4::Initialize()
 {
+    m_vSpawnPoint = Vector2(200.f, 560.f);
     LoadBmpDessertLandscape();
     LoadBmpEnemy();
     
     CreatetTriggerArea();
     CreatePlatform();
-    for (int i = 1; i < 5; ++i)
-    {
-        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CManEater>::Create(), ENEMY);
-        CObjectManager::GetInstance().GetGameObjectList(ENEMY).back()->SetPivot(Vector2(i * 600.f, 100.f));
-    }
     
     CSoundManager::GetInstance().PlayBGM(L"BGM_OST_Desert.mp3", 0.2f);
 
@@ -42,7 +44,14 @@ void CMission4::Initialize()
     CScrollManager::GetInstance().SetMinScrollLockY(0.f);
 
     CScrollManager::GetInstance().SetMaxScrollLockX(n_vDesertMaxLockPoints[m_iScrollLockIdx].x);
-    CScrollManager::GetInstance().SetMaxScrollLockY(n_vDesertMaxLockPoints[m_iScrollLockIdx].y);   
+    CScrollManager::GetInstance().SetMaxScrollLockY(n_vDesertMaxLockPoints[m_iScrollLockIdx].y); 
+
+    CParticleManager::GetInstance().CreateParticle<CMissionStart4>();
+
+    CObjectManager::GetInstance()
+        .AddGameObject(CGameObjectFactory<CRebelBazooca>::Create(), ENEMY);
+    CObjectManager::GetInstance().GetGameObjectList(ENEMY).back()->SetPivot(Vector2(500.f, 400.f));
+
 }
 
 pair<bool, SCENETAG> CMission4::Update()
@@ -51,13 +60,36 @@ pair<bool, SCENETAG> CMission4::Update()
 
     CObjectManager::GetInstance().Update();
 
+    m_vSpawnPoint = { -SCROLLX + 100, 400};
     m_fDelta += 4000.f * DELTA;
+
+    if (m_fBackAttackDelta >= 0.f)
+        m_fBackAttackDelta += 200 * DELTA;
 
     return pair<bool, SCENETAG>{SCENE_NOEVENT, SCENE_END};
 }
 
 void CMission4::LateUpdate()
 {
+    if (m_fBackAttackDelta >= 2000.f)
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> Iinterval(32, 64);
+        Vector2 pScenePivot = CSceneManager::GetInstance().GetCurPlayer()->GetPivot();
+
+        for (int i = 0; i < 17; ++i)
+        {
+
+            float fPosX = pScenePivot.x - (480.f + Iinterval(gen) * i);
+            CObjectManager::GetInstance()
+                .AddGameObject(CGameObjectFactory<CRebel>::Create(), ENEMY);
+            CObjectManager::GetInstance().GetGameObjectList(ENEMY).back()->SetPivot(Vector2(fPosX, 400.f));
+        }
+        m_fBackAttackDelta = 0.f;
+    }
+
+
     CObjectManager::GetInstance().LateUpdate();
 }
 
@@ -72,10 +104,6 @@ void CMission4::Render(HDC _hDC)
 
 void CMission4::Release()
 {    
-    for (auto& pPlatform : m_vecPlatform)
-    {
-        pPlatform->SetDestroy();
-    }
 }
 
 void CMission4::Sequence()
@@ -83,6 +111,43 @@ void CMission4::Sequence()
     ++m_iScrollLockIdx;
     CScrollManager::GetInstance().SetMaxScrollLockX(n_vDesertMaxLockPoints[m_iScrollLockIdx].x);
     CScrollManager::GetInstance().SetMaxScrollLockY(n_vDesertMaxLockPoints[m_iScrollLockIdx].y);
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> Iinterval(32, 64);
+
+    float fPosX = 0.f;
+    Vector2 pScenePivot = CSceneManager::GetInstance().GetCurPlayer()->GetPivot();
+
+    if (m_iScrollLockIdx == 1)
+    {
+        for (int i = 0; i < 20; ++i)
+        {
+            fPosX = pScenePivot.x + (float)WINCX + Iinterval(gen) * i;
+            CObjectManager::GetInstance()
+                .AddGameObject(CGameObjectFactory<CRebel>::Create(), ENEMY);
+            CObjectManager::GetInstance().GetGameObjectList(ENEMY).back()->SetPivot(Vector2(fPosX, 400.f));
+        }
+        m_fBackAttackDelta = 0.f;
+    }
+    else
+    {
+        for (int i = 0; i < 20; ++i)
+        {
+            fPosX = pScenePivot.x + (float)WINCX + Iinterval(gen) * i;
+            CObjectManager::GetInstance()
+                .AddGameObject(CGameObjectFactory<CRebel>::Create(), ENEMY);
+            CObjectManager::GetInstance().GetGameObjectList(ENEMY).back()->SetPivot(Vector2(fPosX, 400.f));
+        }   
+        for (int i = 0; i < m_iScrollLockIdx; ++i)
+        {
+            fPosX = pScenePivot.x + (float)WINCX + Iinterval(gen) * i;
+            CObjectManager::GetInstance()
+                .AddGameObject(CGameObjectFactory<CRebelBazooca>::Create(), ENEMY);
+            CObjectManager::GetInstance().GetGameObjectList(ENEMY).back()->SetPivot(Vector2(fPosX, 400.f));
+        }
+    }
+    
 }
 
 void CMission4::RenderDessertLandscape(HDC _hDC)
@@ -185,7 +250,14 @@ void CMission4::CreatetTriggerArea()
 
     pTri = new CChangeTrigger();
     pTri->SetSize({ 100.f, 100.f });
-    pTri->SetPivot({ 6500.f, 200.f });
+    pTri->SetPivot({ 6600.f, 200.f });
+    pTri->Initialize();
+    CObjectManager::GetInstance()
+        .AddGameObject(pTri, NEUTRAL);
+
+    pTri = new CSequenceTrigger();
+    pTri->SetSize({ (float)WINCX, 400.f });
+    pTri->SetPivot({ 1280.f, 500.f });
     pTri->Initialize();
     CObjectManager::GetInstance()
         .AddGameObject(pTri, NEUTRAL);
@@ -193,6 +265,13 @@ void CMission4::CreatetTriggerArea()
     pTri = new CSequenceTrigger();
     pTri->SetSize({ 400.f, 400.f });
     pTri->SetPivot({ 2000.f, 500.f });
+    pTri->Initialize();
+    CObjectManager::GetInstance()
+        .AddGameObject(pTri, NEUTRAL);
+
+    pTri = new CSequenceTrigger();
+    pTri->SetSize({ 400.f, 400.f });
+    pTri->SetPivot({ 3200.f, 500.f });
     pTri->Initialize();
     CObjectManager::GetInstance()
         .AddGameObject(pTri, NEUTRAL);
@@ -243,11 +322,6 @@ void CMission4::LoadBmpDessertLandscape()
     CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Landscape/BackGround/4-1_Desert_Ruin4.bmp"
         , L"4-1_Desert_Ruin4");
 
-    //CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Landscape/Field/4-1_Dessert_Field1.bmp"
-    //    , L"4-1_Dessert_Field1");
-    //CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Landscape/Field/4-1_Dessert_Field2.bmp"
-    //    , L"4-1_Dessert_Field2");
-
     CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Landscape/FrontGround/4-1_Desert_Frontground1.bmp"
         , L"4-1_Desert_Frontground1");
     CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Landscape/FrontGround/4-1_Desert_Frontground2.bmp"
@@ -283,10 +357,18 @@ void CMission4::LoadBmpDessertLandscape()
 
 void CMission4::LoadBmpEnemy()
 {
-    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/ManEater/ManEater_Idle.bmp"
-        , L"ManEater_Idle");
-    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/ManEater/ManEater_Dead.bmp"
-        , L"ManEater_Dead");
+    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/Rebel/Rebel_Idle.bmp"
+        , L"Rebel_Idle");
+    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/Rebel/Rebel_Dead.bmp"
+        , L"Rebel_Dead");
+    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/Rebel/Rebel_Move.bmp"
+        , L"Rebel_Move");
+    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/Rebel/Rebel_Bazooca_Shoot.bmp"
+        , L"Rebel_Bazooca_Shoot");
+    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/Rebel/Rebel_Bazooca_Idle.bmp"
+        , L"Rebel_Bazooca_Idle");
+    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Projectile/Bazooca/Bazooca.bmp"
+        , L"Bazooca");
 }
 
 

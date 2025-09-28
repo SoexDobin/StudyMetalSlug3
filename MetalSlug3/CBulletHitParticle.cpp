@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CBulletHitParticle.h"
 #include "CAnimation.h"
+#include "CSoundManager.h"
 
 CBulletHitParticle::CBulletHitParticle()
     : m_pAnim(nullptr), m_szFrameKey(nullptr)
@@ -28,6 +29,8 @@ void CBulletHitParticle::Initialize()
     m_pAnim->SetLoop(false); 
     m_pAnim->SetFrameSpeed(0.025f);
 
+    CSoundManager::GetInstance().PlaySound(L"HM_Hit.mp3", BULLET_HIT, 0.15f);
+
     __super::UpdateGameObject();
 }
 
@@ -47,9 +50,11 @@ void CBulletHitParticle::LateUpdate()
 
 void CBulletHitParticle::Render(HDC _hDC)
 {
+    if (m_vPivot == Vector2::Zero) return;
+
     m_pAnim->RenderAnimation(_hDC);
     
-    if (m_pAnim->GetCurrentFrameIndex() == m_pairFrame.second - 1)
+    if (m_pAnim->GetEndOneLoop())
         m_bDestroy = true;
 }
 

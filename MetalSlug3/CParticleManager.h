@@ -23,8 +23,8 @@ public:
 	{
 		CParticle* pParticle = new T();
 		m_ParticleList.push_back(pParticle);
-		pParticle->Initialize();
 		pParticle->SetPivot(_vPivot);
+		pParticle->Initialize();
 	}
 
 	void Update();

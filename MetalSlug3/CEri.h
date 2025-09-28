@@ -6,7 +6,8 @@ class CCollider;
 
 class CEri : public CGameObject
 {
-	enum PLAYER_STATE { SIT, STAND, IDLE, MOVE, SHOOT, CQC, JUMP, MOVEJUMP, DROP, PLAYER_STATE_END };
+	enum PLAYER_STATE { SIT, STAND, IDLE, MOVE, SHOOT, CQC, JUMP, MOVEJUMP, DROP, RESPAWN, DEAD, PLAYER_STATE_END };
+	enum WEAPON { HM_GUN, WEAPON_END };
 public:
 	CEri();
 	virtual ~CEri() override;
@@ -19,14 +20,27 @@ public:
 	void			Release()											override;
 	void			OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)  override;
 
+public:
+	const int&		GetArmo() const						{ return m_iArmo; }
+	void			LoseArmo(const int& _iArmo)			{ m_iArmo -= _iArmo; }
+	void			SetArmo(const int& _iArmo) 			{ m_iArmo = _iArmo; }
+
+	const int&		GetBomb() const						{ return m_iBomb; }
+	void			LoseBomb(const int& _iBomb)			{ m_iBomb -= _iBomb; }
+	void			SetBomb(const int& _iBomb)			{ m_iBomb = _iBomb; }
 	
+	WEAPON			GetCurWeapon() const				{ return m_eCurWeapon; }
+	void			SetCurWeapon(WEAPON _eCurWeapon)	{ m_eCurWeapon = _eCurWeapon; }
+
 private:
 	void			BehaviourKeyInput();
 	void			AttackKeyInput();
+
 	void			Move();
 	void			Jump();
 	void			Drop();
 	void			Shoot();
+	void			Dead();
 
 	void			CheckOutOfBound();
 
@@ -47,6 +61,9 @@ private:
 private:
 	CAnimation*		m_pBodyAnim;
 	CAnimation*		m_pLegAnim;
+	CAnimation*		m_pDeadAnim;
+	CAnimation*		m_pSpawnAnim;
+	CGameObject*	m_pSpawnAnimObj;
 	CGameObject*	m_pCQCCol;
 	CGameObject*	m_pPlatformCol;
 
@@ -65,6 +82,10 @@ private:
 	float			m_fJumpSpeed;
 
 	bool			m_bIsDrop;
+
+	WEAPON			m_eCurWeapon;
+	int				m_iArmo;
+	int				m_iBomb;
 	
 private:
 	const float		n_fShootDelta				= 70.f;
@@ -75,6 +96,7 @@ private:
 	const Vector2	n_vPlayerColSitOffset		= Vector2(0.f, 96.f - 6.f);
 	const Vector2	n_vShootOffset				= Vector2(0.f, 60.f);
 	const Vector2	n_vShootSitOffset			= Vector2(0.f, 80.f);
+	const Vector2	n_vSpawnSize				= Vector2(768.f, 144.f);
 	const float		n_fScatterArg[5]			= { 0.f, 0.03f, -0.02f, 0.02f, -0.04f };
 	const char		n_cJumpKey = 'D';
 	const char		n_cAttackKey = 'A';

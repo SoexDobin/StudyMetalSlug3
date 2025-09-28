@@ -16,10 +16,12 @@ public:
 	virtual void					Sequence()			PURE;
 
 public:
-	void				SetSceneState(bool _bSet) 		{ m_bDestroyScene = _bSet; }
-	bool				GetSceneState() const			{ return m_bDestroyScene; }
-	void				DestroyScene() 					{ m_bDestroyScene = SCENE_DESTROY; }
+	Vector2				GetSpawnPoint()	const				{ return m_vSpawnPoint; }
+	void				SetSpawnPoint(const Vector2& _vPt)	{ m_vSpawnPoint = _vPt; }
+	bool				GetSceneState() const				{ return m_bDestroyScene; }
+	void				DestroyScene() 						{ m_bDestroyScene = SCENE_DESTROY; }
 
 protected:
 	bool				m_bDestroyScene;
+	Vector2				m_vSpawnPoint;
 };

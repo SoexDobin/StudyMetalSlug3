@@ -1,6 +1,8 @@
 #pragma once
 #include "CScene.h"
 
+class CGameObject;
+
 class CMission4BossStage final : public CScene
 {
 public: 
@@ -21,9 +23,17 @@ private:
 
 	void					CreatePlatform();
 	void					CreatetTriggerArea();
-	void					LoadBmpPyramidLandscape();
+	void					LoadBmpBossStageLandscape();
 	void					LoadBmpEnemy();
-private:
 
+private:
+	CGameObject*			m_pSolDaeLokker;
+	CGameObject*			m_pSolDaeLokkerDummy;
+
+	float					m_fIntroDelta;
+
+	int						m_iBGIdx;
+	float					m_fBGDelta;
+	vector<const TCHAR*>	m_vecBGKey;
 };
 

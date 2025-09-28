@@ -10,6 +10,10 @@ public:
 public:
 	bool			GetHasColWithPlatform()		{ return m_bFindPlatform; }
 	float			GetColTopPosition()			{ return m_fTop; }
+
+	void			SetOffset(const Vector2& _vOffset)	{ m_vOffset = _vOffset; }
+	const Vector2	GetOffset()							{ return m_vOffset; }
+
 public:
 	void			Initialize()																	override;
 	int				Update()																		override;
@@ -21,4 +25,5 @@ public:
 private:
 	bool			m_bFindPlatform;
 	float			m_fTop;
+	Vector2			m_vOffset;
 };

@@ -127,8 +127,56 @@
     <Filter Include="89. SoundManager">
       <UniqueIdentifier>{392d41cb-35bd-4651-989f-e2a2c6a69ddf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. GameObject\04. Enemy\99. SolDaeLokker">
+      <UniqueIdentifier>{14949700-df6c-4990-96bc-91d2427a002e}</UniqueIdentifier>
+    </Filter>
     <Filter Include="01. GameObject\08. TriggerZone">
       <UniqueIdentifier>{5066dc06-a65b-48ad-9918-a6183d20249b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\03. Projectile\99. YellowCorn">
+      <UniqueIdentifier>{139e0b38-bb0f-454c-b2b6-25ee257f381a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\03. Projectile\00. HeavyMachineGun">
+      <UniqueIdentifier>{053293b8-af83-400c-bf0b-98b7210496a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="88. ScoreManager">
+      <UniqueIdentifier>{f64b95f5-44d3-4388-a75a-f55095fcc4a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="87. UIManager">
+      <UniqueIdentifier>{c4b59ea6-a8a5-4881-b0c7-834ce34535f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\09. UI">
+      <UniqueIdentifier>{bc0cb338-6c7d-4965-bb20-9b46843dc307}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\09. UI\00. TimerUI">
+      <UniqueIdentifier>{a24cd0cc-0201-41ff-8eb3-bee38c48cc56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\09. UI\01. ScoreUI">
+      <UniqueIdentifier>{f07862aa-b9a2-47e6-a451-946ae420934a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\09. UI\02. MultiHitUI">
+      <UniqueIdentifier>{e659176b-02d0-483d-b234-5a2f8fcc8651}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\09. UI\03. ArmUI">
+      <UniqueIdentifier>{625f66c1-afe2-41ab-95af-0abc8fa5bf0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\10. DamageArea">
+      <UniqueIdentifier>{390de409-8f75-4273-b5f8-64f5924d2767}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\05. Particle\01. MissionStart">
+      <UniqueIdentifier>{5346a37f-82fb-4669-b462-82b3410e50e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\04. Enemy\01. Rebel">
+      <UniqueIdentifier>{0d6ffd16-d010-4eb6-a834-7add200741ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Scene\02. Barracks">
+      <UniqueIdentifier>{198cdeb5-5108-42e5-85f9-77008a7f03cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\03. Projectile\01. Bazooca">
+      <UniqueIdentifier>{22adb691-337c-4072-bb87-30f1d63d9388}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\11. Spawner">
+      <UniqueIdentifier>{c05bf732-0f81-447b-b7f1-0005d6634e04}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -213,7 +261,7 @@
     <ClInclude Include="tagLine.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CCQCArea.h">
+    <ClInclude Include="CCQCChecker.h">
       <Filter>01. GameObject\01. CQCArea</Filter>
     </ClInclude>
     <ClInclude Include="CEnemy.h">
@@ -224,9 +272,6 @@
     </ClInclude>
     <ClInclude Include="CMission4.h">
       <Filter>03. Scene\01. Mission4</Filter>
-    </ClInclude>
-    <ClInclude Include="CHMProjectile.h">
-      <Filter>01. GameObject\03. Projectile</Filter>
     </ClInclude>
     <ClInclude Include="CParticleManager.h">
       <Filter>90. ParticleManager</Filter>
@@ -239,9 +284,6 @@
     </ClInclude>
     <ClInclude Include="CColliderFactory.h">
       <Filter>92. Factory\01. ColliderFactory</Filter>
-    </ClInclude>
-    <ClInclude Include="CProjectileFactory.h">
-      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="CBulletHitParticle.h">
       <Filter>01. GameObject\05. Particle\00. BulletHit</Filter>
@@ -297,8 +339,74 @@
     <ClInclude Include="CChangeTrigger.h">
       <Filter>01. GameObject\08. TriggerZone</Filter>
     </ClInclude>
-    <ClInclude Include="CMission4Boss.h">
+    <ClInclude Include="CMission4BossStage.h">
       <Filter>03. Scene\01. Mission4</Filter>
+    </ClInclude>
+    <ClInclude Include="CSolDaeLokker.h">
+      <Filter>01. GameObject\04. Enemy\99. SolDaeLokker</Filter>
+    </ClInclude>
+    <ClInclude Include="CYellowCorn.h">
+      <Filter>01. GameObject\03. Projectile\99. YellowCorn</Filter>
+    </ClInclude>
+    <ClInclude Include="CHMProjectile.h">
+      <Filter>01. GameObject\03. Projectile\00. HeavyMachineGun</Filter>
+    </ClInclude>
+    <ClInclude Include="CUIObject.h">
+      <Filter>01. GameObject\09. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="CScoreManager.h">
+      <Filter>88. ScoreManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CUIManager.h">
+      <Filter>87. UIManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CProjectileFactory.h">
+      <Filter>92. Factory\02. ProjectileFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="CTimerUI.h">
+      <Filter>01. GameObject\09. UI\00. TimerUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CScoreUI.h">
+      <Filter>01. GameObject\09. UI\01. ScoreUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CMultiHitUI.h">
+      <Filter>01. GameObject\09. UI\02. MultiHitUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CArmUI.h">
+      <Filter>01. GameObject\09. UI\03. ArmUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CEriSpawn.h">
+      <Filter>01. GameObject\00. Eri</Filter>
+    </ClInclude>
+    <ClInclude Include="CExplodeArea.h">
+      <Filter>01. GameObject\10. DamageArea</Filter>
+    </ClInclude>
+    <ClInclude Include="CMissionStart4.h">
+      <Filter>01. GameObject\05. Particle\01. MissionStart</Filter>
+    </ClInclude>
+    <ClInclude Include="CCQCArea.h">
+      <Filter>01. GameObject\10. DamageArea</Filter>
+    </ClInclude>
+    <ClInclude Include="CRebel.h">
+      <Filter>01. GameObject\04. Enemy\01. Rebel</Filter>
+    </ClInclude>
+    <ClInclude Include="CCharacterSelect.h">
+      <Filter>03. Scene\02. Barracks</Filter>
+    </ClInclude>
+    <ClInclude Include="CRebelBazooca.h">
+      <Filter>01. GameObject\04. Enemy\01. Rebel</Filter>
+    </ClInclude>
+    <ClInclude Include="CBazooca.h">
+      <Filter>01. GameObject\03. Projectile\01. Bazooca</Filter>
+    </ClInclude>
+    <ClInclude Include="CDummy.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CManEaterArea.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CSpawner.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -368,7 +476,7 @@
     <ClCompile Include="CLine.cpp">
       <Filter>91. LineManager\00. Line</Filter>
     </ClCompile>
-    <ClCompile Include="CCQCArea.cpp">
+    <ClCompile Include="CCQCChecker.cpp">
       <Filter>01. GameObject\01. CQCArea</Filter>
     </ClCompile>
     <ClCompile Include="CEnemy.cpp">
@@ -379,9 +487,6 @@
     </ClCompile>
     <ClCompile Include="CMission4.cpp">
       <Filter>03. Scene\01. Mission4</Filter>
-    </ClCompile>
-    <ClCompile Include="CHMProjectile.cpp">
-      <Filter>01. GameObject\03. Projectile</Filter>
     </ClCompile>
     <ClCompile Include="CParticleManager.cpp">
       <Filter>90. ParticleManager</Filter>
@@ -416,8 +521,71 @@
     <ClCompile Include="CChangeTrigger.cpp">
       <Filter>01. GameObject\08. TriggerZone</Filter>
     </ClCompile>
-    <ClCompile Include="CMission4Boss.cpp">
+    <ClCompile Include="CMission4BossStage.cpp">
       <Filter>03. Scene\01. Mission4</Filter>
+    </ClCompile>
+    <ClCompile Include="CSolDaeLokker.cpp">
+      <Filter>01. GameObject\04. Enemy\99. SolDaeLokker</Filter>
+    </ClCompile>
+    <ClCompile Include="CYellowCorn.cpp">
+      <Filter>01. GameObject\03. Projectile\99. YellowCorn</Filter>
+    </ClCompile>
+    <ClCompile Include="CHMProjectile.cpp">
+      <Filter>01. GameObject\03. Projectile\00. HeavyMachineGun</Filter>
+    </ClCompile>
+    <ClCompile Include="CUIObject.cpp">
+      <Filter>01. GameObject\09. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CScoreManager.cpp">
+      <Filter>88. ScoreManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CUIManager.cpp">
+      <Filter>87. UIManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CTimerUI.cpp">
+      <Filter>01. GameObject\09. UI\00. TimerUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CScoreUI.cpp">
+      <Filter>01. GameObject\09. UI\01. ScoreUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CMultiHitUI.cpp">
+      <Filter>01. GameObject\09. UI\02. MultiHitUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CArmUI.cpp">
+      <Filter>01. GameObject\09. UI\03. ArmUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CEriSpawn.cpp">
+      <Filter>01. GameObject\00. Eri</Filter>
+    </ClCompile>
+    <ClCompile Include="CExplodeArea.cpp">
+      <Filter>01. GameObject\10. DamageArea</Filter>
+    </ClCompile>
+    <ClCompile Include="CMissionStart4.cpp">
+      <Filter>01. GameObject\05. Particle\01. MissionStart</Filter>
+    </ClCompile>
+    <ClCompile Include="CCQCArea.cpp">
+      <Filter>01. GameObject\10. DamageArea</Filter>
+    </ClCompile>
+    <ClCompile Include="CRebel.cpp">
+      <Filter>01. GameObject\04. Enemy\01. Rebel</Filter>
+    </ClCompile>
+    <ClCompile Include="CCharacterSelect.cpp">
+      <Filter>03. Scene\02. Barracks</Filter>
+    </ClCompile>
+    <ClCompile Include="CRebelBazooca.cpp">
+      <Filter>01. GameObject\04. Enemy\01. Rebel</Filter>
+    </ClCompile>
+    <ClCompile Include="CBazooca.cpp">
+      <Filter>01. GameObject\03. Projectile\01. Bazooca</Filter>
+    </ClCompile>
+    <ClCompile Include="CDummy.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CManEaterArea.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CSpawner.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

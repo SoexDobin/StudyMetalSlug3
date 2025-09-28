@@ -12,13 +12,15 @@ public:
 public:
 	CGameObject*	GetParent()		 						{ return m_pParent; }
 	bool			GetIsCollision() const					{ return m_bIsCol; }
+	bool			GetEnableCol() const					{ return m_bEnableCol; }
 	Vector2			GetPivot() const						{ return m_vPivot; }
 	Vector2			GetSize() const							{ return m_vSize; }
 	Vector2			GetOffset() const						{ return m_vOffset; }
 	COLLIDER_TYPE	GetColType() const						{ return m_eType; }
 
 	void			SetParent(CGameObject* _pObj)			{ m_pParent = _pObj; }
-	void			SetCollision(const bool& _bCol)			{ m_bIsCol = _bCol; }
+	void			SetIsCollision(const bool& _bCol)			{ m_bIsCol = _bCol; }
+	void			SetEnableCol(const bool& _bEnableCol)	{ m_bEnableCol = _bEnableCol; }
 	void			SetPivot(const Vector2& _vPivot)		{ m_vPivot = _vPivot; }
 	void			SetSize(const Vector2& _vSize)			{ m_vSize = _vSize; }
 	void			SetOffset(const Vector2& _vOffset)		{ m_vOffset = _vOffset; }
@@ -35,6 +37,7 @@ public:
 
 protected:
 	CGameObject*		m_pParent;
+	bool				m_bEnableCol;
 	bool				m_bIsCol;
 	RECT				m_tRect;
 	Vector2				m_vPivot;

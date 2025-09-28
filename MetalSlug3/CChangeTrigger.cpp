@@ -53,6 +53,6 @@ void CChangeTrigger::OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISIO
     {
         m_bDestroy = true;
         SafeDelete<CCollider*>(m_pColBox);
-        CSceneManager::GetInstance().GetCurScene()->SetSceneState(SCENE_DESTROY);
+        CSceneManager::GetInstance().GetCurScene()->DestroyScene();
     }
 }

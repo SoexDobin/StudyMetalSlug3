@@ -8,9 +8,9 @@
 #include "CParticleManager.h"
 #include "CScrollManager.h"
 #include "CBmpManager.h"
+#include "CScoreManager.h"
 
 CHMProjectile::CHMProjectile()
-    : m_vSpeed({ 1000.f, 1000.f })
 {
 }
 
@@ -25,6 +25,8 @@ void CHMProjectile::Initialize()
     m_pColBox = CColliderFactory::Create(this, HITBOX);
     m_pColBox->SetSize( m_vSize/ 3.f );
     m_iDamage = 1;
+    m_fSpeed = 1000.f;
+    m_eDamageFlag = ENEMY;
     
     __super::UpdateGameObject();
 }
@@ -35,7 +37,7 @@ int CHMProjectile::Update()
 
     __super::UpdateGameObject();
 
-    m_vPivot += m_vSpeed * m_vDirection * DELTA;
+    m_vPivot += m_vDirection * m_fSpeed * DELTA;
 
     return OBJ_NOEVENT;
 }
@@ -74,28 +76,39 @@ void CHMProjectile::OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION
 
     bool pPassThroughPlat = false;
     if (_pCol->GetObjectType() == PLATFORM)
+    {
         pPassThroughPlat = dynamic_cast<CPlatform*>(_pCol)->GetProjectilePass();
 
-    if (_pCol->GetObjectType() == ENEMY || !pPassThroughPlat)
-    {
-        Vector2 vParticleOffset{ 0.f, 0.f };
+        if (pPassThroughPlat) return;
 
-        switch (_eFlag)
-        {
-        case LEFT_COL:  vParticleOffset = Vector2(-m_vSize.x / 2.f, 0.f);
-            break;
-        case RIGHT_COL: vParticleOffset = Vector2(m_vSize.x / 2.f, 0.f);
-            break;
-        case UP_COL:    vParticleOffset = Vector2(0.f, -m_vSize.y / 2.f);
-            break;
-        case DOWN_COL:  vParticleOffset = Vector2(0.f, m_vSize.y / 2.f);
-            break;
-        default:
-            break;
-        }
-
-        CParticleManager::GetInstance().CreateParticle<CBulletHitParticle>(m_vPivot + vParticleOffset);
-        m_bDestroy = OBJ_DESTROY;
-        SafeDelete<CCollider*>(m_pColBox);
+        Hit(_eFlag);
     }
+    else if (_pCol->GetObjectType() == ENEMY)
+    {
+        Hit(_eFlag);
+        CScoreManager::GetInstance().ACCScore(100);
+    }
+}
+
+void CHMProjectile::Hit(COLLISION_COL_FLAG _eFlag)
+{
+    Vector2 vParticleOffset{ 0.f, 0.f };
+
+    switch (_eFlag)
+    {
+    case LEFT_COL:  vParticleOffset = Vector2(-m_vSize.x / 2.f, 0.f);
+        break;
+    case RIGHT_COL: vParticleOffset = Vector2(m_vSize.x / 2.f, 0.f);
+        break;
+    case UP_COL:    vParticleOffset = Vector2(0.f, -m_vSize.y / 2.f);
+        break;
+    case DOWN_COL:  vParticleOffset = Vector2(0.f, m_vSize.y / 2.f);
+        break;
+    default:
+        break;
+    }
+
+    CParticleManager::GetInstance().CreateParticle<CBulletHitParticle>(m_vPivot + vParticleOffset);
+    m_bDestroy = OBJ_DESTROY;
+    SafeDelete<CCollider*>(m_pColBox);
 }

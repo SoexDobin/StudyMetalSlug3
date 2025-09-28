@@ -16,6 +16,8 @@
 #include "CScrollManager.h"
 #include "CParticleManager.h"
 #include "CSoundManager.h"
+#include "CUIManager.h"
+#include "CScoreManager.h"
 
 CGame::CGame()
 	: m_hDC(nullptr)
@@ -43,6 +45,8 @@ void CGame::Initialize()
 	CSceneManager::GetInstance().Initialize();
 	CParticleManager::GetInstance().Initialize();
 	CTimeManager::GetInstance().Initialize();
+	CUIManager::GetInstance().Initialize();
+	CScoreManager::GetInstance().Initialize();
 }
 
 void CGame::Update()
@@ -50,12 +54,15 @@ void CGame::Update()
 	CTimeManager::GetInstance().Update();
 	CSceneManager::GetInstance().Update();
 	CParticleManager::GetInstance().Update();
+	CUIManager::GetInstance().Update();
 }
 
 void CGame::LateUpdate()
 {
 	CSceneManager::GetInstance().LateUpdate();
 	CParticleManager::GetInstance().LateUpdate();
+	CUIManager::GetInstance().LateUpdate();
+
 	CKeyManager::GetInstance().KeyUpdate();
 }
 
@@ -66,7 +73,9 @@ void CGame::Render()
 
 	CSceneManager::GetInstance().Render(m_hDCBack);
 	CParticleManager::GetInstance().Render(m_hDCBack);
-	CLineManager::GetInstance().Render(m_hDCBack);
+	CUIManager::GetInstance().Render(m_hDCBack);
+
+	//CLineManager::GetInstance().Render(m_hDCBack);
 }
 
 void CGame::Release()
@@ -74,7 +83,6 @@ void CGame::Release()
 #ifdef _DEBUG
 FreeConsole();
 #endif
-	CSoundManager::DeleteInstance();
 	CSceneManager::DeleteInstance();
 	CKeyManager::DeleteInstance();
 	CBmpManager::DeleteInstance();
@@ -84,6 +92,10 @@ FreeConsole();
 	CCollisionManager::DeleteInstance();
 	CScrollManager::DeleteInstance();
 	CParticleManager::DeleteInstance();
+	CUIManager::DeleteInstance();
+	CScoreManager::DeleteInstance();
+	CSoundManager::DeleteInstance();
+	
 
 	ReleaseDC(g_hWnd, m_hDC);
 }

@@ -8,7 +8,7 @@
 CCollider::CCollider() 
 	: m_pParent(nullptr)
 	, m_eType(COL_TYPE_END)
-	, m_bIsCol(false), m_eRenderType(RECT_COL)
+	, m_bEnableCol(true), m_bIsCol(false), m_eRenderType(RECT_COL)
 	, m_dwRGB(0)
 {
 	ZeroMemory(&m_tRect, sizeof(RECT));

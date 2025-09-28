@@ -63,5 +63,9 @@ void CParticleManager::Initialize()
 {
 	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Particle/BulletHit.bmp"
 		, L"BulletHit");
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Particle/Mission4Start/Mission4Start.bmp"
+		, L"Mission4Start");
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Particle/Mission4Start/Mission4Start_Blank.bmp"
+		, L"Mission4Start_Blank");
 }
 

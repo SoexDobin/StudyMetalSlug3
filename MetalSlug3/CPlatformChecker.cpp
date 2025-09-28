@@ -6,6 +6,7 @@
 CPlatformChecker::CPlatformChecker()
 	: m_bFindPlatform(false), m_fTop(0.f)
 {
+	ZeroMemory(&m_vOffset, sizeof(Vector2));
 }
 
 CPlatformChecker::~CPlatformChecker()
@@ -15,19 +16,20 @@ CPlatformChecker::~CPlatformChecker()
 
 void CPlatformChecker::Initialize()
 {
+	m_vPivot = m_pParent->GetPivot() + m_vOffset;
 	m_eType = NEUTRAL;
-	m_vPivot = m_pParent->GetPivot();
 	m_vSize = Vector2(16.f, 16.f);
 
 	m_pColBox = CColliderFactory::Create(this, HITBOX);
-	CCollider* pParentCol = m_pParent->GetCollider();
 }
 
 int CPlatformChecker::Update()
 {
-	if (m_pParent == nullptr) return OBJ_DESTROY;
+	if (m_pParent == nullptr && m_bDestroy) 
+		return OBJ_DESTROY;
 
 	__super::UpdateGameObject();
+	m_vPivot = m_pParent->GetPivot() + m_vOffset;
 
 	return OBJ_NOEVENT;
 }
@@ -44,7 +46,7 @@ void CPlatformChecker::Render(HDC _hDC)
 
 void CPlatformChecker::Release()
 {
-	//m_pParent = nullptr;
+	m_pParent = nullptr;
 	SafeDelete<CCollider*>(m_pColBox);
 }
 

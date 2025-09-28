@@ -2,6 +2,7 @@
 #include "CSingleTon.h"
 #include "Define.h"
 
+class CUIObject;
 class CGameObject;
 class CScene;
 
@@ -21,10 +22,16 @@ public:
 	
 	void			NextSceneSequence();
 	CScene*			ChangeScene(SCENETAG _eTag);
-
+	
 public:
 	CScene*			GetCurScene() 			{ return m_pScene; };
+	SCENETAG		GetCurSceneType()		{ return m_eCurScene; };
+	CGameObject*	GetCurPlayer()			{ return m_pPlayer; }
 	
+	void			DisableSceneUI();
+	void			EnableSceneUI();
+	
+
 private:
 	CScene*			m_pScene;
 	CScene*			m_pPrevScene;
@@ -33,6 +40,14 @@ private:
 
 // [!]NOTICE	Don't Destroy On SCENE
 private:
-	CGameObject*	ref_pPlayer;
+	CGameObject*	m_pPlayer;
+
+	CUIObject*		m_pTimerUI;
+	CUIObject*		m_pScoreUI;
+	CUIObject*		m_pMultiHitUI;
+	CUIObject*		m_pArmBoxUI;
+
+	// ÄÚÀÎ, ¸ñ¼û
+	// 
 };
 

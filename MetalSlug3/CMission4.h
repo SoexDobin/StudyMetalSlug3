@@ -29,6 +29,7 @@ private:
 private:
 	int						m_iScrollLockIdx;
 	float					m_fDelta;
+	float					m_fBackAttackDelta;
 
 	vector<CGameObject*>	m_vecPlatform;
 
@@ -39,11 +40,12 @@ private:
 	
 
 private:
-	Vector2		n_vDesertMaxLockPoints[3] =
+	Vector2		n_vDesertMaxLockPoints[4] =
 	{
-		Vector2(2480.f, (float)WINCY),
+		Vector2(960.f, (float)WINCY),
+		Vector2(2040.f, (float)WINCY),
+		Vector2(3840.f, (float)WINCY),
 		Vector2(6526.f, (float)WINCY),
-		Vector2(  )
 	};
 };
 

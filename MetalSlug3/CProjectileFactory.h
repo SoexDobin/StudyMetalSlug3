@@ -1,12 +1,23 @@
 #pragma once
 #include "CProjectile.h"
-#include "CHMProjectile.h"
 #include "CObjectManager.h"
 
 template <typename T>
 class CProjectileFactory
 {
 public:
+	static void CreateProjectile(Vector2 _vPivot, Vector2 _vDir, int _iLayer, float _fAngle = 0.f)
+	{
+		CProjectile* pProjectile = new T();
+		pProjectile->SetAngle(_fAngle);
+		pProjectile->SetPivot(_vPivot);
+		pProjectile->SetDirection(_vDir);
+		pProjectile->SetImgLayer(_iLayer);
+
+		pProjectile->Initialize();
+
+		CObjectManager::GetInstance().AddGameObject(pProjectile, PROJECTILE);
+	}
 	static void CreateProjectile(Vector2 _vPivot)
 	{
 		CProjectile* pProjectile = new T();
@@ -14,10 +25,10 @@ public:
 		pProjectile->SetPivot(_vPivot);
 		CObjectManager::GetInstance().AddGameObject(pProjectile, PROJECTILE);
 	}
-	static void CreateProjectile(Vector2 _vPivot, Vector2 _vDir, const TCHAR* _szImgKey, int _iLayer)
+	static void CreateProjectile(Vector2 _vPivot, Vector2 _vDir, const TCHAR* _szImgKey, int _iLayer, float _fAngle = 0.f)
 	{
 		CProjectile* pProjectile = new T();
-
+		pProjectile->SetAngle(_fAngle);
 		pProjectile->SetPivot(_vPivot);
 		pProjectile->SetDirection(_vDir);
 		pProjectile->SetImgKey(_szImgKey);

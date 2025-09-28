@@ -2,9 +2,13 @@
 #include "CEri.h"
 #include "CHitBox.h"
 #include "CAnimation.h"
-#include "CCQCArea.h"
+#include "CCQCChecker.h"
 #include "CHMProjectile.h"
 #include "CPlatformChecker.h"
+#include "CCQCArea.h"
+#include "CExplodeArea.h"
+#include "CEriSpawn.h"
+#include "CScene.h"
 
 // Managers
 #include "CBmpManager.h"
@@ -16,15 +20,20 @@
 #include "CObjectManager.h"
 #include "CProjectileFactory.h"
 #include "CLineManager.h"
+#include "CSoundManager.h"
+#include "CSceneManager.h"
 
 CEri::CEri()
-	: m_pBodyAnim(nullptr), m_pLegAnim(nullptr), m_pCQCCol(nullptr), m_pPlatformCol(nullptr)
+	: m_pDeadAnim(nullptr), m_pBodyAnim(nullptr), m_pLegAnim(nullptr)
+	, m_pSpawnAnim(nullptr), m_pSpawnAnimObj(nullptr)
+	, m_pCQCCol(nullptr), m_pPlatformCol(nullptr)
 	, m_eCurBodyState(PLAYER_STATE_END), m_ePrevBodyState(PLAYER_STATE_END)
 	, m_eCurLegState(PLAYER_STATE_END), m_ePrevLegState(PLAYER_STATE_END)
 	, m_fMoveSpeed(0.f), m_fCrawlSpeed(0.f)
 	, m_fJumpSpeed(0.f), m_bIsJump(false)
 	, m_bIsDrop(true)
 	, m_iScatterIdx(0), m_fShootDelta(0.f)
+	, m_iArmo(INFINITE), m_iBomb(0), m_eCurWeapon(HM_GUN)
 {
 }
 
@@ -35,8 +44,14 @@ CEri::~CEri()
 
 void CEri::Initialize()
 {
+
+
+	LoadProjectileBmp();
+	LoadEriBmp();
+
 	m_vPivot = Vector2(200, 480);
 	m_vSize = Vector2(PLAYER_BMPX, PLAYER_BMPY);
+
 	m_vFace = Vector2::UnitX;
 	m_vDirection = Vector2(0.f, 0.f);
 	m_fMoveSpeed = 500.f;
@@ -45,35 +60,83 @@ void CEri::Initialize()
 	m_eType = PLAYER;
 
 	m_pColBox = CColliderFactory::Create(this, HITBOX);;
-
-	m_pCQCCol = CGameObjectFactory<CCQCArea>::Create(Vector2::Zero, Vector2::Zero, this);
+	m_pCQCCol = CGameObjectFactory<CCQCChecker>::Create(Vector2::Zero, Vector2::Zero, this);
 	CObjectManager::GetInstance().AddGameObject(m_pCQCCol, NEUTRAL);
 
 	m_pPlatformCol = CGameObjectFactory<CPlatformChecker>::Create(Vector2::Zero, Vector2::Zero, this);
 	CObjectManager::GetInstance().AddGameObject(m_pPlatformCol, NEUTRAL);
 
-	SetStandCollider();
+	m_pSpawnAnimObj = new CEriSpawn();
+	m_pSpawnAnimObj->Initialize();
+	m_pSpawnAnim = dynamic_cast<CEriSpawn*>(m_pSpawnAnimObj)->GetSpawnAnimation();
+	m_pSpawnAnimObj->SetPivot(m_vPivot);
 
-	LoadProjectileBmp();
-	LoadEriBmp();
 	m_ePrevBodyState = IDLE;
 	m_ePrevLegState = IDLE;
-	m_pBodyAnim->ChangeAnimation(L"Eri_Standing_Idle_Body");
+	m_eCurBodyState = RESPAWN;
+	m_eCurLegState = RESPAWN;
+	
 	m_pBodyAnim->SetFrameSpeed(0.07f);
-	m_pLegAnim->ChangeAnimation(L"Eri_Standing_Idle_Leg");
 	m_pLegAnim->SetFrameSpeed(0.07f);
 
+	m_pBodyAnim->ChangeAnimation(L"Eri_Blank_Body");
+	m_pLegAnim->ChangeAnimation(L"Eri_Blank_Body");
+	m_pSpawnAnim->ChangeAnimation(L"Eri_Spawn");
+
+	SetStandCollider();
 	srand(static_cast<int>(DELTA));
 	m_fJumpSpeed = n_fSeedJumpSpeed;
 }
 
 int CEri::Update()
 {
+
 	if (m_bDestroy) return OBJ_DESTROY;
+
+	if (CKeyManager::GetInstance().KeyPressing(VK_F4))
+	{
+		Dead();
+	}
+	
+	__super::UpdateGameObject();
+	m_pSpawnAnimObj->SetPivot(Vector2(m_vPivot.x, m_vPivot.y - 240.f));
+	if (m_eCurBodyState == RESPAWN)
+	{
+		m_pSpawnAnimObj->Update();
+		if (m_pSpawnAnim->GetEndOneLoop())
+		{
+			m_pColBox->SetEnableCol(true);
+			SetBodyAnim(L"Eri_Standing_Idle_Body", true, IDLE, 1);
+			SetLegAnim(L"Eri_Standing_Idle_Leg", true, IDLE, 1);
+			m_pSpawnAnim->ChangeAnimation(L"Eri_Spawn_Blank");
+
+			return OBJ_NOEVENT;
+		}
+		return OBJ_NOEVENT;
+	}
+
+	if (m_eCurBodyState == DEAD)
+	{
+		if (m_pDeadAnim->GetEndOneLoop())
+		{
+			m_eCurBodyState = RESPAWN;
+			m_eCurLegState = RESPAWN;
+
+			m_vPivot = CSceneManager::GetInstance().GetCurScene()->GetSpawnPoint();
+			m_pSpawnAnimObj->SetPivot(m_vPivot);
+			m_pDeadAnim->ChangeAnimation(L"Eri_Blank_Body");
+			m_pSpawnAnim->ChangeAnimation(L"Eri_Spawn");
+			m_pSpawnAnim->SetLoop(false);
+
+			return OBJ_NOEVENT;
+		}
+
+		m_pDeadAnim->UpdateAnimation();
+		return OBJ_NOEVENT;
+	}
 
 	m_pBodyAnim->UpdateAnimation();
 	m_pLegAnim->UpdateAnimation();
-	__super::UpdateGameObject();
 
 	m_fShootDelta -= 1000.f * DELTA;
 
@@ -87,6 +150,11 @@ int CEri::Update()
 
 void CEri::LateUpdate()
 {
+	if (m_eCurBodyState == DEAD || m_eCurBodyState == RESPAWN)
+	{
+		return;
+	}
+
 	if (m_eCurBodyState == SIT)
 		SetSitCollider();
 	else
@@ -96,11 +164,22 @@ void CEri::LateUpdate()
 	Jump();
 	Drop();
 	Shoot();
-	
 }
 
 void CEri::Render(HDC _hDC)
 {
+	if (m_eCurBodyState == RESPAWN)
+	{
+		m_pSpawnAnimObj->Render(_hDC);
+		return;
+	}
+
+	if (m_eCurBodyState == DEAD)
+	{
+		m_pDeadAnim->RenderAnimation(_hDC);
+		return;
+	}
+
 	m_pLegAnim->RenderAnimation(_hDC);
 	m_pBodyAnim->RenderAnimation(_hDC);
 
@@ -112,20 +191,29 @@ void CEri::Release()
 {
 	SafeDelete<CAnimation*>(m_pBodyAnim);
 	SafeDelete<CAnimation*>(m_pLegAnim);
+	SafeDelete<CAnimation*>(m_pDeadAnim);
+	m_pSpawnAnim = nullptr;
+	SafeDelete<CGameObject*>(m_pSpawnAnimObj);
 	//SafeDelete(m_pCQCCol);
 	//SafeDelete(m_pPlatformCol); 
 }
 
 void CEri::OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)
 {
-	switch (_pCol->GetObjectType())
+	if (_pCol->GetObjectType() == PROJECTILE)
 	{
-	case ENEMY:
-		break;
-	case PLATFORM:
-		break;
-	default:
-		break;
+		if (dynamic_cast<CProjectile*>(_pCol)->GetDamageFlag() == PLAYER)
+		{
+			Dead();
+		}
+
+	}
+	else if (_pCol->GetObjectType() == EXPLODE)
+	{
+		if (dynamic_cast<CExplodeArea*>(_pCol)->GetDamageFlag() == PLAYER)
+		{
+			Dead();
+		}
 	}
 }
 
@@ -212,10 +300,11 @@ void CEri::BehaviourKeyInput()
 
 void CEri::AttackKeyInput()
 {
-	bool bHasEnemy = dynamic_cast<CCQCArea*>(m_pCQCCol)->CatchEnemyCQCZone();
+	bool bHasEnemy = dynamic_cast<CCQCChecker*>(m_pCQCCol)->CatchEnemyCQCZone();
 
-	if (m_eCurBodyState == SIT)
+	if (m_eCurBodyState == SIT) 
 	{
+		if (m_ePrevLegState == CQC && !m_pLegAnim->GetEndOneLoop()) return;
 		m_pBodyAnim->SetLoop(true);
 		if (CKeyManager::GetInstance().KeyPressing(n_cAttackKey))
 		{
@@ -230,10 +319,18 @@ void CEri::AttackKeyInput()
 
 			if (bHasEnemy)
 			{
-				if (m_pBodyAnim->GetCurrentFrameIndex() < m_pBodyAnim->GetEndFrameIndex() - 1)
+				if (m_pLegAnim->GetEndOneLoop() == false)
 					return;
-
-				SetLegAnim(L"Eri_Sit_CQC", true, CQC);
+				
+				SetLegAnim(L"Eri_Sit_CQC", false, CQC);
+				CSoundManager::GetInstance().PlaySound(L"CQC_Tonfa.mp3", PLAYER_ATTACK, 0.2f);
+				if (m_pLegAnim->GetEndOneLoop())
+				{
+					m_pLegAnim->SetEndOneLoop(false);
+					
+					CObjectManager::GetInstance().AddGameObject(
+						CGameObjectFactory<CCQCArea>::Create(m_vPivot, Vector2(64.f, 64.f)), EXPLODE);
+				}
 				return;
 			}
 
@@ -259,16 +356,38 @@ void CEri::AttackKeyInput()
 	}
 	else
 	{
+		if (m_ePrevBodyState == CQC && !m_pBodyAnim->GetEndOneLoop())
+			return;
 		if (CKeyManager::GetInstance().KeyPressing(n_cAttackKey))
 		{
 			if (bHasEnemy)
 			{
 				int irand = rand() % 2;
-				if (m_pBodyAnim->GetCurrentFrameIndex() < m_pBodyAnim->GetEndFrameIndex() - 1)
-					return;
 
-				if (irand)		SetBodyAnim(L"Eri_Standing_AxeCQC_Body", true, CQC);
-				else			SetBodyAnim(L"Eri_Standing_TonfaCQC_Body", true, CQC);
+				
+
+				if (irand) 
+				{
+					SetBodyAnim(L"Eri_Standing_AxeCQC_Body", false, CQC);
+					CSoundManager::GetInstance().PlaySound(L"CQC_Axe.mp3", PLAYER_ATTACK, 0.2f);
+					CObjectManager::GetInstance().AddGameObject(
+						CGameObjectFactory<CCQCArea>::Create(m_vPivot, Vector2(64.f, 64.f)), EXPLODE);
+					if (m_pBodyAnim->GetEndOneLoop())
+					{
+						m_pBodyAnim->SetEndOneLoop(false);
+					}
+				}
+				else 
+				{
+					SetBodyAnim(L"Eri_Standing_TonfaCQC_Body", false, CQC);
+					CSoundManager::GetInstance().PlaySound(L"CQC_Tonfa.mp3", PLAYER_ATTACK, 0.2f);
+					CObjectManager::GetInstance().AddGameObject(
+						CGameObjectFactory<CCQCArea>::Create(m_vPivot, Vector2(64.f, 64.f)), EXPLODE);
+					if (m_pBodyAnim->GetEndOneLoop())
+					{
+						m_pBodyAnim->SetEndOneLoop(false);
+					}
+				}	
 				return;
 			}
 
@@ -346,8 +465,6 @@ void CEri::Jump()
 
 void CEri::Drop()
 {
-	// TODO : 그냥 드롭일 때 m_fJumpSpeed 에 -1곱해야 함
-
 	if (m_bIsDrop)
 	{
 		m_fJumpSpeed += DELTA * n_fFallSpeed;
@@ -399,9 +516,25 @@ void CEri::Shoot()
 			::CreateProjectile(vPos, Vector2(n_fScatterArg[m_iScatterIdx], 1.f), L"HeavyMachineGunProjectile_Down", 0);
 	}
 
-	
+	if (m_eCurWeapon == HM_GUN && m_iScatterIdx % 2 == 1)
+	{
+		CSoundManager::GetInstance().PlaySound(L"HM_Shoot.mp3", PLAYER_ATTACK, 0.1f);
+	}
+
 	m_iScatterIdx = (m_iScatterIdx + 1) % 5;
 	m_fShootDelta = n_fShootDelta;
+}
+
+
+void CEri::Dead()
+{
+	SetBodyAnim(L"Eri_Blank_Body", false, DEAD);
+	SetLegAnim(L"Eri_Blank_Body", false, DEAD);
+	m_pSpawnAnim->ChangeAnimation(L"Eri_Spawn_Blank");
+
+	m_pColBox->SetEnableCol(false);
+	m_pDeadAnim->ChangeAnimation(L"Eri_Dead");
+	m_pDeadAnim->SetLoop(false);
 }
 
 void CEri::CheckOutOfBound()
@@ -418,12 +551,7 @@ void CEri::CheckOutOfBound()
 void CEri::CheckPlatform()
 {
 	bool bColPlatform = dynamic_cast<CPlatformChecker*>(m_pPlatformCol)->GetHasColWithPlatform();
-	//if (bColPlatform)
-	//{ 
-	//	float fPosY = dynamic_cast<CPlatformChecker*>(m_pPlatformCol)->GetColTopPosition();
-	//	m_vPivot.y = fPosY - (m_pColBox->GetSize().y / 2.f) - m_pColBox->GetOffset().y;
-	//	//m_vPivot.y -= fabsf(fPosY - (m_pColBox->GetPivot().y + m_pColBox->GetSize().y / 2.f));
-	//}	
+
 	float fLineChecker = 0.f;
 	Vector2 vPos = Vector2(static_cast<int>(m_pPlatformCol->GetRect().right), static_cast<int>(m_pPlatformCol->GetRect().top));
 	if (CLineManager::GetInstance().CollisionLine(vPos, &fLineChecker))
@@ -521,10 +649,14 @@ void CEri::LoadEriBmp()
 {
 	m_pBodyAnim = new CAnimation();
 	m_pLegAnim = new CAnimation();
+	m_pDeadAnim = new CAnimation();
+
 
 	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Eri/Eri_Blank_Body.bmp"
 		, L"Eri_Blank_Body");
 	m_pBodyAnim->AddAnimation(L"Eri_Blank_Body", pair<int, int>{0, 1});
+	m_pLegAnim->AddAnimation(L"Eri_Blank_Body", pair<int, int>{0, 1});
+	m_pDeadAnim->AddAnimation(L"Eri_Blank_Body", pair<int, int>{0, 1});
 	// sit
 	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Eri/Eri_Sit_CQC.bmp"
 		, L"Eri_Sit_CQC");
@@ -607,10 +739,16 @@ void CEri::LoadEriBmp()
 	m_pBodyAnim->AddAnimation(L"Eri_Standing_ShootFrontToUp_Body", pair<int, int>{0, 2});
 	m_pBodyAnim->AddAnimation(L"Eri_Standing_ShootUpToFront_Body", pair<int, int>{0, 2});
 
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Eri/Eri_Dead.bmp",
+		L"Eri_Dead");
+	m_pDeadAnim->AddAnimation(L"Eri_Dead", pair<int, int>{0, 20});
+
 	m_pBodyAnim->Initialize();
 	m_pLegAnim->Initialize();
+	m_pDeadAnim->Initialize();
 	m_pBodyAnim->SetParent(this);
 	m_pLegAnim->SetParent(this);
+	m_pDeadAnim->SetParent(this);
 }
 
 void CEri::LoadProjectileBmp()

@@ -4,6 +4,7 @@
 #include "CPlatform.h"
 #include "CSequenceTrigger.h"
 #include "CChangeTrigger.h"
+#include "CSpawner.h"
 
 #include "CBmpManager.h"
 #include "CObjectManager.h"
@@ -26,11 +27,10 @@ CMission4Pyramid::~CMission4Pyramid()
 
 void CMission4Pyramid::Initialize()
 {
-    CObjectManager::GetInstance().GetGameObjectList(PLAYER).front()->SetPivot(Vector2(100, 650 - WINCY));
+    CObjectManager::GetInstance().GetGameObjectList(PLAYER).front()->SetPivot(Vector2(-100, 650 - WINCY));
 
-    CScrollManager::GetInstance().SetScrollX(0);
-    CScrollManager::GetInstance().SetScrollY(WINCY);
-    CScrollManager::GetInstance().SetMinScrollLockY(-WINCY);
+    CScrollManager::GetInstance().ForceScrollX(0);
+    CScrollManager::GetInstance().ForceScrollY(WINCY);
 
     LoadBmpPyramidLandscape();
     LoadBmpEnemy();
@@ -45,7 +45,8 @@ void CMission4Pyramid::Initialize()
 
 pair<bool, SCENETAG> CMission4Pyramid::Update()
 {
-    if (m_bDestroyScene) return pair<bool, SCENETAG>{SCENE_DESTROY, MISSION_SCENE_3};
+    if (m_bDestroyScene) 
+        return pair<bool, SCENETAG>{SCENE_DESTROY, MISSION_SCENE_3};
 
     CObjectManager::GetInstance().Update();
 
@@ -74,11 +75,6 @@ void CMission4Pyramid::Release()
 
 void CMission4Pyramid::Sequence()
 {
-    // TODO : 최소 스크롤 막을 수 있어야함
-    // MINX 적용시 같이 하면 될 듯
-    std::wcout << m_iScrollLockIdx << L"\n";
-    
-
     CScrollManager::GetInstance().SetMinScrollLockX(n_vPyramidMinLockPoints[m_iScrollLockIdx].x);
     CScrollManager::GetInstance().SetMinScrollLockY(n_vPyramidMinLockPoints[m_iScrollLockIdx].y);
 
@@ -87,6 +83,27 @@ void CMission4Pyramid::Sequence()
     else
         CScrollManager::GetInstance().SetMaxScrollLockX(n_vPyramidMaxLockPoints[m_iScrollLockIdx].x, false);
     CScrollManager::GetInstance().SetMaxScrollLockY(n_vPyramidMaxLockPoints[m_iScrollLockIdx].y);
+
+    if (m_iScrollLockIdx == 3)
+    {
+        CObjectManager::GetInstance().AddGameObject( CGameObjectFactory<CSpawner>::Create(Vector2(2400.f, -1080.f), Vector2::Zero), NEUTRAL );
+        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CSpawner>::Create(Vector2(2400.f, -990.f), Vector2::Zero), NEUTRAL);
+        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CSpawner>::Create(Vector2(2400.f, -870.f), Vector2::Zero), NEUTRAL);
+    }
+    else if (m_iScrollLockIdx == 4)
+    {
+        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CSpawner>::Create(Vector2(1900.f, -1080.f), Vector2::Zero), NEUTRAL);
+        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CSpawner>::Create(Vector2(1900.f, -990.f), Vector2::Zero), NEUTRAL);
+        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CSpawner>::Create(Vector2(1900.f, -870.f), Vector2::Zero), NEUTRAL);
+    }
+    else if (m_iScrollLockIdx == 6)
+    {
+        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CSpawner>::Create(Vector2(2800.f, -2300.f), Vector2::Zero), NEUTRAL);
+        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CSpawner>::Create(Vector2(2800.f, -2300.f), Vector2::Zero), NEUTRAL);
+        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CSpawner>::Create(Vector2(2350.f, -2160.f), Vector2::Zero), NEUTRAL);
+    }
+
+    
     ++m_iScrollLockIdx;
 }
 
@@ -136,7 +153,7 @@ void CMission4Pyramid::RenderPyramidLandscape(HDC _hDC)
     {
         hFieldDC = CBmpManager::GetInstance().FindBmpImg(m_vecPyramidTopFloorKey[i]);
         GdiTransparentBlt(_hDC
-            , 3924.f + 1536.f * i + SCROLLX, -2896.f + SCROLLY
+            , 3924 + 1536 * i + SCROLLX, -2896 + SCROLLY
             , 1536, 768
             , hFieldDC
             , 0, 0
@@ -146,7 +163,7 @@ void CMission4Pyramid::RenderPyramidLandscape(HDC _hDC)
 
     hFieldDC = CBmpManager::GetInstance().FindBmpImg(L"4-2_Pyramid_BossEntrance");
     GdiTransparentBlt(_hDC
-        , 9000.f + SCROLLX, -2500.f + SCROLLY
+        , 9000 + SCROLLX, -2500 + SCROLLY
         , 384, 384
         , hFieldDC
         , 0, 0
@@ -159,7 +176,7 @@ void CMission4Pyramid::RenderFrontLandscape(HDC _hDC)
 {
     HDC hFrontDC = CBmpManager::GetInstance().FindBmpImg(L"4-2_Pyramid_Frontground1");
     GdiTransparentBlt(_hDC
-        , 6996.f + 384.f + SCROLLX, -2958.f + SCROLLY
+        , 6996 + 384 + SCROLLX, -2958 + SCROLLY
         , 768, 768
         , hFrontDC
         , 0, 0
@@ -167,17 +184,16 @@ void CMission4Pyramid::RenderFrontLandscape(HDC _hDC)
         , RGB(255, 255, 255));
     hFrontDC = CBmpManager::GetInstance().FindBmpImg(L"4-2_Pyramid_Frontground2");
     GdiTransparentBlt(_hDC
-        , 6996.f + 384.f + 768.f + SCROLLX, -2957.f + SCROLLY
+        , 6996 + 384 + 768 + SCROLLX, -2957 + SCROLLY
         , 768, 768
         , hFrontDC
         , 0, 0
         , 768, 768
-        , RGB(255, 255, 255));
-    // 18 -3    
+        , RGB(255, 255, 255)); 
 
     hFrontDC = CBmpManager::GetInstance().FindBmpImg(m_vecWaterFallKey[m_iWaterFallIdx]);
     GdiTransparentBlt(_hDC
-        , 6996.f + 384.f + 768.f + 18.f + SCROLLX, -2957.f - 3.f + SCROLLY
+        , 6996 + 384 + 768 + 18 + SCROLLX, -2960 + SCROLLY
         , 384, 768
         , hFrontDC
         , 0, 0
@@ -186,7 +202,7 @@ void CMission4Pyramid::RenderFrontLandscape(HDC _hDC)
 
     hFrontDC = CBmpManager::GetInstance().FindBmpImg(L"4-2_Pyramid_FrontBossEntrance");
     GdiTransparentBlt(_hDC
-        , 9000.f + SCROLLX, -2500.f + SCROLLY
+        , 9000 + SCROLLX, -2500 + SCROLLY
         , 384, 384
         , hFrontDC
         , 0, 0
@@ -200,12 +216,15 @@ void CMission4Pyramid::RenderFrontLandscape(HDC _hDC)
         ++m_iWaterFallIdx;
         m_iWaterFallIdx = m_iWaterFallIdx % 4;
     }
-
-    
 }
 
 void CMission4Pyramid::CreatePlatform()
 {
+    CObjectManager::GetInstance()
+        .AddGameObject(CGameObjectFactory<CPlatform>
+            ::Create(Vector2(-100.f, (float)WINCY - 32.f)
+                , Vector2(200.f, 64.f)), PLATFORM);
+
     CLineManager::GetInstance().AddLine(Vector2(-10, WINCY - WINCY), Vector2(256.f, 450.f - WINCY));
 
     CObjectManager::GetInstance()
@@ -394,11 +413,26 @@ void CMission4Pyramid::CreatetTriggerArea()
 
 
     pTri = new CSequenceTrigger();
-    pTri->SetSize({ 100.f, 100.f });
+    pTri->SetSize({ 800.f, 100.f });
     pTri->SetPivot({ 1000.f, -720.f });
     pTri->Initialize();
     CObjectManager::GetInstance()
         .AddGameObject(pTri, NEUTRAL);
+
+    pTri = new CSequenceTrigger();
+    pTri->SetSize({ 100.f, 2000.f });
+    pTri->SetPivot({ 1500.f, -920.f });
+    pTri->Initialize();
+    CObjectManager::GetInstance()
+        .AddGameObject(pTri, NEUTRAL);
+
+    pTri = new CSequenceTrigger();
+    pTri->SetSize({ 100.f, 2000.f });
+    pTri->SetPivot({ 2300.f, -920.f });
+    pTri->Initialize();
+    CObjectManager::GetInstance()
+        .AddGameObject(pTri, NEUTRAL);
+
 
     pTri = new CSequenceTrigger();
     pTri->SetSize({ 100.f, 100.f });
@@ -436,18 +470,18 @@ void CMission4Pyramid::CreatetTriggerArea()
         .AddGameObject(pTri, NEUTRAL);
 
     pTri = new CSequenceTrigger();
-    pTri->SetSize({ 560.f, 140.f });
+    pTri->SetSize({ 500.f, 140.f });
     pTri->SetPivot({ 6000.f, -2600.f });
     pTri->Initialize();
     CObjectManager::GetInstance()
         .AddGameObject(pTri, NEUTRAL);
 
     CGameObject* pEntranceBoss = new CChangeTrigger();
-    pTri->SetSize({ 300.f, 300.f });
-    pTri->SetPivot({ 9000.f, -2500.f });
-    pTri->Initialize();
+    pEntranceBoss->SetSize({ 300.f, 300.f });
+    pEntranceBoss->SetPivot({ 9200.f, -2400.f });
+    pEntranceBoss->Initialize();
     CObjectManager::GetInstance()
-        .AddGameObject(pTri, NEUTRAL);
+        .AddGameObject(pEntranceBoss, NEUTRAL);
 }
 
 void CMission4Pyramid::LoadBmpPyramidLandscape()
@@ -514,4 +548,16 @@ void CMission4Pyramid::LoadBmpEnemy()
         , L"ManEater_Idle");
     CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/ManEater/ManEater_Dead.bmp"
         , L"ManEater_Dead");
+    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/ManEater/ManEater_Move.bmp"
+        , L"ManEater_Move");
+    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/ManEater/ManEater_Jump&Drop.bmp"
+        , L"ManEater_Jump&Drop");
+    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/ManEater/ManEater_Attack_Left.bmp"
+        , L"ManEater_Attack_Left");
+    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/ManEater/ManEater_Attack_Right.bmp"
+        , L"ManEater_Attack_Right");
+    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/ManEater/ManEater_Attack_Blank.bmp"
+        , L"ManEater_Attack_Blank");
+    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/ManEater/ManEater_Blank.bmp"
+        , L"ManEater_Blank");
 }

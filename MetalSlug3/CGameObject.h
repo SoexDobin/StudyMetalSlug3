@@ -18,6 +18,7 @@ public:
 	Vector2			GetSize() const			{ return m_vSize; }
 	Vector2			GetFace() const			{ return m_vFace; }
 	Vector2			GetDirection() const	{ return m_vDirection; }
+	float			GetAngle() const		{ return m_fAngle; }
 	
 	void			SetParent(CGameObject* _pParent)			{ m_pParent = _pParent; }
 	void			SetObjectType(OBJECT_TYPE _eType)			{ m_eType = _eType; }
@@ -26,6 +27,7 @@ public:
 	void			SetSize(const Vector2& _vSize)				{ m_vSize = _vSize; }
 	void			SetFace(const Vector2& _vFace)				{ m_vFace = _vFace; }
 	void			SetDirection(const Vector2& _vDirection)	{ m_vDirection = _vDirection; }
+	void			SetAngle(const float& _fAngle)				{ m_fAngle = _fAngle; }
 
 public:
 	virtual void	Initialize()										PURE;
@@ -48,5 +50,6 @@ protected:
 	Vector2			m_vSize;
 	Vector2			m_vFace;
 	Vector2			m_vDirection;
+	float			m_fAngle;
 };
 

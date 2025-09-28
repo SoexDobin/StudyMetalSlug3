@@ -45,8 +45,8 @@ void CCollisionManager::RTRCollision(list<CGameObject*>& _Src1, list<CGameObject
 	{
 		for (auto& Src2 : _Src2)
 		{
-			if (Src1->GetCollider() == nullptr) continue;
-			if (Src2->GetCollider() == nullptr) continue;
+			if (Src1->GetCollider() == nullptr || !Src1->GetCollider()->GetEnableCol()) continue;
+			if (Src2->GetCollider() == nullptr || !Src1->GetCollider()->GetEnableCol()) continue;
 
 			CCollider* pCol1 = Src1->GetCollider();
 			CCollider* pCol2 = Src2->GetCollider();
@@ -63,8 +63,8 @@ void CCollisionManager::RTRCollision(list<CGameObject*>& _Src1, list<CGameObject
 			bool isCol = fSumHalfSize.x >= vDst.x && fSumHalfSize.y >= vDst.y;
 			if (isCol == true)
 			{
-				pCol1->SetCollision(true);
-				pCol2->SetCollision(true);
+				pCol1->SetIsCollision(true);
+				pCol2->SetIsCollision(true);
 				// 반지름의 합 - 중점 사이 거리
 				Vector2 vDifference = fSumHalfSize - vDst;
 				vDifference = Vector2(fabsf(vDifference.x), fabsf(vDifference.y));
@@ -99,8 +99,8 @@ void CCollisionManager::RTRCollision(list<CGameObject*>& _Src1, list<CGameObject
 			}
 			else
 			{
-				Src1->GetCollider()->SetCollision(false);
-				Src2->GetCollider()->SetCollision(false);
+				Src1->GetCollider()->SetIsCollision(false);
+				Src2->GetCollider()->SetIsCollision(false);
 			}
 		}
 	}
@@ -123,15 +123,15 @@ void CCollisionManager::CTCCollision(list<CGameObject*>& _Src1, list<CGameObject
 
 			if (fSumRadius >= fHypot)
 			{
-				Src1->GetCollider()->SetCollision(true);
-				Src2->GetCollider()->SetCollision(true);
+				Src1->GetCollider()->SetIsCollision(true);
+				Src2->GetCollider()->SetIsCollision(true);
 				Src1->OnCollision(Src2, Vector2::UnitX, COL_END);
 				Src2->OnCollision(Src1, Vector2::UnitX, COL_END);
 			}
 			else
 			{
-				Src1->GetCollider()->SetCollision(false);
-				Src2->GetCollider()->SetCollision(false);
+				Src1->GetCollider()->SetIsCollision(false);
+				Src2->GetCollider()->SetIsCollision(false);
 			}
 		}
 	}

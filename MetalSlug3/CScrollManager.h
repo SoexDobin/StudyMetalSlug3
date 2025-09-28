@@ -9,6 +9,8 @@ private:
 	~CScrollManager() override;
 
 public:
+	void			ForceScrollY(float _Y)	{ m_fScrollY = _Y; }
+	void			ForceScrollX(float _X)	{ m_fScrollX = _X; }
 	void			SetScrollX(float _X)	{ m_fScrollX += _X; }
 	void			SetScrollY(float _Y)	{ m_fScrollY += _Y; }
 	float			GetScrollX() const		{ return m_fScrollX; }
