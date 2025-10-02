@@ -45,6 +45,8 @@ private:
 	float			m_fJumpDelta;
 	float			m_fDropDelta;
 
+	Damage_TYPE		m_eLastHit;
+
 	CGameObject*	m_pPlayer;
 	MANEATER_STATE	m_eCurState;
 	MANEATER_STATE	m_ePrevState;

@@ -178,6 +178,36 @@
     <Filter Include="01. GameObject\11. Spawner">
       <UniqueIdentifier>{c05bf732-0f81-447b-b7f1-0005d6634e04}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. GameObject\03. Projectile\98. RedCorn">
+      <UniqueIdentifier>{753e218f-8767-4587-ba93-bdfa465a7c2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\05. Particle\02. SDWEffect">
+      <UniqueIdentifier>{3980475b-513d-4fd5-8423-0e43c529fe3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\12. Prisoner">
+      <UniqueIdentifier>{ded1ee22-b4e9-43eb-a8f6-b8d6101f2ebe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\05. Particle\03. Explosion">
+      <UniqueIdentifier>{7de14b5c-1f15-48c5-8f31-028225323557}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\05. Particle\04. MissionComplete">
+      <UniqueIdentifier>{4a7805c1-14d5-4475-b7e0-9d63741699de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\03. Projectile\02. Bomb">
+      <UniqueIdentifier>{abe82893-35fe-497b-bc63-f42d2cb8ee15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\13. Item">
+      <UniqueIdentifier>{11e7838a-3c1f-4c2a-85e5-8a5600f30171}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\03. Projectile\04. IronLizzard">
+      <UniqueIdentifier>{f9fd7dc6-998a-4025-b6ee-f05545b8c46b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\03. Projectile\05. FlameShot">
+      <UniqueIdentifier>{22d943f7-551b-44ec-9325-b5e5f6808a2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject\04. Enemy\02. Di_Cokka">
+      <UniqueIdentifier>{7c9fa3c2-a5a4-4ab4-be9a-7285118abdda}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -402,10 +432,64 @@
     <ClInclude Include="CDummy.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CManEaterArea.h">
+    <ClInclude Include="CSpawner.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CSpawner.h">
+    <ClInclude Include="CRedCorn.h">
+      <Filter>01. GameObject\03. Projectile\98. RedCorn</Filter>
+    </ClInclude>
+    <ClInclude Include="CShoopDaWhoopArea.h">
+      <Filter>01. GameObject\10. DamageArea</Filter>
+    </ClInclude>
+    <ClInclude Include="CManEaterArea.h">
+      <Filter>01. GameObject\10. DamageArea</Filter>
+    </ClInclude>
+    <ClInclude Include="CSDWEffect.h">
+      <Filter>01. GameObject\05. Particle\02. SDWEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="CBigExplode.h">
+      <Filter>01. GameObject\05. Particle\03. Explosion</Filter>
+    </ClInclude>
+    <ClInclude Include="CMediumExplode.h">
+      <Filter>01. GameObject\05. Particle\03. Explosion</Filter>
+    </ClInclude>
+    <ClInclude Include="CMission4Complete.h">
+      <Filter>01. GameObject\05. Particle\04. MissionComplete</Filter>
+    </ClInclude>
+    <ClInclude Include="CBomb.h">
+      <Filter>01. GameObject\03. Projectile\02. Bomb</Filter>
+    </ClInclude>
+    <ClInclude Include="CPrisonerTied.h">
+      <Filter>01. GameObject\12. Prisoner</Filter>
+    </ClInclude>
+    <ClInclude Include="CItem.h">
+      <Filter>01. GameObject\13. Item</Filter>
+    </ClInclude>
+    <ClInclude Include="CPrisoner.h">
+      <Filter>01. GameObject\12. Prisoner</Filter>
+    </ClInclude>
+    <ClInclude Include="CGrenade.h">
+      <Filter>01. GameObject\13. Item</Filter>
+    </ClInclude>
+    <ClInclude Include="CIronLizzard.h">
+      <Filter>01. GameObject\13. Item</Filter>
+    </ClInclude>
+    <ClInclude Include="CILProjectile.h">
+      <Filter>01. GameObject\03. Projectile\04. IronLizzard</Filter>
+    </ClInclude>
+    <ClInclude Include="CBombExplode.h">
+      <Filter>01. GameObject\10. DamageArea</Filter>
+    </ClInclude>
+    <ClInclude Include="CFSProjectile.h">
+      <Filter>01. GameObject\03. Projectile\05. FlameShot</Filter>
+    </ClInclude>
+    <ClInclude Include="CFlameShot.h">
+      <Filter>01. GameObject\13. Item</Filter>
+    </ClInclude>
+    <ClInclude Include="CDiCokka.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CDiCokkaProjectile.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -581,10 +665,64 @@
     <ClCompile Include="CDummy.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CManEaterArea.cpp">
+    <ClCompile Include="CSpawner.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CSpawner.cpp">
+    <ClCompile Include="CRedCorn.cpp">
+      <Filter>01. GameObject\03. Projectile\98. RedCorn</Filter>
+    </ClCompile>
+    <ClCompile Include="CShoopDaWhoopArea.cpp">
+      <Filter>01. GameObject\10. DamageArea</Filter>
+    </ClCompile>
+    <ClCompile Include="CManEaterArea.cpp">
+      <Filter>01. GameObject\10. DamageArea</Filter>
+    </ClCompile>
+    <ClCompile Include="CSDWEffect.cpp">
+      <Filter>01. GameObject\05. Particle\02. SDWEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="CBigExplode.cpp">
+      <Filter>01. GameObject\05. Particle\03. Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="CMediumExplode.cpp">
+      <Filter>01. GameObject\05. Particle\03. Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="CMission4Complete.cpp">
+      <Filter>01. GameObject\05. Particle\04. MissionComplete</Filter>
+    </ClCompile>
+    <ClCompile Include="CBomb.cpp">
+      <Filter>01. GameObject\03. Projectile\02. Bomb</Filter>
+    </ClCompile>
+    <ClCompile Include="CPrisonerTied.cpp">
+      <Filter>01. GameObject\12. Prisoner</Filter>
+    </ClCompile>
+    <ClCompile Include="CItem.cpp">
+      <Filter>01. GameObject\13. Item</Filter>
+    </ClCompile>
+    <ClCompile Include="CPrisoner.cpp">
+      <Filter>01. GameObject\12. Prisoner</Filter>
+    </ClCompile>
+    <ClCompile Include="CGrenade.cpp">
+      <Filter>01. GameObject\13. Item</Filter>
+    </ClCompile>
+    <ClCompile Include="CIronLizzard.cpp">
+      <Filter>01. GameObject\13. Item</Filter>
+    </ClCompile>
+    <ClCompile Include="CILProjectile.cpp">
+      <Filter>01. GameObject\03. Projectile\04. IronLizzard</Filter>
+    </ClCompile>
+    <ClCompile Include="CBombExplode.cpp">
+      <Filter>01. GameObject\10. DamageArea</Filter>
+    </ClCompile>
+    <ClCompile Include="CFSProjectile.cpp">
+      <Filter>01. GameObject\03. Projectile\05. FlameShot</Filter>
+    </ClCompile>
+    <ClCompile Include="CFlameShot.cpp">
+      <Filter>01. GameObject\13. Item</Filter>
+    </ClCompile>
+    <ClCompile Include="CDiCokka.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CDiCokkaProjectile.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

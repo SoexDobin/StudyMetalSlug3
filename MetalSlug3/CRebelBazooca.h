@@ -30,6 +30,7 @@ private:
 private:
 	bool			m_bDead;
 	REBEL_STATE		m_eState;
+	float			m_fBeside;
 	float			m_fSpeed;
 	float			m_fShootDelta;
 	float			m_fInvisibleDelta;

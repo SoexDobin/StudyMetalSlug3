@@ -15,6 +15,9 @@ public:
     virtual void        Release()                                            PURE;
     virtual void        OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)   PURE;
 
+    Damage_TYPE         GetDamageType() const { return m_eDamageType; }
+    void                SetDamageType(Damage_TYPE _eType) { m_eDamageType = _eType; }
+
 protected:
     void                CheckOutOfWindow();
 
@@ -36,5 +39,6 @@ protected:
     int             m_iDamage;
     float			m_fSpeed;
     OBJECT_TYPE     m_eDamageFlag;
+    Damage_TYPE     m_eDamageType;
 };
 

@@ -8,12 +8,16 @@
 #include "CSceneManager.h"
 #include "CDummy.h"
 #include "CManEaterArea.h"
+#include <random>
+#
 
 #include "CColliderFactory.h"
 #include "CScrollManager.h"
 #include "CGameObjectFactory.h"
 #include "CObjectManager.h"
 #include "CTimeManager.h"
+#include "CSoundManager.h"
+#include "CDiCokka.h"
 
 
 CManEater::CManEater()
@@ -35,7 +39,7 @@ void CManEater::Initialize()
     LoadAnimation();
     m_pPlayer = CSceneManager::GetInstance().GetCurPlayer();
 
-    m_iHp = 1;
+    m_iHp = 5;
     m_vPivot = Vector2(800.f, 500.f);
     m_vSize = Vector2(192.f, 192.f);
     m_vFace = Vector2::UnitX;
@@ -84,12 +88,18 @@ int CManEater::Update()
 {
     if (m_bDestroy) return OBJ_DESTROY;
 
-    if (m_bDead) return OBJ_NOEVENT;
+    __super::UpdateGameObject();
+
     // TODO : ¹Ù²ã
     if (m_eCurState != DROP)
         m_vPivot.y += 300.f * DELTA;
 
-    __super::UpdateGameObject();
+    if (m_bDead)
+    {
+        CheckPlatform();
+        return OBJ_NOEVENT;
+    }
+
 
     m_pAttackAnimObj->Update();
     m_pAttackAnimObj->SetPivot(m_vPivot);
@@ -116,6 +126,8 @@ int CManEater::Update()
         m_fInvisibleDelta -= DELTA;
     else if (m_fInvisibleDelta <= 0.f)
         m_fInvisibleDelta = 0.f;
+
+
 
     if (CheckDropCol()) return OBJ_NOEVENT;
     CheckPlatform();
@@ -157,7 +169,6 @@ void CManEater::Release()
     SafeDelete<CAnimation*>(m_pAttackAnim);
     SafeDelete<CCollider*>(m_pColBox);
     SafeDelete<CGameObject*>(m_pAttackAnimObj);
-
 
     m_pPlatformCol->SetParent(nullptr);
     m_pForwardCol->SetParent(nullptr);
@@ -227,7 +238,12 @@ void CManEater::CheckBehaviour()
     float fDstX = m_pPlayer->GetPivot().x - m_vPivot.x;
     float fDstY = m_pPlayer->GetPivot().y - m_vPivot.y;
 
-    if (pUpperCol->GetHasColWithPlatform() && fDstY + 90.f < 0.f)
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> iRand(0, 1);
+
+    if (pUpperCol->GetHasColWithPlatform() && fDstY + 90.f < 0.f && iRand(gen) > 0)
     {
         m_eCurState = JUMP;
 
@@ -312,7 +328,8 @@ void CManEater::CheckPlatform()
         float fPosY = dynamic_cast<CPlatformChecker*>(m_pPlatformCol)->GetColTopPosition();
 
         m_vPivot.y = fPosY - (m_pColBox->GetSize().y / 2.f) - m_pColBox->GetOffset().y;
-        m_eCurState = IDLE;
+        if (m_eCurState != ATTACK && m_eCurState != DEAD)
+            m_eCurState = IDLE;
         m_fStateDelta = 150.f;
         m_vDirection = Vector2::Zero;
         m_fJumpDelta = n_fSeedJumpSpeed;
@@ -322,7 +339,8 @@ void CManEater::CheckPlatform()
     {
         float fPosY = dynamic_cast<CPlatformChecker*>(m_pPlatformCol)->GetColTopPosition();
         m_vPivot.y = fPosY - (m_pColBox->GetSize().y / 2.f) - m_pColBox->GetOffset().y;
-        m_eCurState = IDLE;
+        if (m_eCurState != ATTACK && m_eCurState != DEAD)
+            m_eCurState = IDLE;
         m_vDirection = Vector2::Zero;
     }
 }
@@ -369,7 +387,8 @@ void CManEater::Chase()
     if (m_fMoveDelta >= 100.f)
     {
         m_eCurState = IDLE;
-        m_fStateDelta = 200.f;
+        m_fStateDelta = 100.f;
+        m_fMoveDelta = 0.f;
         m_vDirection = Vector2::Zero;
 
         SetAnim(L"ManEater_Idle", true, IDLE);
@@ -392,7 +411,9 @@ void CManEater::Attack()
 {
     if (m_eCurState != ATTACK) return;
 
-    if (m_ePrevState == ATTACK && m_pAttackAnim->GetEndOneLoop())
+    if ((m_pAttackAnim->GetCurrentFrameKey() == L"ManEater_Attack_Right"
+        || m_pAttackAnim->GetCurrentFrameKey() == L"ManEater_Attack_Left")
+        && m_pAttackAnim->GetEndOneLoop())
     {
         SetAnim(L"ManEater_Idle", true, IDLE);
         SetAttackAnim(L"ManEater_Attack_Blank", false, IDLE);
@@ -407,14 +428,17 @@ void CManEater::Attack()
         SetAttackAnim(L"ManEater_Attack_Right", false, ATTACK);
     else
         SetAttackAnim(L"ManEater_Attack_Left", false, ATTACK);
-}
 
+    if (m_ePrevState != ATTACK)
+        CSoundManager::GetInstance().PlaySound(L"ManEater_Attack.mp3", ENEMY_ATTACK, 0.2f);
+}
 void CManEater::Damage(CGameObject* _pDamageArg)
 {
     CProjectile* pProj = dynamic_cast<CProjectile*>(_pDamageArg);
     if (pProj->GetDamageFlag() == m_eType)
     {
         m_iHp -= pProj->GetDamage();
+        m_eLastHit = pProj->GetDamageType();
     }
 }
 
@@ -428,15 +452,19 @@ void CManEater::Dead()
         return;
     }
     
-
     if (m_eCurState == DEAD) return;
+
+    CSoundManager::GetInstance().PlaySound(L"ManEater_Dead.mp3", ENEMY_DEAD1, 0.2f);
 
     m_bDead = true;
     m_eCurState = DEAD;
-    m_pAnim->ChangeAnimation(L"ManEater_Dead");
+    if (m_eLastHit == FIRE)
+        m_pAnim->ChangeAnimation(L"ManEater_Burn");
+    else
+        m_pAnim->ChangeAnimation(L"ManEater_Dead");
     m_pAttackAnim->ChangeAnimation(L"ManEater_Attack_Blank");
     m_pAnim->SetLoop(false);
-    SafeDelete<CCollider*>(m_pColBox);
+    m_pColBox->SetEnableCol(false);
 }
 
 void CManEater::LoadAnimation()
@@ -449,6 +477,7 @@ void CManEater::LoadAnimation()
 
     m_pAnim->AddAnimation(L"ManEater_Idle", pair<int, int>{ 0, 12 });
     m_pAnim->AddAnimation(L"ManEater_Dead", pair<int, int>{ 0, 22 });
+    m_pAnim->AddAnimation(L"ManEater_Burn", pair<int, int>{ 0, 24 });
     m_pAnim->AddAnimation(L"ManEater_Move", pair<int, int>{ 0, 15 });
     m_pAnim->AddAnimation(L"ManEater_Jump&Drop", pair<int, int>{ 0, 9 });
     m_pAnim->AddAnimation(L"ManEater_Blank", pair<int, int>{ 0, 1 });

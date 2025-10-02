@@ -27,7 +27,7 @@ void CHMProjectile::Initialize()
     m_iDamage = 1;
     m_fSpeed = 1000.f;
     m_eDamageFlag = ENEMY;
-    
+    m_eDamageType = DANMAK;
     __super::UpdateGameObject();
 }
 

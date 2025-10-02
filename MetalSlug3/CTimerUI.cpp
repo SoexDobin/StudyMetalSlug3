@@ -21,7 +21,7 @@ void CTimerUI::Initialize()
 	m_vPivot = Vector2(static_cast<float>(WINCX / 2), m_vSize.y);
 	
 
-	m_fGameTime = 60.f;
+	m_fGameTime = 6.f;
 }
 
 int CTimerUI::Update()
@@ -40,6 +40,8 @@ int CTimerUI::Update()
 void CTimerUI::LateUpdate()
 {
 	if (m_bDisable) return;
+
+	if (m_fGameTime <= 0.f) return;
 	ChangeNumberIdx();
 }
 

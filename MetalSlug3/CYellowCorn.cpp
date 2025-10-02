@@ -106,7 +106,6 @@ void CYellowCorn::OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_C
             break;
         }
 
-        CParticleManager::GetInstance().CreateParticle<CBulletHitParticle>(m_vPivot + vParticleOffset);
         m_bDestroy = OBJ_DESTROY;
         SafeDelete<CCollider*>(m_pColBox);
     }

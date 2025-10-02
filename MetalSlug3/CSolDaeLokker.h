@@ -25,9 +25,9 @@ public:
 private:
     void        SwitchPattern();
 
+    void        Floating();
     bool        Intro();
     bool        Dead();
-
     void        Move();
     void        ShoopDaWhoop();
     void        YellowCorn();
@@ -49,25 +49,44 @@ private:
     SDLK_ATTACK     m_eCurPattern;
     SDLK_STATE      m_eCurState;
     
+    int             m_iEffectIdx;
+    int             m_iDeadExplodeIdx;
+    float           m_fBeforeExplodeDelta;
+
     float           m_fDelta;
     float           m_fIntroDelta;
     float           m_fDeadDelta;
+    float           m_fFloatingDelta;
+    bool            m_bIsTopFloat;
 
+    float           m_fIdleDelta;
     float           m_fMoveDelta;
     float           m_fSDWDelta;
     float           m_fCornDelta;
     float           m_fCornAccDelta;
     Vector2         m_vMove;
+
+private:
+    bool            m_bShowAllPattern;
+    int             m_iShowIndex;
+
 private:
     float           n_fSpeedSeed        = 20.f;
     Vector2         n_vMovePoint[5]     = { {192.f, 256.f}
-                                        , {480.f, 256.f}
+                                        , {480.f, 288.f}
                                         , {768.f, 256.f}
-                                        , { 320.f, 480.f }
-                                        , { 640.f, 480.f } };
+                                        , { 320.f, 420.f }
+                                        , { 640.f, 320.f } };
 
     Vector2         n_vSDWPoint[2]      = { {100.f, 356.f}, { 860.f, 356.f } };
     Vector2         n_vSDWOffset        = { 576.f, 0.f };
-    
+
+    const TCHAR*    n_szEffectKey[4] = { L"SDW1", L"SDW2", L"SDW3", L"SDW4" };
+    const Vector2   n_vExplodePoint[5] = { { -128.f, 0.f }
+                                         , {-64.f, 64.f}
+                                         , {96.f, 96.f}
+                                         , {-192.f, -192.f}
+                                         , {170.f, -192.f}
+    };
 };
 

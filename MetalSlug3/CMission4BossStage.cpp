@@ -24,13 +24,18 @@ CMission4BossStage::~CMission4BossStage()
 
 void CMission4BossStage::Initialize()
 {
+    CObjectManager::GetInstance().GetGameObjectList(PLAYER)
+        .front()->SetPivot(Vector2(200.f, -500.f));
+    CObjectManager::GetInstance().GetGameObjectList(PLAYER)
+        .front()->SetDirection(Vector2::Zero);
     CScrollManager::GetInstance().ForceScrollY(0.f);
     CScrollManager::GetInstance().SetMinScrollLockX(0.f);
+    CScrollManager::GetInstance().SetMaxScrollLockX(WINCY);
     CScrollManager::GetInstance().SetMinScrollLockY(0.f);
     CScrollManager::GetInstance().SetMaxScrollLockX(WINCX);
 
-    CObjectManager::GetInstance().GetGameObjectList(PLAYER).front()->SetPivot(Vector2(200.f, -100.f));
-    CObjectManager::GetInstance().GetGameObjectList(PLAYER).front()->SetDirection(Vector2::Zero);
+    m_vSpawnPoint = Vector2(200.f, 560.f);
+    
     CLineManager::GetInstance().AddLine(Vector2::Zero, Vector2(WINCX, 0));
 
     LoadBmpBossStageLandscape();
@@ -205,5 +210,12 @@ void CMission4BossStage::LoadBmpEnemy()
         , L"SolDaeLokker_YelCorn_Ready");
     CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/SolDaeLokker/YelCorn/SolDaeLokker_YelCorn_End.bmp"
         , L"SolDaeLokker_YelCorn_End");
+
+    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/SolDaeLokker/RedCorn/SolDaeLokker_RedCorn_Attack.bmp"
+        , L"SolDaeLokker_RedCorn_Attack");
+    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/SolDaeLokker/RedCorn/SolDaeLokker_RedCorn_Ready.bmp"
+        , L"SolDaeLokker_RedCorn_Ready");
+    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/SolDaeLokker/RedCorn/SolDaeLokker_RedCorn_End.bmp"
+        , L"SolDaeLokker_RedCorn_End");
 
 }

@@ -67,5 +67,19 @@ void CParticleManager::Initialize()
 		, L"Mission4Start");
 	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Particle/Mission4Start/Mission4Start_Blank.bmp"
 		, L"Mission4Start_Blank");
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Particle/Mission4Complete/Mission4Complete.bmp"
+		, L"Mission4Complete");
+
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Particle/SDW/SDW1.bmp", L"SDW1");
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Particle/SDW/SDW2.bmp", L"SDW2");
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Particle/SDW/SDW3.bmp", L"SDW3");
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Particle/SDW/SDW4.bmp", L"SDW4");
+
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Particle/Explode/Big_Explode.bmp"
+		, L"Big_Explode");
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Particle/Explode/Medium_Explode.bmp"
+		, L"Medium_Explode");
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Particle/Explode/Bomb_Explode.bmp"
+		, L"Bomb_Explode");
 }
 

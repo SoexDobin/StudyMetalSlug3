@@ -48,8 +48,7 @@ void CChangeTrigger::Release()
 
 void CChangeTrigger::OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)
 {
-    if (_pCol->GetObjectType() == PLAYER
-        && CObjectManager::GetInstance().GetGameObjectList(ENEMY).empty())
+    if (_pCol->GetObjectType() == PLAYER)
     {
         m_bDestroy = true;
         SafeDelete<CCollider*>(m_pColBox);

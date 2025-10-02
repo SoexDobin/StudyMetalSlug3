@@ -1,13 +1,14 @@
 #pragma once
 #include "CGameObject.h"
+#include "Define.h"
 
 class CAnimation;
 class CCollider;
 
 class CEri : public CGameObject
 {
-	enum PLAYER_STATE { SIT, STAND, IDLE, MOVE, SHOOT, CQC, JUMP, MOVEJUMP, DROP, RESPAWN, DEAD, PLAYER_STATE_END };
-	enum WEAPON { HM_GUN, WEAPON_END };
+	enum PLAYER_STATE { SIT, STAND, IDLE, MOVE, SHOOT, BOMB, CQC, JUMP, MOVEJUMP, DROP, RESPAWN, DEAD, PLAYER_STATE_END };
+
 public:
 	CEri();
 	virtual ~CEri() override;
@@ -29,8 +30,12 @@ public:
 	void			LoseBomb(const int& _iBomb)			{ m_iBomb -= _iBomb; }
 	void			SetBomb(const int& _iBomb)			{ m_iBomb = _iBomb; }
 	
-	WEAPON			GetCurWeapon() const				{ return m_eCurWeapon; }
-	void			SetCurWeapon(WEAPON _eCurWeapon)	{ m_eCurWeapon = _eCurWeapon; }
+	WEAPON_TYPE		GetCurWeapon() const				{ return m_eCurWeapon; }
+	void			SetCurWeapon(WEAPON_TYPE _eCurWeapon)	{ m_eCurWeapon = _eCurWeapon; }
+
+public:
+	void			Dead();
+	void			CheckMissionComplete(const bool& _bIsComplete) { m_bMissionComplete = _bIsComplete; }
 
 private:
 	void			BehaviourKeyInput();
@@ -40,7 +45,10 @@ private:
 	void			Jump();
 	void			Drop();
 	void			Shoot();
-	void			Dead();
+
+	void			ShootHeavyMachineGun(Vector2 _vPos);
+	void			ShootIronLizzard(Vector2 _vPos);
+	void			ShootFlameShot(Vector2 _vPos);
 
 	void			CheckOutOfBound();
 
@@ -72,8 +80,11 @@ private:
 	PLAYER_STATE	m_eCurLegState;
 	PLAYER_STATE	m_ePrevLegState;
 
+	float			m_fInvisibleDelta;
+
 	int				m_iScatterIdx;
 	float			m_fShootDelta;
+	float			m_fBombDelta;
 
 	float			m_fMoveSpeed;
 	float			m_fCrawlSpeed;
@@ -83,12 +94,15 @@ private:
 
 	bool			m_bIsDrop;
 
-	WEAPON			m_eCurWeapon;
+	bool			m_bMissionComplete;
+
+	WEAPON_TYPE		m_eCurWeapon;
 	int				m_iArmo;
 	int				m_iBomb;
 	
 private:
 	const float		n_fShootDelta				= 70.f;
+	const float		n_fBombDelta				= 100.f;
 	const float		n_fSeedJumpSpeed			= -1000.f;
 	const float		n_fMaxFall					= 700.f;
 	const float		n_fFallSpeed				= 1800.f;
@@ -100,5 +114,6 @@ private:
 	const float		n_fScatterArg[5]			= { 0.f, 0.03f, -0.02f, 0.02f, -0.04f };
 	const char		n_cJumpKey = 'D';
 	const char		n_cAttackKey = 'A';
+	const char		n_cBombKey = 'S';
 };
 

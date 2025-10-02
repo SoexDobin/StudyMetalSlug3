@@ -46,7 +46,7 @@ void CCollisionManager::RTRCollision(list<CGameObject*>& _Src1, list<CGameObject
 		for (auto& Src2 : _Src2)
 		{
 			if (Src1->GetCollider() == nullptr || !Src1->GetCollider()->GetEnableCol()) continue;
-			if (Src2->GetCollider() == nullptr || !Src1->GetCollider()->GetEnableCol()) continue;
+			if (Src2->GetCollider() == nullptr || !Src2->GetCollider()->GetEnableCol()) continue;
 
 			CCollider* pCol1 = Src1->GetCollider();
 			CCollider* pCol2 = Src2->GetCollider();

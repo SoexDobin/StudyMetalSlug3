@@ -21,6 +21,7 @@
 CRebelBazooca::CRebelBazooca()
     : m_bDead(false), m_pAnim(nullptr), m_pPlayer(nullptr), m_pPlatformCol(nullptr)
     , m_eState(REBEL_END), m_fSpeed(0.f), m_fInvisibleDelta(0.f), m_fShootDelta(0.f)
+    , m_fBeside(0.f)
 {
 }
 
@@ -44,6 +45,12 @@ void CRebelBazooca::Initialize()
     m_pPlatformCol = CGameObjectFactory<CPlatformChecker>::Create(Vector2::Zero, Vector2::Zero, this);
     CObjectManager::GetInstance().AddGameObject(m_pPlatformCol, NEUTRAL);
     m_pPlatformCol->GetCollider()->SetOffset({ 0.f, m_vSize.y * 0.5f });
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> iRand(256, 426);
+
+    m_fBeside = (float)iRand(gen);
 }
 
 int CRebelBazooca::Update()
@@ -64,7 +71,7 @@ int CRebelBazooca::Update()
     else if (m_fInvisibleDelta <= 0.f)
         m_fInvisibleDelta = 0.f;
     
-    if (m_fShootDelta >= 100.f)
+    if (m_fShootDelta >= 70.f)
     {
         m_eState = SHOOT;
         return OBJ_NOEVENT;
@@ -72,14 +79,14 @@ int CRebelBazooca::Update()
 
     float fDst = m_pPlayer->GetPivot().x - m_vPivot.x;
 
-    if (fabs(fDst) <= 256.f && fDst > 0)
+    if (fabs(fDst) <= m_fBeside && fDst > 0)
     {
         m_eState = IDLE;
         m_vFace = Vector2::UnitX * -1.f;
         m_vDirection = Vector2::Zero;
         m_fShootDelta += 40.f * DELTA;
     }
-    else if (fabs(fDst) <= 256.f && fDst <= 0)
+    else if (fabs(fDst) <= m_fBeside && fDst <= 0)
     {
         m_eState = IDLE;
         m_vFace = Vector2::UnitX;
@@ -224,7 +231,29 @@ void CRebelBazooca::Dead()
         return;
     }
     if (m_eState == DEAD) return;
-    CSoundManager::GetInstance().PlaySoundOnce(L"Rebel_Dead.mp3", ENEMY_DEAD, 0.2f);
+    
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> iRand(0, 3);
+
+    switch (iRand(gen))
+    {
+    case 1:
+        CSoundManager::GetInstance().PlaySoundOnce(L"Rebel_Dead1.mp3", ENEMY_DEAD1, 0.1f);
+        break;
+    case 2:
+        CSoundManager::GetInstance().PlaySoundOnce(L"Rebel_Dead2.mp3", ENEMY_DEAD2, 0.1f);
+        break;
+    case 3:
+        CSoundManager::GetInstance().PlaySoundOnce(L"Rebel_Dead3.mp3", ENEMY_DEAD3, 0.1f);
+        break;
+    case 4:
+        CSoundManager::GetInstance().PlaySoundOnce(L"Rebel_Dead4.mp3", ENEMY_DEAD4, 0.1f);
+        break;
+    default:
+        break;
+    }
+
     m_eState = DEAD;
     m_bDead = true;
     m_vDirection = Vector2::Zero;

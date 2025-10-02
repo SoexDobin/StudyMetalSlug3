@@ -18,6 +18,7 @@
 
 CRebel::CRebel()
     : m_bDead(false), m_pAnim(nullptr), m_pPlayer(nullptr), m_pPlatformCol(nullptr), m_eState(REBEL_END), m_fSpeed(0.f), m_fInvisibleDelta(0.f)
+    , m_fBeside(0.f)
 {
 }
 
@@ -41,6 +42,12 @@ void CRebel::Initialize()
     m_pPlatformCol = CGameObjectFactory<CPlatformChecker>::Create(Vector2::Zero, Vector2::Zero, this);
     CObjectManager::GetInstance().AddGameObject(m_pPlatformCol, NEUTRAL);
     m_pPlatformCol->GetCollider()->SetOffset({ 0.f, m_vSize.y * 0.5f });
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> iRand(96, 192);
+
+    m_fBeside = (float)iRand(gen);
 }
 
 int CRebel::Update()
@@ -48,9 +55,9 @@ int CRebel::Update()
     if (m_bDestroy) return OBJ_DESTROY;
 
     if (m_bDead) return OBJ_NOEVENT;
-    m_vPivot.y += 200.f * DELTA;
 
     __super::UpdateGameObject();
+    m_vPivot.y += 200.f * DELTA;
     CheckPlatform();
 
 
@@ -61,7 +68,7 @@ int CRebel::Update()
         m_fInvisibleDelta = 0.f;
 
     float fDst = m_pPlayer->GetPivot().x - m_vPivot.x;
-    if (fabsf(fDst) <= 64.f)
+    if (fabsf(fDst) <= m_fBeside)
     {
         m_eState = IDLE;
         m_vDirection = Vector2::Zero;
@@ -119,7 +126,7 @@ void CRebel::OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FL
         if (pProj->GetDamageFlag() == ENEMY)
         {
             m_iHp -= pProj->GetDamage();
-
+            m_eLastHit = PROJECTILE;
         }
         break;
     }   
@@ -130,6 +137,7 @@ void CRebel::OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FL
         if (m_eType == pExplode->GetDamageFlag())
         {
             m_iHp -= pExplode->GetDamage();
+            m_eLastHit = EXPLODE;
             break;
         }
     }
@@ -141,31 +149,14 @@ void CRebel::OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FL
 
 void CRebel::CheckPlatform()
 {
-    //if (m_pColBox == nullptr) return;
     bool bColPlatform = dynamic_cast<CPlatformChecker*>(m_pPlatformCol)->GetHasColWithPlatform();
-
-    //if (!bColPlatform && !m_bIsJump && !m_bIsDrop)
-    //{
-    //    m_bIsDrop = true;
-    //    m_fJumpSpeed = -n_fSeedJumpSpeed / 10.f;
-    //}
-    //if (m_bIsJump || !m_bIsDrop) return;
 
     if (bColPlatform) // && m_bIsDrop
     {
         float fPosY = dynamic_cast<CPlatformChecker*>(m_pPlatformCol)->GetColTopPosition();
-        // m_bIsDrop = false;
         m_vPivot.y = fPosY - (m_pColBox->GetSize().y / 2.f) - m_pColBox->GetOffset().y;
-        //m_eCurLegState = STAND;
-        //m_fJumpSpeed = n_fSeedJumpSpeed;
 
         return;
-    }
-    else if (bColPlatform == false)
-    {
-        //m_bIsDrop = true;
-        //m_eCurBodyState == DROP;
-        //m_eCurLegState == DROP;
     }
 }
 
@@ -203,7 +194,38 @@ void CRebel::Dead()
         return;
     }
     if (m_eState == DEAD) return;
-    CSoundManager::GetInstance().PlaySoundOnce(L"Rebel_Dead.mp3", ENEMY_DEAD, 0.1f);
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> iRand(0, 3);
+    
+    if (m_eLastHit == EXPLODE)
+    {
+        CSoundManager::GetInstance().PlaySoundOnce(L"Rebel_Dead_Explode.mp3", ENEMY_DEAD1, 0.1f);
+    }
+    else
+    {
+        switch (iRand(gen))
+        {
+        case 1:
+            CSoundManager::GetInstance().PlaySoundOnce(L"Rebel_Dead1.mp3", ENEMY_DEAD1, 0.1f);
+            break;
+        case 2:
+            CSoundManager::GetInstance().PlaySoundOnce(L"Rebel_Dead2.mp3", ENEMY_DEAD2, 0.1f);
+            break;
+        case 3:
+            CSoundManager::GetInstance().PlaySoundOnce(L"Rebel_Dead3.mp3", ENEMY_DEAD3, 0.1f);
+            break;
+        case 4:
+            CSoundManager::GetInstance().PlaySoundOnce(L"Rebel_Dead4.mp3", ENEMY_DEAD4, 0.1f);
+            break;
+        default:
+            break;
+        }
+    }
+
+    
+    
     m_eState = DEAD;
     m_bDead = true;
     m_vDirection = Vector2::Zero;

@@ -49,17 +49,17 @@ private:
 	};
 	Vector2		n_vPyramidMaxLockPoints[11] =
 	{
-		Vector2(1030.f,			0.f),
-		Vector2(360.f + 768.f,	0.f),
-		Vector2(3430.f,			0.f),
-		Vector2(3430.f,			0.f),
-		Vector2(3430.f,			0.f),
-		Vector2(3430.f,			0.f),
-		Vector2(-(3430.f - 480.f), 0.f),
-		Vector2(3430.f - 480.f, 0.f),
-		Vector2(3430.f * 2.f,	0.f),
-		Vector2(9500.f,	0.f),
-		Vector2(9500.f,	0.f),
+		Vector2(1030.f,			3000.f),
+		Vector2(360.f + 768.f,	3000.f),
+		Vector2(3430.f,			3000.f),
+		Vector2(3430.f,			3000.f),
+		Vector2(3430.f,			3000.f),
+		Vector2(3430.f,			3000.f),
+		Vector2(-(3430.f - 480.f)	, 3000.f),
+		Vector2(3430.f - 480.f		, 3000.f),
+		Vector2(3430.f * 2.f,	3000.f),
+		Vector2(9500.f,			3000.f),
+		Vector2(9500.f,			3000.f),
 	};
 };
 

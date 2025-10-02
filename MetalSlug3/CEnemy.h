@@ -9,7 +9,7 @@ public:
 
 public:
     int        GetHp()                      { return m_iHp; }
-    int        SetHp(const int _iHp)        { m_iHp = _iHp; }
+    void       SetHp(const int _iHp)        { m_iHp = _iHp; }
 
 public:
     virtual void        Initialize()                                         PURE;

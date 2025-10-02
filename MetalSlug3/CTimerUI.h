@@ -10,6 +10,8 @@ public:
 public:
 	const float&	GetTime() { return m_fGameTime; }
 	void			SetTime(const float& _fTime) { m_fGameTime = _fTime; }
+	void			StopTime() { m_bStopTimer = true; }
+	void			ResumeTime() { m_bStopTimer = false; }
 
 public:
 	void Initialize() override;

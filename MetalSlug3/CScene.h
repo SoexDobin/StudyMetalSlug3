@@ -1,5 +1,6 @@
 #pragma once
 #include "Define.h"
+#include "CGameObject.h"
 
 class CScene 
 {
@@ -20,8 +21,10 @@ public:
 	void				SetSpawnPoint(const Vector2& _vPt)	{ m_vSpawnPoint = _vPt; }
 	bool				GetSceneState() const				{ return m_bDestroyScene; }
 	void				DestroyScene() 						{ m_bDestroyScene = SCENE_DESTROY; }
+	vector<CGameObject*>&		GetItems()					{ return m_vecItems; }
 
 protected:
 	bool				m_bDestroyScene;
 	Vector2				m_vSpawnPoint;
+	vector<CGameObject*>		m_vecItems;
 };

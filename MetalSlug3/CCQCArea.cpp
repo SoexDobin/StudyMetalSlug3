@@ -19,7 +19,7 @@ void CCQCArea::Initialize()
 	m_eDamageFlag = ENEMY;
 	m_iDamage = 3;
 
-	m_vSize = Vector2(128.f,128.f);
+	m_vSize = Vector2(128.f,96.f);
 	m_pColBox = CColliderFactory::Create(this, HITBOX);
 	m_pColBox->SetOffset(Vector2(0.f, 64.f));
 

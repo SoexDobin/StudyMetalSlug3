@@ -92,8 +92,8 @@ void CLineManager::LateUpdate()
 
 void CLineManager::Render(HDC hDC)
 {
-	for (auto& pLine : m_LineList)
-		pLine->Render(hDC);
+	/*for (auto& pLine : m_LineList)
+		pLine->Render(hDC);*/
 }
 
 void CLineManager::Release()

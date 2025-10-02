@@ -2,7 +2,8 @@
 #include "CArmoryScene.h"
 #include "CAnimation.h"
 #include "CPlatform.h"
-#include "CManEater.h"
+#include "CPrisonerTied.h"
+#include "CChangeTrigger.h"
 
 // Managers
 #include "CGameObjectFactory.h"
@@ -47,10 +48,6 @@ void CArmoryScene::Initialize()
     CScrollManager::GetInstance().SetMaxScrollLockY(WINCY);
     CSoundManager::GetInstance().PlayBGM(L"BGM_OST_Desert.mp3", 0.2f);
 
-    /*CObjectManager::GetInstance()
-        .AddGameObject(CGameObjectFactory<CPlatform>
-            ::Create(Vector2(140.f, 600.f)
-                , Vector2(280.f, 8.f)), PLATFORM);*/
     CObjectManager::GetInstance()
         .AddGameObject(CGameObjectFactory<CPlatform>
             ::Create(Vector2(140.f, 600.f)
@@ -73,17 +70,26 @@ void CArmoryScene::Initialize()
                 , Vector2(280.f, 8.f)), PLATFORM);
 
 
-    CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CManEater>::Create(), ENEMY);
-    //CObjectManager::GetInstance().GetGameObjectList(ENEMY).back()->SetPivot(Vector2(580.f, 200.f));
+    CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CPrisonerTied>::Create(), ENEMY);
     CObjectManager::GetInstance().GetGameObjectList(ENEMY).back()->SetPivot(Vector2(580.f, 450.f));
+    dynamic_cast<CPrisonerTied*>(CObjectManager::GetInstance().GetGameObjectList(ENEMY).back())->SetHp(90);
+    dynamic_cast<CPrisonerTied*>(CObjectManager::GetInstance().GetGameObjectList(ENEMY).back())->LockUnravel();
+
+    CGameObject* pTri = nullptr;
+
+    pTri = new CChangeTrigger();
+    pTri->SetSize({ 100.f, 100.f });
+    pTri->SetPivot({ 960.f, 200.f });
+    pTri->Initialize();
+    CObjectManager::GetInstance()
+        .AddGameObject(pTri, NEUTRAL);
 }
 
 pair<bool, SCENETAG> CArmoryScene::Update()
 {
-    if (m_bDestroyScene) return pair<bool, SCENETAG>{SCENE_NOEVENT, SCENE_END};
+    if (m_bDestroyScene) return pair<bool, SCENETAG>{SCENE_DESTROY, MISSION_SCENE_1};
     
     CObjectManager::GetInstance().Update();
-    CLineManager::GetInstance().Update();
 
     return pair<bool, SCENETAG>{SCENE_NOEVENT, SCENE_END};
 }
@@ -92,20 +98,21 @@ void CArmoryScene::LateUpdate()
 {
     CheatKeyInput();
     CObjectManager::GetInstance().LateUpdate();
-    CLineManager::GetInstance().LateUpdate();
 }
 
 void CArmoryScene::Render(HDC _hDC)
 {
-    int iX = (int)CScrollManager::GetInstance().GetScrollX();
-    int iY = (int)CScrollManager::GetInstance().GetScrollY();
 
     CObjectManager::GetInstance().Render(_hDC);
-    CLineManager::GetInstance().Render(_hDC);
 }
 
 void CArmoryScene::Release()
 {
+    SafeDelete<CGameObject*>(CObjectManager::GetInstance().GetGameObjectList(PLAYER).front());
+    CObjectManager::GetInstance().GetGameObjectList(PLAYER).pop_front();
+
+    CScrollManager::GetInstance().ForceScrollX(0);
+    CScrollManager::GetInstance().ForceScrollY(0);
 }
 
 void CArmoryScene::CheatKeyInput()

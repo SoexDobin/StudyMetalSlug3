@@ -14,7 +14,7 @@
 #include "CMultiHitUI.h"
 #include "CArmUI.h"
 #include "CCharacterSelect.h"
-
+#include "CMission4Complete.h"
 
 // Managers
 #include "CObjectManager.h"
@@ -24,12 +24,15 @@
 #include "CSoundManager.h"
 #include "CLineManager.h"
 #include "CUIManager.h"
-
+#include "CTimeManager.h"
+#include "CParticleManager.h"
 
 CSceneManager::CSceneManager() 
 	: m_pScene(nullptr), m_pPrevScene(nullptr), m_eCurScene(SCENE_END)
 	, m_pPlayer(nullptr)
 	, m_pTimerUI(nullptr), m_pScoreUI(nullptr), m_pMultiHitUI(nullptr), m_pArmBoxUI(nullptr)
+	, m_bMissionComplete(false)
+	, m_fCompleteDelta(0.f)
 {
 
 }
@@ -66,9 +69,9 @@ void CSceneManager::Initialize()
 
 	ChangeScene(m_eCurScene);
 #ifdef _DEBUG
-	CObjectManager::GetInstance().AddGameObject(
-		CGameObjectFactory<CMouse>::Create(), PLAYER);
-	CObjectManager::GetInstance().GetGameObjectList(PLAYER).back()->Initialize();
+	//CObjectManager::GetInstance().AddGameObject(
+	//	CGameObjectFactory<CMouse>::Create(), PLAYER);
+	//CObjectManager::GetInstance().GetGameObjectList(PLAYER).back()->Initialize();
 #endif
 }
 
@@ -78,11 +81,37 @@ void CSceneManager::Update()
 
 	if (bSceneState.first && m_pPrevScene == nullptr)
 	{
-		
 		m_pPrevScene = ChangeScene(bSceneState.second);
 		SafeDelete<CScene*>(m_pPrevScene);
 	}
-	
+
+	if (dynamic_cast<CTimerUI*>(m_pTimerUI)->GetTime() <= 0.f)
+	{
+		dynamic_cast<CEri*>(m_pPlayer)->Dead();
+		dynamic_cast<CTimerUI*>(m_pTimerUI)->SetTime(61.f);
+	}
+
+	if (m_bMissionComplete && m_fCompleteDelta > 0.f)
+	{
+		m_fCompleteDelta += DELTA;
+
+		if (m_fCompleteDelta >= 6.f)
+		{
+			m_fCompleteDelta = -1.f;
+			CParticleManager::GetInstance().CreateParticle<CMission4Complete>();
+		}
+		return;
+	}
+
+
+	if (m_bMissionComplete && m_fCompleteDelta == 0.f)
+	{
+		dynamic_cast<CEri*>(m_pPlayer)->CheckMissionComplete(true);
+		dynamic_cast<CTimerUI*>(m_pTimerUI)->StopTime();
+		
+		
+		m_fCompleteDelta += DELTA;
+	}
 }
 
 void CSceneManager::LateUpdate()
@@ -101,6 +130,10 @@ void CSceneManager::Render(HDC _hDC)
 	CCollisionManager::GetInstance().CheckCollision(
 		CObjectManager::GetInstance().GetGameObjectList(PLAYER)
 		, CObjectManager::GetInstance().GetGameObjectList(ENEMY)
+		, RECT_TO_RECT);
+	CCollisionManager::GetInstance().CheckCollision(
+		CObjectManager::GetInstance().GetGameObjectList(PLAYER)
+		, CObjectManager::GetInstance().GetGameObjectList(ITEM)
 		, RECT_TO_RECT);
 	CCollisionManager::GetInstance().CheckCollision(
 		CObjectManager::GetInstance().GetGameObjectList(PLAYER)
@@ -147,17 +180,18 @@ void CSceneManager::Render(HDC _hDC)
 		, CObjectManager::GetInstance().GetGameObjectList(PLATFORM)
 		, RECT_TO_RECT);
 	CCollisionManager::GetInstance().CheckCollision(
-		CObjectManager::GetInstance().GetGameObjectList(EXPLODE)
-		, CObjectManager::GetInstance().GetGameObjectList(ENEMY)
+		CObjectManager::GetInstance().GetGameObjectList(ENEMY)
+		, CObjectManager::GetInstance().GetGameObjectList(EXPLODE)
 		, RECT_TO_RECT);
 
 #ifdef _DEBUG
-	CCollisionManager::GetInstance().RenderCollisionBox(_hDC, CObjectManager::GetInstance().GetGameObjectList(PLAYER));
-	CCollisionManager::GetInstance().RenderCollisionBox(_hDC, CObjectManager::GetInstance().GetGameObjectList(ENEMY));
-	CCollisionManager::GetInstance().RenderCollisionBox(_hDC, CObjectManager::GetInstance().GetGameObjectList(PROJECTILE));
-	CCollisionManager::GetInstance().RenderCollisionBox(_hDC, CObjectManager::GetInstance().GetGameObjectList(PLATFORM));
-	CCollisionManager::GetInstance().RenderCollisionBox(_hDC, CObjectManager::GetInstance().GetGameObjectList(NEUTRAL));
-	CCollisionManager::GetInstance().RenderCollisionBox(_hDC, CObjectManager::GetInstance().GetGameObjectList(EXPLODE));
+	//CCollisionManager::GetInstance().RenderCollisionBox(_hDC, CObjectManager::GetInstance().GetGameObjectList(PLAYER));
+	//CCollisionManager::GetInstance().RenderCollisionBox(_hDC, CObjectManager::GetInstance().GetGameObjectList(ITEM));
+	//CCollisionManager::GetInstance().RenderCollisionBox(_hDC, CObjectManager::GetInstance().GetGameObjectList(ENEMY));
+	//CCollisionManager::GetInstance().RenderCollisionBox(_hDC, CObjectManager::GetInstance().GetGameObjectList(PROJECTILE));
+	//CCollisionManager::GetInstance().RenderCollisionBox(_hDC, CObjectManager::GetInstance().GetGameObjectList(PLATFORM));
+	//CCollisionManager::GetInstance().RenderCollisionBox(_hDC, CObjectManager::GetInstance().GetGameObjectList(NEUTRAL));
+	//CCollisionManager::GetInstance().RenderCollisionBox(_hDC, CObjectManager::GetInstance().GetGameObjectList(EXPLODE));
 #endif 	
 }
 
@@ -178,10 +212,6 @@ CScene* CSceneManager::ChangeScene(SCENETAG _eTag)
 	case BARRACKS_SCENE:	
 		m_pScene = new CCharacterSelect();
 		DisableSceneUI();
-		break;
-	case ARMORY_SCENE:		
-		m_pScene = new CArmoryScene();			
-		EnableSceneUI();
 		break;
 	case MISSION_SCENE_3:	m_pScene = new CMission4BossStage();	break;
 	case MISSION_SCENE_2:	m_pScene = new CMission4Pyramid();		break;
@@ -247,5 +277,5 @@ void CSceneManager::EnableSceneUI()
 void CSceneManager::NextSceneSequence()
 {
 	m_pScene->Sequence();
-	dynamic_cast<CTimerUI*>(m_pTimerUI)->SetTime(60.f);
+	dynamic_cast<CTimerUI*>(m_pTimerUI)->SetTime(61.f);
 }

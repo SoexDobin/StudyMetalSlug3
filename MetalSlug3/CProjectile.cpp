@@ -13,11 +13,18 @@ CProjectile::~CProjectile()
 
 void CProjectile::CheckOutOfWindow()
 {
-	if (m_tRect.right == (WINCX + SCROLLX)
-		|| m_tRect.top == CScrollManager::GetInstance().GetMinScrollLock().y
-		|| m_tRect.left == CScrollManager::GetInstance().GetMinScrollLock().x
-		|| m_tRect.bottom == (WINCY + SCROLLY))
-	{
+	int RightOut = WINCX - SCROLLX;
+	int LeftOut = CScrollManager::GetInstance().GetMinScrollLock().x;
+
+	if (m_tRect.left >= (WINCX - SCROLLX))
 		m_bDestroy = OBJ_DESTROY;
-	}
+
+	if (m_tRect.right <= CScrollManager::GetInstance().GetMinScrollLock().x)
+		m_bDestroy = OBJ_DESTROY;
+
+	if (m_tRect.top <= -CScrollManager::GetInstance().GetMaxScrollLock().y)
+		m_bDestroy = OBJ_DESTROY;
+		
+	if(m_tRect.bottom <= -CScrollManager::GetInstance().GetMinScrollLock().y)
+		m_bDestroy = OBJ_DESTROY;
 }

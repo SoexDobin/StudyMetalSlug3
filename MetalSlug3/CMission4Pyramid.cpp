@@ -5,6 +5,9 @@
 #include "CSequenceTrigger.h"
 #include "CChangeTrigger.h"
 #include "CSpawner.h"
+#include "CPrisonerTied.h"
+#include "CFlameShot.h"
+#include "CGrenade.h"
 
 #include "CBmpManager.h"
 #include "CObjectManager.h"
@@ -13,6 +16,7 @@
 #include "CTimeManager.h"
 #include "CGameObjectFactory.h"
 #include "CSoundManager.h"
+#include "CSceneManager.h"
 
 CMission4Pyramid::CMission4Pyramid()
     : m_iScrollLockIdx(0)
@@ -38,7 +42,17 @@ void CMission4Pyramid::Initialize()
 
     CreatetTriggerArea();
     CreatePlatform();
-    
+
+    m_vecItems.push_back(new CFlameShot());
+    m_vecItems.push_back(new CGrenade());
+
+    CObjectManager::GetInstance()
+        .AddGameObject(CGameObjectFactory<CPrisonerTied>::Create(), ENEMY);
+    CObjectManager::GetInstance().GetGameObjectList(ENEMY).back()->SetPivot(Vector2(600.f, -460.f));
+    CObjectManager::GetInstance()
+        .AddGameObject(CGameObjectFactory<CPrisonerTied>::Create(), ENEMY);
+    CObjectManager::GetInstance().GetGameObjectList(ENEMY).back()->SetPivot(Vector2(3360.f, -860.f));
+
     CSoundManager::GetInstance().PlayBGM(L"BGM_OST_Pyramid.mp3", 0.2f);
     m_fWaterFallDelta = 0.f;
 }
@@ -98,12 +112,25 @@ void CMission4Pyramid::Sequence()
     }
     else if (m_iScrollLockIdx == 6)
     {
-        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CSpawner>::Create(Vector2(2800.f, -2300.f), Vector2::Zero), NEUTRAL);
-        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CSpawner>::Create(Vector2(2800.f, -2300.f), Vector2::Zero), NEUTRAL);
-        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CSpawner>::Create(Vector2(2350.f, -2160.f), Vector2::Zero), NEUTRAL);
+        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CSpawner>::Create(Vector2(2800.f, -2500.f), Vector2::Zero), NEUTRAL);
+        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CSpawner>::Create(Vector2(2800.f, -2500.f), Vector2::Zero), NEUTRAL);
+        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CSpawner>::Create(Vector2(2350.f, -2500.f), Vector2::Zero), NEUTRAL);
+    }
+    else if (m_iScrollLockIdx == 9)
+    {
+        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CSpawner>::Create(Vector2(5800.f, -2860.f), Vector2::Zero), NEUTRAL);
+        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CSpawner>::Create(Vector2(6000.f, -2860.f), Vector2::Zero), NEUTRAL);
+        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CSpawner>::Create(Vector2(6200.f, -2860.f), Vector2::Zero), NEUTRAL);
+    }
+    else if (m_iScrollLockIdx == 10)
+    {
+        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CSpawner>::Create(Vector2(5700.f, -3300.f), Vector2::Zero), NEUTRAL);
+        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CSpawner>::Create(Vector2(6000.f, -3300.f), Vector2::Zero), NEUTRAL);
+        CObjectManager::GetInstance().AddGameObject(CGameObjectFactory<CSpawner>::Create(Vector2(6120.f, -3300.f), Vector2::Zero), NEUTRAL);
     }
 
-    
+    m_vSpawnPoint = CSceneManager::GetInstance().GetCurPlayer()->GetPivot() + Vector2(200.f, -128.f);
+
     ++m_iScrollLockIdx;
 }
 
@@ -404,36 +431,36 @@ void CMission4Pyramid::CreatetTriggerArea()
 {
     CGameObject* pTri = nullptr;
 
+    // 0
     pTri = new CSequenceTrigger();
     pTri->SetSize({ 300.f, 700.f });
     pTri->SetPivot({ 820.f, 300.f - WINCY });
     pTri->Initialize();
     CObjectManager::GetInstance()
         .AddGameObject(pTri, NEUTRAL);
-
-
+    // 1
     pTri = new CSequenceTrigger();
     pTri->SetSize({ 800.f, 100.f });
     pTri->SetPivot({ 1000.f, -720.f });
     pTri->Initialize();
     CObjectManager::GetInstance()
         .AddGameObject(pTri, NEUTRAL);
-
+    // 2
+    pTri = new CSequenceTrigger();
+    pTri->SetSize({ 400.f, 2000.f });
+    pTri->SetPivot({ 1600.f, -920.f });
+    pTri->Initialize();
+    CObjectManager::GetInstance()
+        .AddGameObject(pTri, NEUTRAL);
+    // 3
     pTri = new CSequenceTrigger();
     pTri->SetSize({ 100.f, 2000.f });
-    pTri->SetPivot({ 1500.f, -920.f });
+    pTri->SetPivot({ 2780.f, -820.f });
     pTri->Initialize();
     CObjectManager::GetInstance()
         .AddGameObject(pTri, NEUTRAL);
 
-    pTri = new CSequenceTrigger();
-    pTri->SetSize({ 100.f, 2000.f });
-    pTri->SetPivot({ 2300.f, -920.f });
-    pTri->Initialize();
-    CObjectManager::GetInstance()
-        .AddGameObject(pTri, NEUTRAL);
-
-
+    // 4
     pTri = new CSequenceTrigger();
     pTri->SetSize({ 100.f, 100.f });
     pTri->SetPivot({ 3430.f, -1420.f });
@@ -478,7 +505,7 @@ void CMission4Pyramid::CreatetTriggerArea()
 
     CGameObject* pEntranceBoss = new CChangeTrigger();
     pEntranceBoss->SetSize({ 300.f, 300.f });
-    pEntranceBoss->SetPivot({ 9200.f, -2400.f });
+    pEntranceBoss->SetPivot({ 9200.f, -2000.f });
     pEntranceBoss->Initialize();
     CObjectManager::GetInstance()
         .AddGameObject(pEntranceBoss, NEUTRAL);
@@ -556,6 +583,8 @@ void CMission4Pyramid::LoadBmpEnemy()
         , L"ManEater_Attack_Left");
     CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/ManEater/ManEater_Attack_Right.bmp"
         , L"ManEater_Attack_Right");
+    CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/ManEater/ManEater_Burn.bmp"
+        , L"ManEater_Burn");
     CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/ManEater/ManEater_Attack_Blank.bmp"
         , L"ManEater_Attack_Blank");
     CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Enemy/ManEater/ManEater_Blank.bmp"

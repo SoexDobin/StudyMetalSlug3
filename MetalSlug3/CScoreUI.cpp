@@ -34,6 +34,8 @@ void CScoreUI::LateUpdate()
 
 void CScoreUI::Render(HDC _hDC)
 {
+	if (m_bDisable) return;
+
 	HFONT hFont = CreateFontW(
 		36, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
 		DEFAULT_CHARSET,

@@ -8,11 +8,18 @@ public:
 	virtual ~CParticle();
 	
 public:
+	const TCHAR*	GetFrameKey() { return m_szFrameKey; }
+	void			SetFrameKey(const TCHAR* _szKey) { m_szFrameKey = _szKey; }
+
+public:
 	virtual void        Initialize()                                         PURE;
 	virtual int         Update()                                             PURE;
 	virtual void        LateUpdate()                                         PURE;
 	virtual void        Render(HDC _hDC)                                     PURE;
 	virtual void        Release()                                            PURE;
 	virtual void        OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)   PURE;
+
+protected:
+	const TCHAR* m_szFrameKey;
 };
 

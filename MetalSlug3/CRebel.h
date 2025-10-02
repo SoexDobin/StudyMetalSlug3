@@ -29,10 +29,13 @@ private:
 private:
 	bool			m_bDead;
 	REBEL_STATE		m_eState;
+	float			m_fBeside;
 	float			m_fSpeed;
 	float			m_fInvisibleDelta;
 	CAnimation*		m_pAnim;
 	CGameObject*	m_pPlatformCol;
 	CGameObject*	m_pPlayer;
+
+	OBJECT_TYPE		m_eLastHit;
 };
 

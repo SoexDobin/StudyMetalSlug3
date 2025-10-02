@@ -4,7 +4,7 @@
 #include "CSoundManager.h"
 
 CBulletHitParticle::CBulletHitParticle()
-    : m_pAnim(nullptr), m_szFrameKey(nullptr)
+    : m_pAnim(nullptr)
 {
     ZeroMemory(&m_pairFrame, sizeof(pair<int, int>));
 }

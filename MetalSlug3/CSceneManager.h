@@ -30,13 +30,14 @@ public:
 	
 	void			DisableSceneUI();
 	void			EnableSceneUI();
-	
+	void			SetMissionComplete()	{ m_bMissionComplete = true; }
 
 private:
 	CScene*			m_pScene;
 	CScene*			m_pPrevScene;
 	SCENETAG		m_eCurScene;
 	
+	float			m_fCompleteDelta;
 
 // [!]NOTICE	Don't Destroy On SCENE
 private:
@@ -47,7 +48,6 @@ private:
 	CUIObject*		m_pMultiHitUI;
 	CUIObject*		m_pArmBoxUI;
 
-	// ÄÚÀÎ, ¸ñ¼û
-	// 
+	bool			m_bMissionComplete;
 };
 

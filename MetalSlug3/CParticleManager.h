@@ -26,6 +26,15 @@ public:
 		pParticle->SetPivot(_vPivot);
 		pParticle->Initialize();
 	}
+	template <typename T>
+	void CreateParticle(Vector2 _vPivot, const TCHAR* _szFrameKey)
+	{
+		CParticle* pParticle = new T();
+		m_ParticleList.push_back(pParticle);
+		pParticle->SetPivot(_vPivot);
+		pParticle->SetFrameKey(_szFrameKey);
+		pParticle->Initialize();
+	}
 
 	void Update();
 	void LateUpdate();

@@ -4,11 +4,14 @@
 #include "CAnimation.h"
 #include "CCQCChecker.h"
 #include "CHMProjectile.h"
+#include "CILProjectile.h"
+#include "CFSProjectile.h"
 #include "CPlatformChecker.h"
 #include "CCQCArea.h"
 #include "CExplodeArea.h"
 #include "CEriSpawn.h"
 #include "CScene.h"
+#include "CBomb.h"
 
 // Managers
 #include "CBmpManager.h"
@@ -31,8 +34,10 @@ CEri::CEri()
 	, m_eCurLegState(PLAYER_STATE_END), m_ePrevLegState(PLAYER_STATE_END)
 	, m_fMoveSpeed(0.f), m_fCrawlSpeed(0.f)
 	, m_fJumpSpeed(0.f), m_bIsJump(false)
+	, m_fInvisibleDelta(0.f)
 	, m_bIsDrop(true)
-	, m_iScatterIdx(0), m_fShootDelta(0.f)
+	, m_bMissionComplete(false)
+	, m_iScatterIdx(0), m_fShootDelta(0.f), m_fBombDelta(0.f)
 	, m_iArmo(INFINITE), m_iBomb(0), m_eCurWeapon(HM_GUN)
 {
 }
@@ -44,8 +49,6 @@ CEri::~CEri()
 
 void CEri::Initialize()
 {
-
-
 	LoadProjectileBmp();
 	LoadEriBmp();
 
@@ -54,9 +57,10 @@ void CEri::Initialize()
 
 	m_vFace = Vector2::UnitX;
 	m_vDirection = Vector2(0.f, 0.f);
-	m_fMoveSpeed = 500.f;
-	m_fCrawlSpeed = 100.f;
+	m_fMoveSpeed = 420.f;
+	m_fCrawlSpeed = 200.f;
 	m_fShootDelta = n_fShootDelta;
+	m_fBombDelta = n_fBombDelta;
 	m_eType = PLAYER;
 
 	m_pColBox = CColliderFactory::Create(this, HITBOX);;
@@ -71,8 +75,8 @@ void CEri::Initialize()
 	m_pSpawnAnim = dynamic_cast<CEriSpawn*>(m_pSpawnAnimObj)->GetSpawnAnimation();
 	m_pSpawnAnimObj->SetPivot(m_vPivot);
 
-	m_ePrevBodyState = IDLE;
-	m_ePrevLegState = IDLE;
+	m_ePrevBodyState = RESPAWN;
+	m_ePrevLegState = RESPAWN;
 	m_eCurBodyState = RESPAWN;
 	m_eCurLegState = RESPAWN;
 	
@@ -86,6 +90,10 @@ void CEri::Initialize()
 	SetStandCollider();
 	srand(static_cast<int>(DELTA));
 	m_fJumpSpeed = n_fSeedJumpSpeed;
+
+
+	// Supply
+	m_iBomb = 3;
 }
 
 int CEri::Update()
@@ -99,6 +107,12 @@ int CEri::Update()
 	}
 	
 	__super::UpdateGameObject();
+
+	if (m_fInvisibleDelta > 0.f)
+		m_fInvisibleDelta -= DELTA;
+	else if (m_fInvisibleDelta <= 0.f)
+		m_fInvisibleDelta = 0.f;
+
 	m_pSpawnAnimObj->SetPivot(Vector2(m_vPivot.x, m_vPivot.y - 240.f));
 	if (m_eCurBodyState == RESPAWN)
 	{
@@ -110,6 +124,9 @@ int CEri::Update()
 			SetLegAnim(L"Eri_Standing_Idle_Leg", true, IDLE, 1);
 			m_pSpawnAnim->ChangeAnimation(L"Eri_Spawn_Blank");
 
+			m_eCurWeapon = HM_GUN;
+			m_iArmo = INFINITE;
+			m_iBomb = 0;
 			return OBJ_NOEVENT;
 		}
 		return OBJ_NOEVENT;
@@ -119,6 +136,7 @@ int CEri::Update()
 	{
 		if (m_pDeadAnim->GetEndOneLoop())
 		{
+			m_fInvisibleDelta = 3.f;
 			m_eCurBodyState = RESPAWN;
 			m_eCurLegState = RESPAWN;
 
@@ -135,12 +153,26 @@ int CEri::Update()
 		return OBJ_NOEVENT;
 	}
 
+	CheckPlatform();
+
+	if (m_bMissionComplete)
+	{
+		SetBodyAnim(L"Eri_Complete", true, PLAYER_STATE_END);
+		SetLegAnim(L"Eri_Blank_Body", true, PLAYER_STATE_END);
+		m_pDeadAnim->ChangeAnimation(L"Eri_Blank_Body");
+		m_pBodyAnim->SetFrameSpeed(0.1f);
+		m_pBodyAnim->UpdateAnimation();
+		m_pLegAnim->UpdateAnimation();
+		m_pDeadAnim->UpdateAnimation();
+		return OBJ_NOEVENT;
+	}
+
 	m_pBodyAnim->UpdateAnimation();
 	m_pLegAnim->UpdateAnimation();
 
+	m_fBombDelta -= 1000.f * DELTA;
 	m_fShootDelta -= 1000.f * DELTA;
 
-	CheckPlatform();
 	CheckOutOfBound();
 	BehaviourKeyInput();
 	AttackKeyInput();
@@ -194,12 +226,12 @@ void CEri::Release()
 	SafeDelete<CAnimation*>(m_pDeadAnim);
 	m_pSpawnAnim = nullptr;
 	SafeDelete<CGameObject*>(m_pSpawnAnimObj);
-	//SafeDelete(m_pCQCCol);
-	//SafeDelete(m_pPlatformCol); 
 }
 
 void CEri::OnCollision(CGameObject* _pCol, Vector2 _vColSize, COLLISION_COL_FLAG _eFlag)
 {
+	if (m_fInvisibleDelta > 0.f) return;
+
 	if (_pCol->GetObjectType() == PROJECTILE)
 	{
 		if (dynamic_cast<CProjectile*>(_pCol)->GetDamageFlag() == PLAYER)
@@ -304,9 +336,44 @@ void CEri::AttackKeyInput()
 
 	if (m_eCurBodyState == SIT) 
 	{
-		if (m_ePrevLegState == CQC && !m_pLegAnim->GetEndOneLoop()) return;
+		if (m_ePrevLegState == CQC && !m_pLegAnim->GetEndOneLoop()) 
+			return;
+		if (m_ePrevLegState == BOMB && !m_pLegAnim->GetEndOneLoop())
+		{
+			m_vDirection = Vector2::Zero;
+			return;
+		}
+			
 		m_pBodyAnim->SetLoop(true);
-		if (CKeyManager::GetInstance().KeyPressing(n_cAttackKey))
+
+
+		if (CKeyManager::GetInstance().KeyDown(n_cBombKey))
+		{
+			if (m_fBombDelta > 0.f) return;
+			
+			Vector2 vPos = m_pColBox->GetPivot() + Vector2(m_vFace.x * 64.f, -64.f);
+
+			if (m_vFace.x >= 0.f)
+			{
+				SetLegAnim(L"Eri_Sit_Throw", false, BOMB);
+				if (m_iBomb == 0) return;
+				CProjectileFactory<CBomb>
+					::CreateProjectile(vPos, Vector2::UnitX, 0, 45.f);
+				--m_iBomb;
+			}
+			else
+			{
+				SetLegAnim(L"Eri_Sit_Throw", false, BOMB);
+				if (m_iBomb == 0) return;
+				CProjectileFactory<CBomb>
+					::CreateProjectile(vPos, Vector2::UnitX, 0, 135.f);
+				--m_iBomb;
+			}
+			
+			m_fBombDelta = n_fBombDelta;
+			return;
+		}
+		else if (CKeyManager::GetInstance().KeyPressing(n_cAttackKey))
 		{
 			if (CKeyManager::GetInstance().KeyPressing(VK_RIGHT))
 				m_vFace = Vector2::UnitX;
@@ -358,13 +425,41 @@ void CEri::AttackKeyInput()
 	{
 		if (m_ePrevBodyState == CQC && !m_pBodyAnim->GetEndOneLoop())
 			return;
-		if (CKeyManager::GetInstance().KeyPressing(n_cAttackKey))
+		if (m_ePrevBodyState == BOMB && !m_pBodyAnim->GetEndOneLoop())
+			return;
+
+		if (CKeyManager::GetInstance().KeyDown(n_cBombKey))
+		{
+			if (m_fBombDelta > 0.f) return;
+
+			Vector2 vPos = m_pColBox->GetPivot() + Vector2(0.f, -96.f);
+
+			if (m_vFace.x >= 0.f)
+			{
+				SetBodyAnim(L"Eri_Standing_Throw_Body", false, BOMB);
+				
+				if (m_iBomb == 0) return;
+				CProjectileFactory<CBomb>
+					::CreateProjectile(vPos, Vector2::UnitX, 0, 45.f);
+				--m_iBomb;
+			}
+			else
+			{
+				if (m_iBomb == 0) return;
+				SetBodyAnim(L"Eri_Standing_Throw_Body", false, BOMB);
+				CProjectileFactory<CBomb>
+					::CreateProjectile(vPos, Vector2::UnitX, 0, 135.f);
+				--m_iBomb;
+			}
+			
+			m_fBombDelta = n_fBombDelta;
+			return;
+		}
+		else if (CKeyManager::GetInstance().KeyPressing(n_cAttackKey))
 		{
 			if (bHasEnemy)
 			{
 				int irand = rand() % 2;
-
-				
 
 				if (irand) 
 				{
@@ -452,7 +547,6 @@ void CEri::Jump()
 		m_fJumpSpeed += DELTA * n_fFallSpeed;
 		m_vPivot.y += m_fJumpSpeed * DELTA;
 		
-		// TODO : Y스크롤 액션을 처리해야 한다.
 		if (m_fJumpSpeed > 0.f)
 		{
 			m_bIsDrop = true;
@@ -495,25 +589,34 @@ void CEri::Shoot()
 	else
 		vPos += n_vShootOffset;
 
+	ShootHeavyMachineGun(vPos);
+	ShootIronLizzard(vPos);
+	ShootFlameShot(vPos);
+}
+
+void CEri::ShootHeavyMachineGun(Vector2 _vPos)
+{
+	if (m_eCurWeapon != HM_GUN) return;
+
 	if (m_vFace.x >= Vector2::UnitX.x && m_vFace.y == 0.f)
 	{
 		CProjectileFactory<CHMProjectile>
-			::CreateProjectile(vPos, Vector2(m_vFace.x, n_fScatterArg[m_iScatterIdx]), L"HeavyMachineGunProjectile_Front", 0);
+			::CreateProjectile(_vPos, Vector2(m_vFace.x, n_fScatterArg[m_iScatterIdx]), L"HeavyMachineGunProjectile_Front", 0);
 	}
 	else if (m_vFace.x <= Vector2::UnitX.x && m_vFace.y == 0.f)
 	{
 		CProjectileFactory<CHMProjectile>
-			::CreateProjectile(vPos, Vector2(m_vFace.x, n_fScatterArg[m_iScatterIdx]), L"HeavyMachineGunProjectile_Front", 1);
+			::CreateProjectile(_vPos, Vector2(m_vFace.x, n_fScatterArg[m_iScatterIdx]), L"HeavyMachineGunProjectile_Front", 1);
 	}
 	else if (m_vFace.y <= Vector2::UnitY.y * -1.f && m_vFace.x == 0.f)
 	{
 		CProjectileFactory<CHMProjectile>
-			::CreateProjectile(vPos, Vector2(n_fScatterArg[m_iScatterIdx], -1.f), L"HeavyMachineGunProjectile_Up", 0);
+			::CreateProjectile(_vPos, Vector2(n_fScatterArg[m_iScatterIdx], -1.f), L"HeavyMachineGunProjectile_Up", 0);
 	}
 	else if (m_vFace.y >= Vector2::UnitY.y && m_vFace.x == 0.f)
 	{
 		CProjectileFactory<CHMProjectile>
-			::CreateProjectile(vPos, Vector2(n_fScatterArg[m_iScatterIdx], 1.f), L"HeavyMachineGunProjectile_Down", 0);
+			::CreateProjectile(_vPos, Vector2(n_fScatterArg[m_iScatterIdx], 1.f), L"HeavyMachineGunProjectile_Down", 0);
 	}
 
 	if (m_eCurWeapon == HM_GUN && m_iScatterIdx % 2 == 1)
@@ -523,6 +626,78 @@ void CEri::Shoot()
 
 	m_iScatterIdx = (m_iScatterIdx + 1) % 5;
 	m_fShootDelta = n_fShootDelta;
+}
+
+void CEri::ShootIronLizzard(Vector2 _vPos)
+{
+	if (m_eCurWeapon != IRON_LIZZARD) return;
+
+	if (m_vFace.x >= Vector2::UnitX.x && m_vFace.y == 0.f)
+	{
+		CProjectileFactory<CILProjectile>
+			::CreateProjectile(_vPos, Vector2(m_vFace.x, 0.f)
+				, L"Iron_Lizzard", 0);
+	}
+	else if (m_vFace.x <= Vector2::UnitX.x && m_vFace.y == 0.f)
+	{
+		CProjectileFactory<CILProjectile>
+			::CreateProjectile(_vPos, Vector2(m_vFace.x, 0.f)
+				, L"Iron_Lizzard", 1);
+	}
+
+	--m_iArmo;
+	m_fShootDelta = 225.f;
+
+	if (m_iArmo == 0)
+	{
+		m_eCurWeapon = HM_GUN;
+		m_iArmo = INFINITE;
+
+		m_fShootDelta = n_fShootDelta;
+		return;
+	}
+}
+
+void CEri::ShootFlameShot(Vector2 _vPos)
+{
+	if (m_eCurWeapon != FLAME_SHOT) return;
+
+	if (m_vFace.x >= Vector2::UnitX.x && m_vFace.y == 0.f)
+	{
+		CProjectileFactory<CFSProjectile>
+			::CreateProjectile(_vPos, Vector2(m_vFace.x, 0.f)
+				, L"FlameShot_Front", 0);
+	}
+	else if (m_vFace.x <= Vector2::UnitX.x && m_vFace.y == 0.f)
+	{
+		CProjectileFactory<CFSProjectile>
+			::CreateProjectile(_vPos, Vector2(m_vFace.x, 0.f)
+				, L"FlameShot_Front", 1);
+	}
+	else if (m_vFace.y <= Vector2::UnitY.y * -1.f && m_vFace.x == 0.f)
+	{
+		CProjectileFactory<CFSProjectile>
+			::CreateProjectile(_vPos, Vector2(0.f, -1.f)
+				, L"FlameShot_Up", 0);
+	}
+	else if (m_vFace.y >= Vector2::UnitY.y && m_vFace.x == 0.f)
+	{
+		CProjectileFactory<CFSProjectile>
+			::CreateProjectile(_vPos, Vector2(0.f, 1.f)
+				, L"FlameShot_Down", 0);
+	}
+
+	--m_iArmo;
+	m_fShootDelta = 350.f;
+
+	if (m_iArmo == 0)
+	{
+		m_eCurWeapon = HM_GUN;
+		m_iArmo = INFINITE;
+
+		m_fShootDelta = n_fShootDelta;
+		return;
+	}
 }
 
 
@@ -535,6 +710,7 @@ void CEri::Dead()
 	m_pColBox->SetEnableCol(false);
 	m_pDeadAnim->ChangeAnimation(L"Eri_Dead");
 	m_pDeadAnim->SetLoop(false);
+	CSoundManager::GetInstance().PlaySoundOnce(L"Eri_Dead.mp3", PLAYER_DEAD, 0.1f);
 }
 
 void CEri::CheckOutOfBound()
@@ -544,8 +720,9 @@ void CEri::CheckOutOfBound()
 	if (m_vPivot.x < fMinX) m_vPivot.x += (fMinX - m_vPivot.x);
 	if (m_vPivot.x > fMaxX) m_vPivot.x += fMaxX - (m_vPivot.x);
 
-	if (m_vPivot.y > WINCY)
-		; // TODO : 낙사 판정
+	//if (m_eCurBodyState = DEAD) return;
+	//if (m_tRect.top > -CScrollManager::GetInstance().GetMinScrollLock().y + 960.f)
+	//	Dead(); // 낙사
 }
 
 void CEri::CheckPlatform()
@@ -739,6 +916,17 @@ void CEri::LoadEriBmp()
 	m_pBodyAnim->AddAnimation(L"Eri_Standing_ShootFrontToUp_Body", pair<int, int>{0, 2});
 	m_pBodyAnim->AddAnimation(L"Eri_Standing_ShootUpToFront_Body", pair<int, int>{0, 2});
 
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Eri/Eri_Standing_Throw_Body.bmp"
+		, L"Eri_Standing_Throw_Body");
+	m_pBodyAnim->AddAnimation(L"Eri_Standing_Throw_Body", pair<int, int>(0, 6));
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Eri/Eri_Sit_Throw.bmp"
+		, L"Eri_Sit_Throw");
+	m_pLegAnim->AddAnimation(L"Eri_Sit_Throw", pair<int, int>(0, 6));
+
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Eri/Eri_Complete.bmp"
+		, L"Eri_Complete");
+	m_pBodyAnim->AddAnimation(L"Eri_Complete", pair<int, int>{0, 7});
+
 	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Eri/Eri_Dead.bmp",
 		L"Eri_Dead");
 	m_pDeadAnim->AddAnimation(L"Eri_Dead", pair<int, int>{0, 20});
@@ -753,18 +941,31 @@ void CEri::LoadEriBmp()
 
 void CEri::LoadProjectileBmp()
 {
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Projectile/Bomb/Bomb.bmp", L"Bomb");
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Item/Grenade.bmp", L"Grenade");
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Item/Iron_Lizzard.bmp", L"Iron_Lizzard");
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Item/Flame_Shot.bmp", L"Flame_Shot");
+	
 	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Projectile/HeavyMachineGun/HeavyMachineGunProjectile_Front.bmp"
 		, L"HeavyMachineGunProjectile_Front");
 	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Projectile/HeavyMachineGun/HeavyMachineGunProjectile_Up.bmp"
 		, L"HeavyMachineGunProjectile_Up");
 	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Projectile/HeavyMachineGun/HeavyMachineGunProjectile_Down.bmp"
 		, L"HeavyMachineGunProjectile_Down");
+
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Projectile/IronLizzard/Iron_Lizzard_Shoot.bmp"
+		, L"Iron_Lizzard_Shoot");
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Projectile/IronLizzard/Iron_Lizzard_Attack.bmp"
+		, L"Iron_Lizzard_Attack");
+
+	CBmpManager::GetInstance().InsertBmp(L"../Resource/Bmp/Projectile/FlameShot/FlameShot_Front.bmp"
+		, L"FlameShot_Front");
 }
 
 void CEri::WinOffsetX(const float& _fCurSpeed)
 {
 	int iOffsetminX = 0;
-	int iOffsetmaxX = static_cast<int>(WINCX * 0.5f);
+	int iOffsetmaxX = static_cast<int>(WINCX * 0.5f) - 96;
 
 	int iScrollX = SCROLLX;
 

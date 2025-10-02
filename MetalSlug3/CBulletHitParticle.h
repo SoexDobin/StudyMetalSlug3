@@ -20,6 +20,5 @@ public:
 private:
 	CAnimation*		m_pAnim;
 	pair<int, int>	m_pairFrame;
-	const TCHAR*	m_szFrameKey;
 };
 
