@@ -39,7 +39,7 @@ void CManEater::Initialize()
     LoadAnimation();
     m_pPlayer = CSceneManager::GetInstance().GetCurPlayer();
 
-    m_iHp = 5;
+    m_iHp = 7;
     m_vPivot = Vector2(800.f, 500.f);
     m_vSize = Vector2(192.f, 192.f);
     m_vFace = Vector2::UnitX;

@@ -57,7 +57,7 @@ void CSolDaeLokker::Initialize()
     m_eCurState = INTRO;
     m_vPivot = Vector2((WINCX / 2), -100);
     m_vSize = Vector2(960.f, 900.f);
-    m_iHp = 200;
+    m_iHp = 100;
 
     LoadBmp();
     LoadAnim();

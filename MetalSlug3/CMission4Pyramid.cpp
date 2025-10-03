@@ -48,7 +48,7 @@ void CMission4Pyramid::Initialize()
 
     CObjectManager::GetInstance()
         .AddGameObject(CGameObjectFactory<CPrisonerTied>::Create(), ENEMY);
-    CObjectManager::GetInstance().GetGameObjectList(ENEMY).back()->SetPivot(Vector2(600.f, -460.f));
+    CObjectManager::GetInstance().GetGameObjectList(ENEMY).back()->SetPivot(Vector2(600.f, -330.f));
     CObjectManager::GetInstance()
         .AddGameObject(CGameObjectFactory<CPrisonerTied>::Create(), ENEMY);
     CObjectManager::GetInstance().GetGameObjectList(ENEMY).back()->SetPivot(Vector2(3360.f, -860.f));

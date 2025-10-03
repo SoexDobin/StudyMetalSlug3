@@ -55,13 +55,13 @@ int CFSProjectile::Update()
     {
         m_vPivot.x += m_vDirection.x * m_fSpeed * DELTA;
         m_vPivot.y -= 0.2f * m_fSpeed * DELTA;
-        m_pAnim->SetDeltaFrame(m_pAnim->GetDeltaFrame() * 3.f);
+        m_pAnim->SetDeltaFrame(m_pAnim->GetDeltaFrame() * 4.f);
     }
     else
     {
         m_vPivot.y += m_vDirection.y * m_fSpeed * DELTA;
         m_vPivot.x -= 0.1f * m_fSpeed * DELTA;
-        m_pAnim->SetDeltaFrame(m_pAnim->GetDeltaFrame() * 3.f);
+        m_pAnim->SetDeltaFrame(m_pAnim->GetDeltaFrame() * 4.f);
     }
     
 
